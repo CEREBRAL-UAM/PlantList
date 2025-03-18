@@ -1,0 +1,41 @@
+"""
+URL configuration for plantlist_crud_api project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+
+from django.conf import settings
+from django.conf.urls.static import static  
+
+
+urlpatterns = [
+    path('plantlist/apiv1/auth/', include('dj_rest_auth.urls')),  # login, logout, user (detalles del usuario)
+    path('plantlist/apiv1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registro de usuarios
+    path('admin/', admin.site.urls),
+    path('usuarios/', include('usuarios.urls')),
+    path('plantas/', include('plantas.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+
+    # Interfaz Swagger para visualizar la API
+    path('doc/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # Interfaz Redoc (otra forma de ver la documentación)
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
