@@ -1,7 +1,6 @@
 from rest_framework import viewsets
-from .serializer import (PlantaSerializer, EspecieSerializer, 
-                         EnfermedadSerializer, PlagaSerializer)
-from .models import Planta, Especie, Enfermedad, Plaga
+from .serializer import (PlantaSerializer, EspecieSerializer, PartePlantaSerializer, PlantaPartesSerializer)
+from .models import Planta, Especie, PartePlanta, PlantaPartes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -15,13 +14,14 @@ class EspecieView(viewsets.ModelViewSet):
     serializer_class = EspecieSerializer
     queryset = Especie.objects.all()
 
-class EnfermedadView(viewsets.ModelViewSet):
-    serializer_class = EnfermedadSerializer
-    queryset = Enfermedad.objects.all()
+class PartePlantaView(viewsets.ModelViewSet):
+    serializer_class = PartePlantaSerializer
+    queryset = PartePlanta.objects.all()
 
-class PlagaView(viewsets.ModelViewSet):
-    serializer_class = PlagaSerializer
-    queryset = Plaga.objects.all()
+class PlantaPartesViewSet(viewsets.ModelViewSet):
+    queryset = PlantaPartes.objects.all()
+    serializer_class = PlantaPartesSerializer
+
 
 # Para obtener plantas de un usuario especifico (autenticado)
 @api_view(['GET'])

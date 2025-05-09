@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export function PlantaCard({ planta }) {
+  const navigate = useNavigate();
+
   const imagenUrl = planta.imagen
     ? `${planta.imagen}`
     : "http://localhost:8000/media/plantas/default.jpg";
@@ -6,7 +10,11 @@ export function PlantaCard({ planta }) {
   //console.log("Imagen URL:", imagenUrl);  -> Verifica la URL
 
   return (
-    <div>
+    <div
+      onClick={() => {
+        navigate(`/plantlist/plantas/${planta.id}`);
+      }}
+    >
       <img
         src={imagenUrl}
         alt="No imagen disponivle"

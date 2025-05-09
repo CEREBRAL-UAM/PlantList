@@ -5,8 +5,8 @@ from plantas import views
 router = routers.DefaultRouter()
 router.register(r'plantas', views.PlantaView, 'plantas')
 router.register(r'especies', views.EspecieView, 'especies')
-router.register(r'enfermedades', views.EnfermedadView, 'enfermedades')
-router.register(r'plagas', views.PlagaView, 'plagas')
+router.register(r'parte_planta', views.PartePlantaView, 'parte_planta')
+router.register(r'planta_partes', views.PlantaPartesViewSet, 'planta_partes')
 
 urlpatterns = [
     path('apiv1/usuario/', views.obtener_plantas_usuario, name='obtener_plantas_usuario'),
