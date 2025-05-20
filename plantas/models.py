@@ -17,6 +17,11 @@ class Especie(Individuo):
     id_especies = models.AutoField(primary_key=True)
     foto = models.ImageField(upload_to='especies/', blank=True, null=True)
     origen = models.CharField(max_length=45, blank=True)
+    id_Planta = models.ForeignKey(
+        'Planta',  
+        on_delete=models.CASCADE,
+        db_column='id_Planta'
+    )
 
     class Meta:
         db_table = 'especies'
@@ -24,14 +29,9 @@ class Especie(Individuo):
 
 class Planta(Individuo):
     id_planta = models.AutoField(primary_key=True)
-    id_especies = models.ForeignKey(
-        'Especie',  
-        on_delete=models.DO_NOTHING,
-        db_column='id_especies'
-    )
-    id_espacios = models.ForeignKey(
+    id_espacios = models.ForeignKey( 
         'Espacio',  
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         db_column='id_espacios'
     )
     foto = models.ImageField(upload_to='plantas/', blank=True, null=True)
@@ -39,7 +39,7 @@ class Planta(Individuo):
 
     class Meta:
         db_table = 'plantas' 
-        unique_together = (('id_planta', 'id_especies'),)
+        unique_together = (('id_planta', 'id_espacios'),)
 
 
 class PartePlanta(Individuo):
@@ -55,8 +55,8 @@ class PlantaPartes(models.Model):
 
     id_planta = models.ForeignKey(
         'Planta',  
-        on_delete=models.DO_NOTHING,
-        db_column='id_Planta'
+        on_delete=models.CASCADE,
+        db_column='id_Planta'      
     )
 
     class Meta:
@@ -75,3 +75,6 @@ class Espacio(models.Model):
 
     class Meta:
         db_table = 'espacios'
+
+    def __str__(self):
+        return self.nombre_espacio
