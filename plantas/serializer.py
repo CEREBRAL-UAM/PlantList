@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Planta, Especie, PartePlanta, PlantaPartes
+from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio
 
 class PlantaSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -20,3 +20,8 @@ class PlantaPartesSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantaPartes
         fields = ['id_parteplanta', 'id_planta']
+
+class EspacioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Espacio
+        fields = '__all__'

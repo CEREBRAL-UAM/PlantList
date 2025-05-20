@@ -5,7 +5,7 @@ from django.conf import settings
 class Individuo(models.Model):
     nombre_cientifico = models.CharField(max_length=45, blank=True)  
     alias = models.CharField(max_length=45, blank=True)
-    descripcion = models.CharField(max_length=150, blank=True)
+    descripcion = models.CharField(max_length=300, blank=True)
 
     class Meta:
         abstract = True
@@ -28,6 +28,11 @@ class Planta(Individuo):
         'Especie',  
         on_delete=models.DO_NOTHING,
         db_column='id_especies'
+    )
+    id_espacios = models.ForeignKey(
+        'Espacio',  
+        on_delete=models.DO_NOTHING,
+        db_column='id_espacios'
     )
     foto = models.ImageField(upload_to='plantas/', blank=True, null=True)
     familia = models.CharField(max_length=45, blank=True)
@@ -61,3 +66,12 @@ class PlantaPartes(models.Model):
 
     def __str__(self):
         return f"Planta ID {self.id_planta} - Parte ID {self.id_parteplanta}"
+
+
+class Espacio(models.Model):
+    id_espacios = models.AutoField(primary_key=True)
+    nombre_espacio = models.CharField(max_length=45, blank=True) 
+    foto = models.ImageField(upload_to='espacios/', blank=True, null=True)
+
+    class Meta:
+        db_table = 'espacios'

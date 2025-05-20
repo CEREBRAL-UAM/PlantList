@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/media": "http://localhost:8000",
+      "/plantas": "http://127.0.0.1:8000",
     },
   },
 });

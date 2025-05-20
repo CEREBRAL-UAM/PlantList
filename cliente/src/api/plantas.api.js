@@ -21,3 +21,6 @@ export const getPlanta = (id) => {
 export const eliminarPlanta = (id) => {
   return plantaApi.delete(`/${id}`);
 };
+
+export const getPlantasPorEspacio = (id_espacios) =>
+  axios.get(`/plantas/apiv1/plantas/?id_espacios=${id_espacios}`);

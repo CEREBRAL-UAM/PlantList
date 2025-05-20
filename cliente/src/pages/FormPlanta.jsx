@@ -12,14 +12,16 @@ export function FormPlanta() {
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
-    formData.append("nombre", data.nombre);
+    formData.append("nombre_cientifico", data.nombre_cientifico);
+    formData.append("alias", data.alias);
     formData.append("descripcion", data.descripcion);
-    formData.append("especie", parseInt(data.especie, 10));
-    formData.append("usuario", 1); // IMPORTNTE: ESTO ES TEMPORAL, CUANDO HAYA USUARIOS LO CAMBIO
+    formData.append("familia", data.familia);
+    formData.append("id_especies", parseInt(data.id_especies, 10));
+    //formData.append("usuario", 1); // IMPORTNTE: ESTO ES TEMPORAL, CUANDO HAYA USUARIOS LO CAMBIO
     // LA LINEA DE ARRIBA IMPORTANTEE
 
-    if (data.imagen[0]) {
-      formData.append("imagen", data.imagen[0]);
+    if (data.foto[0]) {
+      formData.append("foto", data.foto[0]);
     }
 
     try {
@@ -44,8 +46,18 @@ export function FormPlanta() {
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Nombra tu planta"
-          {...register("nombre", { required: true })}
+          placeholder="Nombre cientifico"
+          {...register("nombre_cientifico", { required: true })}
+        />
+        <input
+          type="text"
+          placeholder="Alias"
+          {...register("alias", { required: true })}
+        />
+        <input
+          type="text"
+          placeholder="Familia"
+          {...register("familia", { required: true })}
         />
         <textarea
           rows="3"
@@ -56,14 +68,14 @@ export function FormPlanta() {
         <input
           type="file"
           accept="image/png, image/jpeg"
-          {...register("imagen", { required: false })}
+          {...register("foto", { required: false })}
         />
 
-        <select {...register("especie", { required: true })}>
+        <select {...register("id_especies", { required: true })}>
           <option value="">Selecciona una especie</option>
           {especies.map((especie) => (
-            <option key={especie.id} value={especie.id}>
-              {especie.nombre}
+            <option key={especie.id_especies} value={especie.id_especies}>
+              {especie.nombre_cientifico}
             </option>
           ))}
         </select>

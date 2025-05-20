@@ -7,6 +7,7 @@ router.register(r'plantas', views.PlantaView, 'plantas')
 router.register(r'especies', views.EspecieView, 'especies')
 router.register(r'parte_planta', views.PartePlantaView, 'parte_planta')
 router.register(r'planta_partes', views.PlantaPartesViewSet, 'planta_partes')
+router.register(r'espacios', views.EspacioViewSet, 'espacios')
 
 urlpatterns = [
     path('apiv1/usuario/', views.obtener_plantas_usuario, name='obtener_plantas_usuario'),

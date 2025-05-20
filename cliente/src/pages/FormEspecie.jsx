@@ -9,15 +9,19 @@ export function FormEspecie() {
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
-    formData.append("nombre", data.nombre);
+    formData.append("nombre_cientifico", data.nombre_cientifico);
+    formData.append("alias", data.alias);
     formData.append("descripcion", data.descripcion);
     formData.append("origen", data.origen);
-    formData.append("descubridor", data.descubridor);
+
+    if (data.foto[0]) {
+      formData.append("foto", data.foto[0]);
+    }
 
     try {
       const res = await crearEspecie(formData);
       console.log("Especie creada:", res);
-      navigate("/plantlist/plantas");
+      navigate("/plantlist/especies");
     } catch (error) {
       console.error("Error al crear especie:", error.response?.data || error);
     }
@@ -28,24 +32,30 @@ export function FormEspecie() {
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           type="text"
-          placeholder="Nombra la especie"
-          {...register("nombre", { required: true })}
+          placeholder="Nombre cientifico"
+          {...register("nombre_cientifico", { required: true })}
+        />
+        <input
+          type="text"
+          placeholder="Alias"
+          {...register("alias", { required: true })}
         />
         <input
           type="text"
           placeholder="Origen"
           {...register("origen", { required: true })}
         />
-        <input
-          type="text"
-          placeholder="¿Quien la descubrió?"
-          {...register("descubridor", { required: true })}
-        />
         <textarea
           rows="3"
           placeholder="Descripción"
           {...register("descripcion", { required: true })}
         ></textarea>
+
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
+          {...register("foto", { required: false })}
+        />
 
         <button>Agregar especie</button>
       </form>
