@@ -19,7 +19,7 @@ function App() {
         <Route path="/plantlist/login" element={<IniciarSesion />} />
         <Route path="/plantlist/plantas" element={<Plantas />} />
         <Route
-          path="/plantlist/plantas/AgregarPlanta"
+          path="/plantlist/plantas/AgregarPlanta/:id_espacios"
           element={<FormPlanta />}
         />
         <Route path="/plantlist/plantas/:id" element={<VerPlanta />} />

@@ -12,7 +12,6 @@ export function Planta({ planta }) {
       <h1 className="text-2xl font-bold">{planta.nombre_cientifico}</h1>
       <h2 className="text-2xl">Alias: {planta.alias}</h2>
       <p className="text-gray-600">Descripción: {planta.descripcion}</p>
-      <p className="text-gray-600">Especie: {planta.id_especies}</p>
       <p className="text-gray-600">Familia: {planta.familia}</p>
 
       <img

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function Navigation() {
   return (
-    <nav className="p-4 bg-teal-600">
+    <nav className="p-4 bg-plantlist_green">
       <ul className="flex justify-around">
         <li>
           <Link to="/plantlist/espacios" className="hover:text-gray-300">
@@ -12,14 +12,6 @@ export function Navigation() {
         <li>
           <Link to="/plantlist/especies" className="hover:text-gray-300">
             Especies
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/plantlist/plantas/AgregarPlanta"
-            className="hover:text-gray-300"
-          >
-            Agregar Planta
           </Link>
         </li>
         <li>

@@ -13,3 +13,7 @@ export const crearEspacio = (espacio) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export const getEspacio = (id) => {
+  return EspacioApi.get(`/${id}`);
+};
