@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@theme {
+  --color-mint-500: oklch(0.72 0.11 178);
+  --color-plantlist_green: #73afa5;
+  --color-texto_blanco: #f3efee b;
+}
