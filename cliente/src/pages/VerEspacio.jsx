@@ -3,11 +3,9 @@ import { useParams } from "react-router-dom";
 import { getPlantasPorEspacio } from "../api/plantas.api";
 import { getEspacio } from "../api/espacios.api";
 import { PlantaCard } from "../components/PlantaCard";
-import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { BotonAgregar } from "../components/BotonAgregar";
 
 export function VerEspacio() {
-  const navigate = useNavigate();
   const { id_espacios } = useParams();
   const [plantas, setPlantas] = useState([]);
   const [espacio, setEspacio] = useState([]);
@@ -50,15 +48,11 @@ export function VerEspacio() {
           <PlantaCard planta={planta} key={planta.id_planta} />
         ))}
       </div>
-      <button
-        onClick={() =>
-          navigate(`/plantlist/plantas/AgregarPlanta/${id_espacios}`)
-        }
-        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg"
-        aria-label="Agregar planta"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+
+      <BotonAgregar
+        dir={`/plantlist/plantas/AgregarPlanta/${id_espacios}`}
+        key={plantas.id_planta}
+      />
     </div>
   );
 }

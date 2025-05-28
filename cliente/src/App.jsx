@@ -9,6 +9,7 @@ import { FormPlanta } from "./pages/FormPlanta";
 import { Navigation } from "./components/Navigation";
 import { VerPlanta } from "./pages/VerPlanta";
 import { FormEspecie } from "./pages/FormEspecie";
+import { FormEspacio } from "./pages/FormEspacio";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         />
         <Route path="/plantlist/especies" element={<Especies />} />
         <Route path="/plantlist/espacios" element={<Espacios />} />
+        <Route path="/plantlist/AgregarEspacio" element={<FormEspacio />} />
         <Route
           path="/plantlist/VerEspacio/:id_espacios"
           element={<VerEspacio />}

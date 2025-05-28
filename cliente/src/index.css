@@ -1,7 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@600&display=swap");
 @import "tailwindcss";
 
 @theme {
   --color-mint-500: oklch(0.72 0.11 178);
-  --color-plantlist_green: #73afa5;
-  --color-texto_blanco: #f3efee b;
+  --color-pl_green_a: #73afa5;
+  --color-pl_green_b: #264313;
+  --color-pl_green_c: #85a27a;
+  --color-pl_green_d: #6d918b;
+  --color-pl_green_e: #699d95;
+  --color-pl_white_a: #f3eeea;
+  --color-pl_white_b: #f3efee b;
+}
+
+@theme {
+  --font-nunito: "Nunito", sans-serif;
+  --font-baloo: "Baloo Bhai 2", sans-serif;
 }

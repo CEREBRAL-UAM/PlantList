@@ -1,0 +1,15 @@
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router";
+
+export function BotonAgregar({ dir }) {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => navigate(dir)}
+      className="fixed bottom-6 right-6 bg-pl_green_a text-white rounded-full p-5 shadow-lg hover:bg-pl_green_e"
+      aria-label="Agregar planta"
+    >
+      <Plus className="w-6 h-6 " />
+    </button>
+  );
+}

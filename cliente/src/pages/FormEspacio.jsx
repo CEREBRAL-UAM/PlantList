@@ -1,0 +1,45 @@
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { crearEspacio } from "../api/espacios.api";
+
+export function FormEspacio() {
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = handleSubmit(async (data) => {
+    const formData = new FormData();
+    formData.append("nombre_espacio", data.nombre_espacio);
+
+    if (data.foto[0]) {
+      formData.append("foto", data.foto[0]);
+    }
+
+    try {
+      const res = await crearEspacio(formData);
+      console.log("Espacio creado:", res);
+      navigate("/plantlist/espacios");
+    } catch (error) {
+      console.error("Error al crear espacio:", error.response?.data || error);
+    }
+  });
+
+  return (
+    <div>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Nombra tu espacio"
+          {...register("nombre_espacio", { required: true })}
+        />
+
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
+          {...register("foto", { required: false })}
+        />
+
+        <button>Agregar espacio</button>
+      </form>
+    </div>
+  );
+}

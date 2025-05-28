@@ -28,7 +28,7 @@ export function FormPlanta() {
     try {
       const res = await crearPlanta(formData);
       console.log("Planta creada:", res);
-      navigate("/plantlist/plantas");
+      navigate(`/plantlist/verEspacio/${espacio.id_espacios}`);
     } catch (error) {
       console.error("Error al crear planta:", error.response?.data || error);
     }
