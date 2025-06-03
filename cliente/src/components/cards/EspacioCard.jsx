@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { BotonEliminarEspacio } from "./BotonEliminarEspacio";
-import { BotonEditar } from "./BotonEditar";
+import { BotonEliminarEspacio } from "../botones/BotonEliminarEspacio";
+import { BotonEditar } from "../botones/BotonEditar";
 
 export function EspacioCard({ espacio, onDelete }) {
   const navigate = useNavigate();

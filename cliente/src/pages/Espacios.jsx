@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getEspacios } from "../api/espacios.api";
-import { EspacioCard } from "../components/EspacioCard";
-import { BotonAgregar } from "../components/BotonAgregar";
+import { EspacioCard } from "../components/cards/EspacioCard";
+import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Espacios() {

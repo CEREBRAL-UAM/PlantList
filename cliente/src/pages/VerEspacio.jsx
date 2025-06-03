@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPlantasPorEspacio } from "../api/plantas.api";
 import { getEspacio } from "../api/espacios.api";
-import { PlantaCard } from "../components/PlantaCard";
-import { BotonAgregar } from "../components/BotonAgregar";
+import { PlantaCard } from "../components/cards/PlantaCard";
+import { BotonAgregar } from "../components/botones/BotonAgregar";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();

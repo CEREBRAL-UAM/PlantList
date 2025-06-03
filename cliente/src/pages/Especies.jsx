@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EspecieCard } from "../components/EspecieCard";
+import { EspecieCard } from "../components/cards/EspecieCard";
 import { getEspecies } from "../api/especies.api";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";

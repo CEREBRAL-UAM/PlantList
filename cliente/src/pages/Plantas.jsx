@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPlantas } from "../api/plantas.api";
-import { PlantaCard } from "../components/PlantaCard";
+import { PlantaCard } from "../components/cards/PlantaCard";
 
 export function Plantas() {
   const [plantas, setPlantas] = useState([]);

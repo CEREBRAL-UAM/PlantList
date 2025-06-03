@@ -1,9 +1,9 @@
 import { Minus } from "lucide-react";
-import { eliminarEspacio } from "../api/espacios.api";
+import { eliminarEspacio } from "../../api/espacios.api";
 
 export function BotonEliminarEspacio({ id_espacios, onDelete }) {
   return (
-    <div className="pt-4">
+    <div className="pt-3">
       <button
         onClick={async () => {
           const acepted = window.confirm("Borrar espacio ??");
@@ -23,7 +23,7 @@ export function BotonEliminarEspacio({ id_espacios, onDelete }) {
       dark:hover:brightness-125"
         aria-label="Eliminar espacio"
       >
-        <Minus className="w-7 h-7" />
+        <Minus className="w-8 h-8" />
       </button>
     </div>
   );
