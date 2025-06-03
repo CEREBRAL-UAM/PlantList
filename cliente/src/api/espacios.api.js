@@ -17,3 +17,7 @@ export const crearEspacio = (espacio) => {
 export const getEspacio = (id) => {
   return EspacioApi.get(`/${id}`);
 };
+
+export const eliminarEspacio = (id) => {
+  return EspacioApi.delete(`/${id}`);
+};

@@ -24,7 +24,10 @@ export function FormEspacio() {
   });
 
   return (
-    <div>
+    <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+      <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b">
+        AGREGAR ESPACIO
+      </h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           type="text"

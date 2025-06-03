@@ -17,7 +17,7 @@ export function Navigation() {
   }, []);
 
   return (
-    <nav className="bg-pl_green_a p-4">
+    <nav className="bg-pl_green_a p-4 fixed top-0 left-0 w-full z-50 shadow-md">
       {/* Móvil: boton1 y boton2 a la izquierda, hamburguesa a la derecha */}
       <div className="flex justify-between items-center md:hidden mb-4">
         <div className="flex gap-4">
@@ -56,21 +56,21 @@ export function Navigation() {
             {plantasOpen && (
               <div className="ml-4 mt-2 flex flex-col gap-1">
                 <Link
-                  to="/plantlist/espacios"
+                  to="/biolink_ipc/espacios"
                   className="hover:text-pl_green_b"
                   onClick={() => setMenuOpen(false)}
                 >
                   MIS ESPACIOS
                 </Link>
                 <Link
-                  to="/plantlist/especies"
+                  to="/biolink_ipc/especies"
                   className="hover:text-pl_green_b"
                   onClick={() => setMenuOpen(false)}
                 >
                   ESPECIES
                 </Link>
                 <Link
-                  to="/plantlist/padecimientos"
+                  to="/biolink_ipc/padecimientos"
                   className="hover:text-pl_green_b"
                   onClick={() => setMenuOpen(false)}
                 >
@@ -97,18 +97,28 @@ export function Navigation() {
         </div>
       )}
 
-      {/* Versión escritorio sin cambios */}
+      {/* Versión escritorio */}
       <div className="hidden md:flex justify-between items-center">
         <div className="flex gap-6">
           <Link
             to="/ruta1"
-            className="text-pl_white_a hover:text-pl_green_b font-baloo"
+            className="
+            text-pl_white_a 
+            hover:text-pl_green_b 
+            font-baloo
+            dark:text-pl_green_b
+            dark:hover:text-pl_white_a"
           >
             boton1
           </Link>
           <Link
             to="/ruta2"
-            className="text-pl_white_a hover:text-pl_green_b font-baloo"
+            className="
+            text-pl_white_a 
+            hover:text-pl_green_b 
+            font-baloo
+            dark:text-pl_green_b
+            dark:hover:text-pl_white_a"
           >
             boton2
           </Link>
@@ -118,29 +128,48 @@ export function Navigation() {
           <div className="relative" ref={plantasRef}>
             <button
               onClick={() => setPlantasOpen(!plantasOpen)}
-              className="hover:text-pl_green_b focus:outline-none"
+              className="
+              hover:text-pl_green_b 
+              focus:outline-none
+              dark:text-pl_green_b
+              dark:hover:text-pl_white_a"
             >
               PLANTAS
             </button>
             {plantasOpen && (
               <div className="absolute top-full left-0 bg-pl_green_a text-sm mt-2 rounded shadow-lg z-10">
                 <Link
-                  to="/plantlist/espacios"
-                  className="block px-4 py-2 hover:bg-pl_white_a hover:text-white"
+                  to="/biolink_ipc/espacios"
+                  className="
+                  block px-4 py-2 
+                  hover:bg-pl_green_e
+                  hover:text-white
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
                   onClick={() => setPlantasOpen(false)}
                 >
                   MIS ESPACIOS
                 </Link>
                 <Link
-                  to="/plantlist/especies"
-                  className="block px-4 py-2 hover:bg-pl_white_a hover:text-white"
+                  to="/biolink_ipc/especies"
+                  className="
+                  block px-4 py-2 
+                  hover:bg-pl_green_e
+                  hover:text-white
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
                   onClick={() => setPlantasOpen(false)}
                 >
                   ESPECIES
                 </Link>
                 <Link
-                  to="/plantlist/padecimientos"
-                  className="block px-4 py-2 hover:bg-pl_white_a hover:text-white"
+                  to="/biolink_ipc/padecimientos"
+                  className="
+                  block px-4 py-2 
+                  hover:bg-pl_green_e
+                  hover:text-white 
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
                   onClick={() => setPlantasOpen(false)}
                 >
                   PADECIMIENTOS
@@ -149,10 +178,22 @@ export function Navigation() {
             )}
           </div>
 
-          <Link to="/proyectos" className="hover:text-pl_green_b">
+          <Link
+            to="/proyectos"
+            className="
+          hover:text-pl_green_b
+          dark:text-pl_green_b
+          dark:hover:text-pl_white_a"
+          >
             PROYECTOS
           </Link>
-          <Link to="/sabermas" className="hover:text-pl_green_b">
+          <Link
+            to="/sabermas"
+            className="
+          hover:text-pl_green_b
+          dark:text-pl_green_b
+          dark:hover:text-pl_white_a"
+          >
             SABER MÁS
           </Link>
         </div>

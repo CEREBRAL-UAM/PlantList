@@ -39,11 +39,11 @@ export function VerEspacio() {
   }, []);
 
   return (
-    <div className="p-7">
-      <h1 className="text-xl font-bold text-center mb-4">
+    <div className="pt-15">
+      <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b uppercase">
         {espacio.nombre_espacio}
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
         {plantas.map((planta) => (
           <PlantaCard planta={planta} key={planta.id_planta} />
         ))}

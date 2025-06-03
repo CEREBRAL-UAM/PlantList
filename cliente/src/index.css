@@ -9,8 +9,17 @@
   --color-pl_green_c: #85a27a;
   --color-pl_green_d: #6d918b;
   --color-pl_green_e: #699d95;
+  --color-pl_green_input: #bcc8b2;
+
   --color-pl_white_a: #f3eeea;
-  --color-pl_white_b: #f3efee b;
+  --color-pl_white_b: #f3efee;
+
+  --color-pl_red_a: #805a44;
+}
+
+/* Colores para modo oscuro*/
+@theme {
+  --color-pl_bk: #272927;
 }
 
 @theme {

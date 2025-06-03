@@ -16,23 +16,23 @@ function App() {
     <BrowserRouter>
       <Navigation />
       <Routes>
-        <Route path="/plantlist/registro" element={<RegistrarCuenta />} />
-        <Route path="/plantlist/login" element={<IniciarSesion />} />
-        <Route path="/plantlist/plantas" element={<Plantas />} />
+        <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
+        <Route path="/biolink_ipc/login" element={<IniciarSesion />} />
+        <Route path="/biolink_ipc/plantas" element={<Plantas />} />
         <Route
-          path="/plantlist/plantas/AgregarPlanta/:id_espacios"
+          path="/biolink_ipc/plantas/AgregarPlanta/:id_espacios"
           element={<FormPlanta />}
         />
-        <Route path="/plantlist/plantas/:id" element={<VerPlanta />} />
+        <Route path="/biolink_ipc/plantas/:id" element={<VerPlanta />} />
         <Route
-          path="/plantlist/especies/AgregarEspecie"
+          path="/biolink_ipc/especies/AgregarEspecie"
           element={<FormEspecie />}
         />
-        <Route path="/plantlist/especies" element={<Especies />} />
-        <Route path="/plantlist/espacios" element={<Espacios />} />
-        <Route path="/plantlist/AgregarEspacio" element={<FormEspacio />} />
+        <Route path="/biolink_ipc/especies" element={<Especies />} />
+        <Route path="/biolink_ipc/espacios" element={<Espacios />} />
+        <Route path="/biolink_ipc/AgregarEspacio" element={<FormEspacio />} />
         <Route
-          path="/plantlist/VerEspacio/:id_espacios"
+          path="/biolink_ipc/VerEspacio/:id_espacios"
           element={<VerEspacio />}
         />
       </Routes>
