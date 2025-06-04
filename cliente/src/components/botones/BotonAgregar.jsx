@@ -12,7 +12,7 @@ export function BotonAgregar({ dir }) {
       dark:text-pl_green_b"
       aria-label="Agregar planta"
     >
-      <Plus className="w-6 h-6" />
+      <Plus className="w-7 h-7" />
     </button>
   );
 }
