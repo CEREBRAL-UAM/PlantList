@@ -10,6 +10,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('plantas/', include('plantas.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    
+    path('usuarios/', include('usuarios.urls')),
 
     # Interfaz Swagger para visualizar la API
     path('doc/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

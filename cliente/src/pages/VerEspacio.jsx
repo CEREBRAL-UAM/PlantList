@@ -39,8 +39,18 @@ export function VerEspacio() {
   }, []);
 
   return (
-    <div className="pt-15">
-      <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b uppercase">
+    <div
+      className="
+    pt-15"
+    >
+      <h1
+        className="
+      text-xl font-bold
+      text-center mt-2 
+      font-nunito text-pl_green_b 
+      uppercase
+      dark:text-pl_white_a"
+      >
         {espacio.nombre_espacio}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
