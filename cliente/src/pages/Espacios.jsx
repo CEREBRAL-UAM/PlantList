@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEspacios } from "../api/espacios.api";
+import { getEspaciosUsuario } from "../api/espacios.api";
 import { EspacioCard } from "../components/cards/EspacioCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +8,7 @@ export function Espacios() {
   const [espacios, setEspacios] = useState([]);
 
   async function cargarEspacios() {
-    const res = await getEspacios();
+    const res = await getEspaciosUsuario();
     setEspacios(res.data);
   }
 

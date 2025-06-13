@@ -10,6 +10,7 @@ router.register(r'planta_partes', views.PlantaPartesViewSet, 'planta_partes')
 router.register(r'espacios', views.EspacioViewSet, 'espacios')
 
 urlpatterns = [
-    path('apiv1/usuario/', views.obtener_plantas_usuario, name='obtener_plantas_usuario'),
-    path("apiv1/",include(router.urls))
+    path("apiv1/espacios/mis_espacios/", views.EspaciosPorUsuarioView.as_view(), name='mis_espacios'),
+    path("apiv1/espacios/crear_espacio/", views.CrearEspacioUsuarioView.as_view(), name='crear_espacio'),
+    path("apiv1/",include(router.urls)),
 ]

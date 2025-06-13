@@ -21,7 +21,7 @@ class Usuario(models.Model):
         return True  
 
 class TokenUsuario(models.Model):
-    id_tokem = models.AutoField(primary_key=True)
+    id_tokens = models.AutoField(primary_key=True)
     usuario = models.OneToOneField('Usuario',db_column='id_Usuario', on_delete=models.CASCADE)
     token = models.CharField(max_length=128, unique=True)
 

@@ -60,7 +60,7 @@ export function VerEspacio() {
       </div>
 
       <BotonAgregar
-        dir={`/plantlist/plantas/AgregarPlanta/${id_espacios}`}
+        dir={`/biolink_ipc/plantas/AgregarPlanta/${id_espacios}`}
         key={plantas.id_planta}
       />
     </div>

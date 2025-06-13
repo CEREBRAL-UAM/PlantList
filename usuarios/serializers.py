@@ -34,3 +34,13 @@ class UsuarioDatosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         exclude = ['Contrasenia']
+
+class CambioContrasenaSerializer(serializers.Serializer):
+    contrasena_actual = serializers.CharField(write_only=True)
+    nueva_contrasena = serializers.CharField(write_only=True)
+    confirmar_contrasena = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['nueva_contrasena'] != data['confirmar_contrasena']:
+            raise serializers.ValidationError("Las nuevas contraseñas no coinciden.")
+        return data

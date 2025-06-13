@@ -60,7 +60,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bd_ipc',
         'USER': 'root',
-        'PASSWORD': 'tobi2008',
         'HOST': 'localhost',
         'PORT': '3306',
     }

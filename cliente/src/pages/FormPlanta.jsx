@@ -45,7 +45,7 @@ export function FormPlanta() {
   }, []);
 
   return (
-    <div>
+    <div className="pt-20">
       <h1 className="text-xl font-bold text-center mb-4">AGREGAR PLANTA</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input

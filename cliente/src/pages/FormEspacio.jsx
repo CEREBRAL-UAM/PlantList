@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { crearEspacio } from "../api/espacios.api";
+import { crearEspacioUsuario } from "../api/espacios.api";
 
 export function FormEspacio() {
   const navigate = useNavigate();
@@ -9,13 +9,14 @@ export function FormEspacio() {
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
     formData.append("nombre_espacio", data.nombre_espacio);
+    formData.append("id_usuario", parseInt(3, 10)); // usuario de prueba
 
     if (data.foto[0]) {
       formData.append("foto", data.foto[0]);
     }
 
     try {
-      const res = await crearEspacio(formData);
+      const res = await crearEspacioUsuario(formData);
       console.log("Espacio creado:", res);
       navigate("/plantlist/espacios");
     } catch (error) {

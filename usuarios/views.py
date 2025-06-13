@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Usuario, TokenUsuario
 import uuid
 from .serializers import (
-    UsuarioRegistroSerializer, UsuarioLoginSerializer, UsuarioDatosSerializer
+    UsuarioRegistroSerializer, UsuarioLoginSerializer, UsuarioDatosSerializer, CambioContrasenaSerializer
 )
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from .authentication import TokenAuthentication
 
 
@@ -79,3 +79,28 @@ class UsuarioActualView(APIView):
         serializer = UsuarioDatosSerializer(usuario)
         return Response(serializer.data)
 
+class CambioContrasenaView(APIView):
+    def post(self, request):
+        token_str = request.headers.get('Authorization', '').replace('Token ', '')
+
+        try:
+            token_obj = TokenUsuario.objects.get(token=token_str)
+        except TokenUsuario.DoesNotExist:
+            return Response({'error': 'Token inválido'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        usuario = token_obj.usuario
+
+        serializer = CambioContrasenaSerializer(data=request.data)
+        if serializer.is_valid():
+            actual = serializer.validated_data['contrasena_actual']
+            nueva = serializer.validated_data['nueva_contrasena']
+
+            if not check_password(actual, usuario.Contrasenia):
+                return Response({'error': 'La contraseña actual es incorrecta'}, status=400)
+
+            usuario.Contrasenia = make_password(nueva)
+            usuario.save()
+
+            return Response({'mensaje': 'Contraseña actualizada correctamente'}, status=200)
+
+        return Response(serializer.errors, status=400)

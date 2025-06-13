@@ -73,6 +73,12 @@ class Espacio(models.Model):
     nombre_espacio = models.CharField(max_length=45, blank=True) 
     foto = models.ImageField(upload_to='espacios/', blank=True, null=True)
 
+    id_usuario = models.ForeignKey(
+        'usuarios.Usuario', 
+        on_delete=models.CASCADE,
+        db_column='id_Usuario'
+    )
+
     class Meta:
         db_table = 'espacios'
 
