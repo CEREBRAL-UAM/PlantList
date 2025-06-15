@@ -3,6 +3,7 @@ import { getEspaciosUsuario } from "../api/espacios.api";
 import { EspacioCard } from "../components/cards/EspacioCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { motion, AnimatePresence } from "framer-motion";
+import { SecHeader } from "../components/SecHeader";
 
 export function Espacios() {
   const [espacios, setEspacios] = useState([]);
@@ -18,6 +19,7 @@ export function Espacios() {
 
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+      <SecHeader dir="/biolink_ipc/especies" />
       <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b dark:text-pl_white_a">
         MIS ESPACIOS
       </h1>
