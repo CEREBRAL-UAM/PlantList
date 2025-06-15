@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { RegistrarCuenta } from "./pages/RegistrarCuenta";
 import { IniciarSesion } from "./pages/IniciarSesion";
 import { Plantas } from "./pages/Plantas";
@@ -10,15 +10,26 @@ import { Navigation } from "./components/Navigation";
 import { VerPlanta } from "./pages/VerPlanta";
 import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
+import { PantallaCarga } from "./pages/PantallaCarga";
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
+  const hideHeaderOnRoutes = [
+    "/biolink_ipc/login",
+    "/biolink_ipc/registro",
+    "/biolink_ipc/loading",
+  ];
+
+  const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
+
   return (
-    <BrowserRouter>
-      <Navigation />
+    <>
+      {!shouldHideHeader && <Navigation />}
       <Routes>
         <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
         <Route path="/biolink_ipc/login" element={<IniciarSesion />} />
         <Route path="/biolink_ipc/plantas" element={<Plantas />} />
+        <Route path="/biolink_ipc/loading" element={<PantallaCarga />} />
         <Route
           path="/biolink_ipc/plantas/AgregarPlanta/:id_espacios"
           element={<FormPlanta />}
@@ -36,6 +47,14 @@ function App() {
           element={<VerEspacio />}
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
