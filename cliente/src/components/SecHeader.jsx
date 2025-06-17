@@ -1,5 +1,9 @@
 import { BotonAtras } from "./botones/BotonAtras";
 
-export function SecHeader({ _dir }) {
-  return <BotonAtras dir={_dir} />;
+export function SecHeader({ dir }) {
+  return (
+    <div className="w-full bg-amber-700">
+      <BotonAtras dir={dir} />{" "}
+    </div>
+  );
 }
