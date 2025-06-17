@@ -1,0 +1,19 @@
+# Carpeta de entorno virtual (ajusta el nombre si usas otro)
+venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+
+# Archivos de configuración o secretos
+*.env
+*.sqlite3
+
+# Archivos temporales
+*.log
+*.bak
+*.swp
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
