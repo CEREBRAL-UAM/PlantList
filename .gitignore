@@ -1,19 +1,34 @@
-# Carpeta de entorno virtual (ajusta el nombre si usas otro)
+# Carpeta de entorno virtual (cubre venv, env o cualquier nombre común)
 venv/
+env/
+ENV/
+.venv/
 
-# Archivos de Python
+/media/espacios/*
+!media/espacios/default.jpg
+
+
+/media/plantas/*
+!media/plantas/default.jpg
+
+/media/especies/*
+!media/especies/default.jpg
+
+# Archivos de configuración de Workbench, IDEs y demás
+*.iml
+.idea/
+.vscode/
+
+# Archivos generados por pip
+pip-log.txt
+
+# Archivos innecesarios del sistema
 __pycache__/
 *.py[cod]
+*.pyc
+*.pyo
 
-# Archivos de configuración o secretos
-*.env
+# SQLite u otros archivos de bases de datos
 *.sqlite3
-
-# Archivos temporales
-*.log
+*.db
 *.bak
-*.swp
-
-# Archivos del sistema
-.DS_Store
-Thumbs.db
