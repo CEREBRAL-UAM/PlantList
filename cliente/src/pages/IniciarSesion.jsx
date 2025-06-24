@@ -20,94 +20,83 @@ export function IniciarSesion() {
     }
   });
 
-  // return (
-  //   <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
-  //     <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b">
-  //       INICIAR SESION
-  //     </h1>
-  //     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-  //       <input
-  //         type="email"
-  //         placeholder="Correo electronico"
-  //         {...register("CorreoElectronico", { required: true })}
-  //       />
-  //       <input
-  //         type="text"
-  //         placeholder="Contraseña"
-  //         {...register("Contrasenia", { required: true })}
-  //       />
-
-  //       <button>Iniciar Sesión</button>
-  //     </form>
-  //   </div>
-  // );
-
   return (
-    <div className="bg-[url(/iniciarSesion.png)] bg-[length:100%_100%] bg-center bg-no-repeat">
+    <div className="min-h-screen w-full bg-no-repeat bg-center bg-cover bg-[url(/src/images/fondos/iniciarSesion.png)] lg:bg-[length:100%_100%] relative">
+      {/* Capa oscura */}
+      <div className="absolute inset-0 bg-black/50 scale-z-100" />
 
-      <div className="min-h-screen bg-cover flex items-center justify-end pr-[250px]">
+      {/* Contenido principal */}
+      <div className="relative z-20 flex flex-col items-center justify-center min-h-screen text-[#F3EEEA] px-4">
+        {/* Flecha */}
+        <button className="absolute top-10 left-5 lg:top-15 lg:left-15 z-30">
+          <img
+            src="/src/images/iconos/flecha.png"
+            alt="flecha"
+            className="w-[30px] lg:w-[45px] transition duration-300 hover:scale-120"
+          />
+        </button>
 
-        {/* Formulario */}
-        <div className="p-9  w-full max-w-sm">
+        {/* Logo y título*/}
+        <div className="lg:absolute lg:top-20 lg:left-40 static flex flex-col lg:flex-row items-center font-baloo">
+          <img
+            src="/src/images/iconos/logo.png"
+            alt="logo"
+            className="h-[15vw] lg:h-[90px] block"
+          />
+          <h1 className="lg:ml-2 mt-1 lg:mt-0">
+            <span className="text-[10vw] sm:text-[90px]">BioLink</span>{" "}
+            <span className="text-xl sm:text-3xl">IPC</span>
+          </h1>
+        </div>
 
-          {/* Texto Inicio de sesión  */}
-          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar sesión</h1>
-            
+        {/* Contenedor de formulario */}
+        <div className="w-full max-w-sm p-14 lg:p-9 lg:mt-20 lg:ml-180">
+          <h2 className="text-2xl lg:text-3xl font-baloo text-center mb-6">
+            Iniciar sesión
+          </h2>
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
+            {/* Correo */}
+            <input
+              type="email"
+              id="CorreoElectronico"
+              placeholder="correo electrónico"
+              {...register("CorreoElectronico", { required: true })}
+              className="w-full text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
+            />
 
-            {/* Input Correo electrónico */}
-            <div>
-              <input
-                type="email"
-                id="CorreoElectronico"
-                placeholder="correo electrónico"
-                {...register("CorreoElectronico", { required: true })}
-                className="w-full px-5 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring focus:border-blue-300 mb-6"
-              />
-            </div>
+            {/* Contraseña */}
+            <input
+              type="password"
+              id="Contrasenia"
+              placeholder="contraseña"
+              {...register("Contrasenia", { required: true })}
+              className="w-full text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
+            />
 
-            {/* Input Contraseña */}
-            <div>
-              <input
-                type="password"
-                id="Contrasenia"
-                placeholder="contraseña"
-                {...register("Contrasenia", { required: true })}
-                className="w-full px-5 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring focus:border-blue-300 mb-6"
-              />
-            </div>
-
-            {/*Botón Ingresar*/}
+            {/* Botón Ingresar */}
             <button
               type="submit"
-              className="w-35 py-2 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition duration-200 mx-auto"
+              className="w-36 py-2 bg-[#73AFA5] text-white font-nunito rounded-full hover:bg-[#618B84] transition duration-200 mx-auto"
             >
               Ingresar
             </button>
 
-            {/*Botón Crear cuenta*/}
-            <div className="text-center">
+            {/* Links */}
+            <div className="text-center space-y-4 ">
               <a
                 href="#"
-                className="text-gray-800 no-underline hover:text-blue-700 transition-colors duration-300"
+                className="block hover:text-[#73AFA5] transition-colors duration-300"
               >
                 Crear una cuenta
               </a>
-            </div>
-
-            {/*Botón Olvidaste contraseña*/}
-            <div className="text-sm text-center">
               <a
                 href="#"
-                className="text-gray-800 no-underline hover:text-blue-700 transition-colors duration-300"
+                className="block text-sm hover:text-[#73AFA5] transition-colors duration-300"
               >
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
-
           </form>
-
-          {/* <div className="mt-6 text-center text-gray-500 text-sm">BioLinkIPC</div> */}
         </div>
       </div>
     </div>
