@@ -18,3 +18,10 @@ export const logoutUsuario = () => {
     headers: { Authorization: `Token ${token}` },
   });
 };
+
+export const datosUsuarioActual = () => {
+  const token = localStorage.getItem("token");
+  return UsuarioApi.get("/actual/", {
+    headers: { Authorization: `Token ${token}` },
+  });
+};
