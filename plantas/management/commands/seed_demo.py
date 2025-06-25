@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand
 from plantas.models import Espacio, Especie, Planta
+from usuarios.models import Usuario, TokenUsuario
+from django.contrib.auth.hashers import make_password
 from django.core.files import File
+import uuid
 import os
 
 class Command(BaseCommand):
@@ -13,7 +16,26 @@ class Command(BaseCommand):
         Planta.objects.all().delete()
         Especie.objects.all().delete()
         Espacio.objects.all().delete()
+        Usuario.objects.all().delete()
+        TokenUsuario.objects.all().delete()
 
+        # Usuario de prueba 
+        usuario_demo = Usuario.objects.create(
+            Nombre="Carlos",
+            ApellidoPaterno="Pérez",
+            ApellidoMaterno="López",
+            Telefono="5551234567",
+            CorreoElectronico="alguien@algo.com",
+            Contrasenia=make_password("1234")
+        )
+
+        token = str(uuid.uuid4())
+        TokenUsuario.objects.create(
+            usuario = usuario_demo,
+            token = token
+        )
+
+        self.stdout.write(self.style.SUCCESS("Usuario creado con exito ! \nToken: " +token))
 
         # Espacios
         espacios_data = [
@@ -24,7 +46,7 @@ class Command(BaseCommand):
         espacios = []
         for data in espacios_data:
             with open(data["foto"], "rb") as img_file:
-                espacio = Espacio(nombre_espacio=data["nombre_espacio"])
+                espacio = Espacio(nombre_espacio=data["nombre_espacio"], id_usuario=usuario_demo)
                 espacio.foto.save(os.path.basename(data["foto"]), File(img_file), save=True)
                 espacios.append(espacio)
 
