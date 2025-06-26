@@ -14,6 +14,9 @@ ENV/
 /media/especies/*
 !media/especies/default.jpg
 
+/media/fotos_perfil_usuarios/*
+!media/fotos_perfil_usuarios/default.jpg
+
 # Archivos de configuración de Workbench, IDEs y demás
 *.iml
 .idea/

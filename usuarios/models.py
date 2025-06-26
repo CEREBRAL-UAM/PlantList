@@ -10,6 +10,7 @@ class Usuario(models.Model):
     Telefono = models.CharField(max_length=15)
     CorreoElectronico = models.CharField(max_length=100, unique=True)
     Contrasenia = models.CharField(max_length=128)
+    Foto = models.ImageField(upload_to='fotos_perfil_usuarios/', blank=True, null=True)
 
     class Meta:
         db_table = 'usuario'
