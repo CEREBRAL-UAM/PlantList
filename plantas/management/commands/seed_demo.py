@@ -26,8 +26,13 @@ class Command(BaseCommand):
             ApellidoMaterno="López",
             Telefono="5551234567",
             CorreoElectronico="alguien@algo.com",
-            Contrasenia=make_password("1234")
+            Contrasenia=make_password("1234"),
         )
+
+        foto_usuario = os.path.join(base_dir, "usuario.jpg")
+        with open(foto_usuario, "rb") as img_file:
+            usuario_demo.Foto.save("usuario.jpg", File(img_file), save=True)
+
 
         token = str(uuid.uuid4())
         TokenUsuario.objects.create(
