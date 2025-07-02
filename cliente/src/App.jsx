@@ -11,6 +11,7 @@ import { VerPlanta } from "./pages/VerPlanta";
 import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
 import { PantallaCarga } from "./pages/PantallaCarga";
+import { VerUsuario } from "./pages/VerUsuario";
 
 function AppRoutes() {
   const location = useLocation();
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="/biolink_ipc/especies" element={<Especies />} />
         <Route path="/biolink_ipc/espacios" element={<Espacios />} />
         <Route path="/biolink_ipc/AgregarEspacio" element={<FormEspacio />} />
+        <Route path="/biolink_ipc/Perfil" element={<VerUsuario />} />
         <Route
           path="/biolink_ipc/VerEspacio/:id_espacios"
           element={<VerEspacio />}
