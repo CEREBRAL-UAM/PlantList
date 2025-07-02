@@ -1,6 +1,7 @@
 import { BotonAtras } from "./botones/BotonAtras";
 import { datosUsuarioActual } from "../api/usuarios.api";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 export function SecHeader({ dir }) {
   const [usuario, setUsuario] = useState([]);
@@ -27,9 +28,11 @@ export function SecHeader({ dir }) {
           alt="Imagen ni disponible"
           className="rounded-full w-9 h-9"
         />
-        <h2 className="dark:text-pl_white_a font-baloo">
-          {usuario.Nombre} {usuario.ApellidoPaterno}
-        </h2>
+        <Link to="/biolink_ipc/perfil">
+          <h2 className="dark:text-pl_white_a font-baloo">
+            {usuario.Nombre} {usuario.ApellidoPaterno}
+          </h2>
+        </Link>
       </div>
     </div>
   );
