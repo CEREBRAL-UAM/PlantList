@@ -61,7 +61,7 @@ export function IniciarSesion() {
               id="CorreoElectronico"
               placeholder="correo electrónico"
               {...register("CorreoElectronico", { required: true })}
-              className="w-full text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
+              className="w-full text-black text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
             />
 
             {/* Contraseña */}
@@ -70,7 +70,7 @@ export function IniciarSesion() {
               id="Contrasenia"
               placeholder="contraseña"
               {...register("Contrasenia", { required: true })}
-              className="w-full text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
+              className="w-full text-black text-center lg:text-left lg:px-8 py-2 bg-[#F3EEEA] border border-[#E5E5E5] rounded-full focus:outline-none focus:border-[#73AFA5] focus:border-3 placeholder-[#787878] mb-4 lg:mb-6"
             />
 
             {/* Botón Ingresar */}
