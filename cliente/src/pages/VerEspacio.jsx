@@ -48,7 +48,7 @@ export function VerEspacio() {
       <h1
         className="
       text-xl font-bold
-      text-center mt-2 
+      text-center 
       font-nunito text-pl_green_b 
       uppercase
       dark:text-pl_white_a"
