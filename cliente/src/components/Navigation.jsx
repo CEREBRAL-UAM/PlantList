@@ -179,22 +179,22 @@ export function Navigation() {
           </div>
 
           <Link
-            to="/proyectos"
+            to="/monitoreo"
             className="
           hover:text-pl_green_b
           dark:text-pl_green_b
           dark:hover:text-pl_white_a"
           >
-            PROYECTOS
+            MONITOREO
           </Link>
           <Link
-            to="/sabermas"
+            to="/experimentos"
             className="
           hover:text-pl_green_b
           dark:text-pl_green_b
           dark:hover:text-pl_white_a"
           >
-            SABER MÁS
+            EXPERIMENTOS
           </Link>
         </div>
       </div>
