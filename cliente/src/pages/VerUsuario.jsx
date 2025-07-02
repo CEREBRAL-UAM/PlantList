@@ -21,6 +21,7 @@ export function VerUsuario() {
 
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+      <BotonAtras />
       <h1 className="text-xl font-bold text-left font-nunito text-pl_green_b dark:text-pl_white_a">
         CUENTA
       </h1>
