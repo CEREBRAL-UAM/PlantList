@@ -20,7 +20,7 @@ export function Espacios() {
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
       <SecHeader dir="/biolink_ipc/especies" />
-      <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b dark:text-pl_white_a">
+      <h1 className="text-xl font-bold text-center font-nunito text-pl_green_b dark:text-pl_white_a">
         MIS ESPACIOS
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">

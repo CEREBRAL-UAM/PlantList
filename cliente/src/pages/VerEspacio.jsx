@@ -4,6 +4,7 @@ import { getPlantasPorEspacio } from "../api/plantas.api";
 import { getEspacio } from "../api/espacios.api";
 import { PlantaCard } from "../components/cards/PlantaCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
+import { SecHeader } from "../components/SecHeader";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();
@@ -43,10 +44,11 @@ export function VerEspacio() {
       className="
     pt-15"
     >
+      <SecHeader dir="/biolink_ipc/espacios" />
       <h1
         className="
       text-xl font-bold
-      text-center mt-2 
+      text-center 
       font-nunito text-pl_green_b 
       uppercase
       dark:text-pl_white_a"
