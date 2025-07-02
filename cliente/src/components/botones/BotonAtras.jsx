@@ -8,7 +8,10 @@ export function BotonAtras({ dir }) {
     <button
       onClick={() => {
         console.log("clic");
-        navigate(dir);
+        navigate(dir || -1);
+        /* Si no se recibe la direccion
+        se redireccion a la anterior pagina 
+        visitada en el navegador */
       }}
     >
       <ArrowLeft
