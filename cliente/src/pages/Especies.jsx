@@ -19,10 +19,12 @@ export function Especies() {
     cargarEspecies();
   }, []);
 
-  const especiesFiltradas = especies.filter((especie) =>
-    especie.nombre_cientifico
-      .toLowerCase()
-      .includes(terminoBusqueda.toLowerCase())
+  const especiesFiltradas = especies.filter(
+    (especie) =>
+      especie.nombre_cientifico
+        .toLowerCase()
+        .includes(terminoBusqueda.toLowerCase()) ||
+      especie.alias.toLowerCase().includes(terminoBusqueda.toLowerCase())
   );
 
   return (
