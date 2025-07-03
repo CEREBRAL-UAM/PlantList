@@ -5,11 +5,13 @@ import { getEspacio } from "../api/espacios.api";
 import { PlantaCard } from "../components/cards/PlantaCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { SecHeader } from "../components/SecHeader";
+import { Buscador } from "../components/Buscador";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();
   const [plantas, setPlantas] = useState([]);
   const [espacio, setEspacio] = useState([]);
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
 
   useEffect(() => {
     async function cargarPlantas() {
@@ -39,12 +41,25 @@ export function VerEspacio() {
     cargarEspacio();
   }, []);
 
+  const plantasFiltradas = plantas.filter((planta) =>
+    planta.nombre_cientifico
+      .toLowerCase()
+      .includes(terminoBusqueda.toLowerCase())
+  );
+
   return (
     <div
       className="
     pt-15"
     >
-      <SecHeader dir="/biolink_ipc/espacios" />
+      <div className="flex items-center">
+        <SecHeader dir="/biolink_ipc/espacios" />
+        <Buscador
+          placeholder="Buscar planta por nombre"
+          value={terminoBusqueda}
+          onChange={setTerminoBusqueda}
+        />
+      </div>
       <h1
         className="
       text-xl font-bold
@@ -56,7 +71,7 @@ export function VerEspacio() {
         {espacio.nombre_espacio}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
-        {plantas.map((planta) => (
+        {plantasFiltradas.map((planta) => (
           <PlantaCard planta={planta} key={planta.id_planta} />
         ))}
       </div>
