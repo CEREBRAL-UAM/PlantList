@@ -48,10 +48,7 @@ export function VerEspacio() {
   );
 
   return (
-    <div
-      className="
-    pt-15"
-    >
+    <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
       <div className="flex items-center">
         <SecHeader dir="/biolink_ipc/espacios" />
         <Buscador
