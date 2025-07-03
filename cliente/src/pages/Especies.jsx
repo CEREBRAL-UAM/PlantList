@@ -3,10 +3,14 @@ import { EspecieCard } from "../components/cards/EspecieCard";
 import { getEspecies } from "../api/especies.api";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
+import { SecHeader } from "../components/SecHeader";
+import { Buscador } from "../components/Buscador";
 
 export function Especies() {
   const navigate = useNavigate();
   const [especies, setEspecies] = useState([]);
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+
   useEffect(() => {
     async function cargarEspecies() {
       const res = await getEspecies();
@@ -15,13 +19,27 @@ export function Especies() {
     cargarEspecies();
   }, []);
 
+  const especiesFiltradas = especies.filter((especie) =>
+    especie.nombre_cientifico
+      .toLowerCase()
+      .includes(terminoBusqueda.toLowerCase())
+  );
+
   return (
-    <div>
+    <div className="pt-15">
+      <div className="flex items-center">
+        <SecHeader />
+        <Buscador
+          placeholder="Buscar especie por nombre"
+          value={terminoBusqueda}
+          onChange={setTerminoBusqueda}
+        />
+      </div>
       <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b">
         ESPECIES
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
-        {especies.map((especie) => (
+        {especiesFiltradas.map((especie) => (
           <EspecieCard especie={especie} key={especie.id_especies} />
         ))}
         <button
