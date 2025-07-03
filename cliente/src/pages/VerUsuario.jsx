@@ -1,4 +1,3 @@
-import React from "react";
 import { datosUsuarioActual } from "../api/usuarios.api";
 import { useEffect, useState } from "react";
 import { BotonAtras } from "../components/botones/BotonAtras";
@@ -15,8 +14,8 @@ export function VerUsuario() {
     cargarDatosUsuario();
   }, []);
 
-  const imagenUrl = usuario.foto
-    ? `${usuario.foto}`
+  const imagenUrl = usuario.Foto
+    ? `http://localhost:8000${usuario.Foto}`
     : "http://localhost:8000/media/fotos_perfil_usuarios/default.jpg";
 
   return (

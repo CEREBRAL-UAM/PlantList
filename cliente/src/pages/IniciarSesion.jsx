@@ -1,4 +1,5 @@
 import { loginUsuario } from "../api/usuarios.api";
+import { datosUsuarioActual } from "../api/usuarios.api";
 import { useForm } from "react-hook-form";
 
 export function IniciarSesion() {
@@ -14,7 +15,11 @@ export function IniciarSesion() {
       const respuesta = await loginUsuario(formData);
       const token = respuesta.data.token;
       localStorage.setItem("token", token);
-      console.log("Usuario autenticado", token);
+
+      const usuario = await datosUsuarioActual();
+      localStorage.setItem("nombre", usuario.data.Nombre);
+      localStorage.setItem("apellidoP", usuario.data.ApellidoPaterno);
+      localStorage.setItem("foto", usuario.data.Foto);
     } catch (error) {
       console.error("Error al acceder:", error.response?.data || error);
     }
