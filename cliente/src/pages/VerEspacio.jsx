@@ -41,10 +41,12 @@ export function VerEspacio() {
     cargarEspacio();
   }, []);
 
-  const plantasFiltradas = plantas.filter((planta) =>
-    planta.nombre_cientifico
-      .toLowerCase()
-      .includes(terminoBusqueda.toLowerCase())
+  const plantasFiltradas = plantas.filter(
+    (planta) =>
+      planta.nombre_cientifico
+        .toLowerCase()
+        .includes(terminoBusqueda.toLowerCase()) ||
+      planta.alias.toLowerCase().includes(terminoBusqueda.toLowerCase())
   );
 
   return (
