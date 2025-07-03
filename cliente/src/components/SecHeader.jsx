@@ -1,22 +1,11 @@
 import { BotonAtras } from "./botones/BotonAtras";
-import { datosUsuarioActual } from "../api/usuarios.api";
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 export function SecHeader({ dir }) {
-  const [usuario, setUsuario] = useState([]);
+  const fotoPerfil = localStorage.getItem("foto");
 
-  async function cargarDatosUsuario() {
-    const res = await datosUsuarioActual();
-    setUsuario(res.data);
-  }
-
-  useEffect(() => {
-    cargarDatosUsuario();
-  }, []);
-
-  const imagenUrl = usuario.foto
-    ? `${usuario.foto}`
+  const imagenUrl = fotoPerfil
+    ? `http://localhost:8000${fotoPerfil}`
     : "http://localhost:8000/media/fotos_perfil_usuarios/default.jpg";
 
   return (
@@ -30,7 +19,7 @@ export function SecHeader({ dir }) {
         />
         <Link to="/biolink_ipc/perfil">
           <h2 className="dark:text-pl_white_a font-baloo">
-            {usuario.Nombre} {usuario.ApellidoPaterno}
+            {localStorage.getItem("nombre")} {localStorage.getItem("apellidoP")}
           </h2>
         </Link>
       </div>
