@@ -6,6 +6,7 @@ import { PlantaCard } from "../components/cards/PlantaCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { SecHeader } from "../components/SecHeader";
 import { Buscador } from "../components/Buscador";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();
@@ -69,11 +70,22 @@ export function VerEspacio() {
       >
         {espacio.nombre_espacio}
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
-        {plantasFiltradas.map((planta) => (
-          <PlantaCard planta={planta} key={planta.id_planta} />
-        ))}
-      </div>
+      <AnimatePresence>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 p-7">
+          {plantasFiltradas.map((planta) => (
+            <motion.div
+              key={planta.id_planta}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <PlantaCard planta={planta} key={planta.id_planta} />
+            </motion.div>
+          ))}
+        </div>
+      </AnimatePresence>
 
       <BotonAgregar
         dir={`/biolink_ipc/plantas/AgregarPlanta/${id_espacios}`}
