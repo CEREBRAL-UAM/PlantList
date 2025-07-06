@@ -1,15 +1,21 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
+import { Menu } from "lucide-react";
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [plantasOpen, setPlantasOpen] = useState(false);
+  const [menuHambOpen, setMenuHambOpen] = useState(false);
   const plantasRef = useRef(null);
+  const menuHamb = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (plantasRef.current && !plantasRef.current.contains(event.target)) {
         setPlantasOpen(false);
+      }
+      if (menuHamb.current && !menuHamb.current.contains(event.target)) {
+        setMenuHambOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -111,17 +117,60 @@ export function Navigation() {
           >
             boton1
           </Link>
-          <Link
-            to="/ruta2"
-            className="
-            text-pl_white_a 
-            hover:text-pl_green_b 
-            font-baloo
-            dark:text-pl_green_b
-            dark:hover:text-pl_white_a"
-          >
-            boton2
-          </Link>
+          <div className="relative text-pl_white_a" ref={menuHamb}>
+            <button
+              onClick={() => setMenuHambOpen(!menuHambOpen)}
+              className="
+              text-pl_white_a
+              hover:text-pl_green_b 
+              focus: outline-none
+              dark:text-pl_green_b
+              dark:hover:text-pl_white_a
+              "
+            >
+              <Menu />
+            </button>
+            {menuHambOpen && (
+              <div className="absolute top-full left-0 bg-pl_green_a text-sm mt-2 rounded shadow-lg z-10 font-baloo">
+                <Link
+                  to="/biolink_ipc/#"
+                  className="
+                  block px-4 py-2
+                  hover:bg-pl_green_e
+                  hover:text-white
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
+                  onClick={() => setMenuHambOpen(false)}
+                >
+                  CONTACTO
+                </Link>
+                <Link
+                  to="/biolink_ipc/#"
+                  className="
+                  block px-4 py-2 
+                  hover:bg-pl_green_e
+                  hover:text-white
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
+                  onClick={() => setMenuHambOpen(false)}
+                >
+                  PERSONALIZAR
+                </Link>
+                <Link
+                  to="/biolink_ipc/#"
+                  className="
+                  block px-4 py-2 
+                  hover:bg-pl_green_e
+                  hover:text-white
+                  dark:text-pl_green_b
+                  dark:hover:text-pl_white_a"
+                  onClick={() => setMenuHambOpen(false)}
+                >
+                  SALIR
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-6 items-center text-pl_white_a font-baloo relative">
