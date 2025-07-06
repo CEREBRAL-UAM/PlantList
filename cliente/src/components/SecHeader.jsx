@@ -4,9 +4,10 @@ import { Link } from "react-router";
 export function SecHeader({ dir }) {
   const fotoPerfil = localStorage.getItem("foto");
 
-  const imagenUrl = fotoPerfil
-    ? `http://localhost:8000${fotoPerfil}`
-    : "http://localhost:8000/media/fotos_perfil_usuarios/default.jpg";
+  const imagenUrl =
+    fotoPerfil && fotoPerfil !== "null"
+      ? `http://localhost:8000${fotoPerfil}`
+      : "http://localhost:8000/media/fotos_perfil_usuarios/default.jpg";
 
   return (
     <div className="w-1/2">
