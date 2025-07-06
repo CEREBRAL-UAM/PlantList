@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio
+from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios
 
 class PlantaSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -21,6 +21,11 @@ class PlantaPartesSerializer(serializers.ModelSerializer):
         model = PlantaPartes
         fields = ['id_parteplanta', 'id_planta']
 
+class EspaciosUsuariosSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = EspaciosUsuarios
+        fields = ['id_usuario', 'id_espacios']
+
 class EspacioSerializer(serializers.ModelSerializer):
     def get_foto(self, obj):
         request = self.context.get('request')
@@ -30,8 +35,6 @@ class EspacioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Espacio
         fields = '__all__'
-    
-
 
 class CrearEspacioSerializer(serializers.ModelSerializer): 
     class Meta: 

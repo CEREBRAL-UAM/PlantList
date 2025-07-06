@@ -79,8 +79,34 @@ class Espacio(models.Model):
         db_column='id_Usuario'
     )
 
+    usuarios_miembros = models.ManyToManyField(
+    'usuarios.Usuario',
+    through='EspaciosUsuarios',
+    related_name='usuarios_miembros'
+    )
+
     class Meta:
         db_table = 'espacios'
 
     def __str__(self):
         return self.nombre_espacio
+    
+class EspaciosUsuarios(models.Model):
+    id_usuario = models.ForeignKey(
+        'usuarios.Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_Usuario'
+    )
+
+    id_espacios = models.ForeignKey(
+        'Espacio',  
+        on_delete=models.CASCADE,
+        db_column='id_espacios'
+    )
+    class Meta:
+        db_table = 'espaciosusuarios'
+        managed = False
+        unique_together = (('id_espacios', 'id_usuario'),)
+    
+    def __srt__(self):
+        return self.id_usuario
