@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
+import { logoutUsuario } from "../api/usuarios.api";
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -8,6 +9,11 @@ export function Navigation() {
   const [menuHambOpen, setMenuHambOpen] = useState(false);
   const plantasRef = useRef(null);
   const menuHamb = useRef(null);
+
+  async function cerrarSesion() {
+    localStorage.clear();
+    await logoutUsuario();
+  }
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -166,7 +172,7 @@ export function Navigation() {
                   dark:hover:text-pl_white_a"
                   onClick={() => {
                     setMenuHambOpen(false);
-                    localStorage.clear();
+                    cerrarSesion();
                   }}
                 >
                   SALIR

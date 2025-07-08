@@ -12,6 +12,7 @@ import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
 import { PantallaCarga } from "./pages/PantallaCarga";
 import { VerUsuario } from "./pages/VerUsuario";
+import { Home } from "./pages/Home";
 
 function AppRoutes() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
         <Route path="/biolink_ipc/login" element={<IniciarSesion />} />
+        <Route path="/biolink_ipc/home" element={<Home />} />
         <Route path="/biolink_ipc/plantas" element={<Plantas />} />
         <Route path="/biolink_ipc/loading" element={<PantallaCarga />} />
         <Route
