@@ -157,14 +157,17 @@ export function Navigation() {
                   PERSONALIZAR
                 </Link>
                 <Link
-                  to="/biolink_ipc/#"
+                  to="/biolink_ipc/home"
                   className="
                   block px-4 py-2 
                   hover:bg-pl_green_e
                   hover:text-white
                   dark:text-pl_green_b
                   dark:hover:text-pl_white_a"
-                  onClick={() => setMenuHambOpen(false)}
+                  onClick={() => {
+                    setMenuHambOpen(false);
+                    localStorage.clear();
+                  }}
                 >
                   SALIR
                 </Link>
