@@ -7,6 +7,7 @@ import { BotonAgregar } from "../components/botones/BotonAgregar";
 import { SecHeader } from "../components/SecHeader";
 import { Buscador } from "../components/Buscador";
 import { motion, AnimatePresence } from "framer-motion";
+import { BotonColab } from "../components/botones/BotonColab";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();
@@ -87,6 +88,7 @@ export function VerEspacio() {
         </div>
       </AnimatePresence>
 
+      <BotonColab dir={`/biolink_ipc/colaboradores/${id_espacios}`} />
       <BotonAgregar
         dir={`/biolink_ipc/plantas/AgregarPlanta/${id_espacios}`}
         key={plantas.id_planta}
