@@ -246,7 +246,7 @@ export function Navigation() {
             MONITOREO
           </Link>
           <Link
-            to="/experimentos"
+            to="/biolink_ipc/experimentos"
             className="
           hover:text-pl_green_b
           dark:text-pl_green_b
