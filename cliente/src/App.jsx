@@ -12,6 +12,7 @@ import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
 import { PantallaCarga } from "./pages/PantallaCarga";
 import { VerUsuario } from "./pages/VerUsuario";
+import {Experimentos} from "./pages/Experimentos";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
 
@@ -21,6 +22,7 @@ function AppRoutes() {
     "/biolink_ipc/login",
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
+    "/biolink_ipc/experimentos",
   ];
 
   const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
@@ -55,6 +57,7 @@ function AppRoutes() {
           path="/biolink_ipc/VerEspacio/:id_espacios"
           element={<VerEspacio />}
         />
+        <Route path="/biolink_ipc/experimentos" element={<Experimentos/>} />
       </Routes>
     </>
   );
