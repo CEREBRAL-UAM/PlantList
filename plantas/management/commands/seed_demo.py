@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from plantas.models import Espacio, Especie, Planta
+from plantas.utils import generar_clave_acceso_unica
+from plantas.models import Espacio, Especie, Planta, EspaciosUsuarios
 from usuarios.models import Usuario, TokenUsuario
 from django.contrib.auth.hashers import make_password
 from django.core.files import File
@@ -44,18 +45,24 @@ class Command(BaseCommand):
 
         # Espacios
         espacios_data = [
-            {"nombre_espacio": "Patio", "foto": os.path.join(base_dir, "espacio1.jpg")},
-            {"nombre_espacio": "Encinal", "foto": os.path.join(base_dir, "espacio2.jpg")},
-            {"nombre_espacio": "Interior", "foto": os.path.join(base_dir, "espacio3.jpg")},
+            {"nombre_espacio": "Patio", "foto": os.path.join(base_dir, "espacio1.jpg"),"clave_acceso":generar_clave_acceso_unica()},
+            {"nombre_espacio": "Encinal", "foto": os.path.join(base_dir, "espacio2.jpg"),"clave_acceso":generar_clave_acceso_unica()},
+            {"nombre_espacio": "Interior", "foto": os.path.join(base_dir, "espacio3.jpg"),"clave_acceso":generar_clave_acceso_unica()},
         ]
         espacios = []
         for data in espacios_data:
             with open(data["foto"], "rb") as img_file:
-                espacio = Espacio(nombre_espacio=data["nombre_espacio"], id_usuario=usuario_demo)
+                espacio = Espacio(nombre_espacio=data["nombre_espacio"], clave_acceso=data["clave_acceso"])
                 espacio.foto.save(os.path.basename(data["foto"]), File(img_file), save=True)
                 espacios.append(espacio)
+                EspaciosUsuarios.objects.create(
+                    id_usuario = usuario_demo,
+                    id_espacios = espacio,
+                    isAdmin = True
+                )
 
         self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))
+
 
         
         #Plantas
