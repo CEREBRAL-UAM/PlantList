@@ -71,7 +71,7 @@ class PlantaPartes(models.Model):
 class Espacio(models.Model):
     id_espacios = models.AutoField(primary_key=True)
     nombre_espacio = models.CharField(max_length=45, blank=True) 
-    foto = models.ImageField(upload_to='espacios/', blank=True, null=True)
+    foto = models.ImageField(upload_to='espacios/', blank=True, null=True)  
     clave_acceso = models.CharField(max_length=45, blank=True) 
 
     usuarios_miembros = models.ManyToManyField(
