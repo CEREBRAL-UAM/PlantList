@@ -14,7 +14,16 @@ export function Buscador({ onChange, placeholder, value }) {
          items-center
     "
     >
-      <div className="bg-pl_gray_input rounded-2xl shadow-lg w-1/2 flex pl-2 p-0.5 items-center">
+      <div
+        className="
+          bg-pl_gray_input 
+          rounded-2xl shadow-lg 
+          w-1/2 flex pl-2 p-0.5 
+          items-center
+          dark:bg-pl_gray_dark_input
+          dark:text-pl_white_a
+        "
+      >
         <input
           type="text"
           placeholder={placeholder}
@@ -23,7 +32,7 @@ export function Buscador({ onChange, placeholder, value }) {
           className="w-full focus:outline-none"
         />
 
-        <Search className="ml-2 mr-2 text-pl_green_b w-6 h-6" />
+        <Search className="ml-2 mr-2 text-pl_green_b w-6 h-6 dark:text-pl_gray_input" />
       </div>
     </div>
   );
