@@ -7,7 +7,6 @@ export function BotonAtras({ dir }) {
   return (
     <button
       onClick={() => {
-        console.log("clic");
         navigate(dir || -1);
         /* Si no se recibe la direccion
         se redireccion a la anterior pagina 
