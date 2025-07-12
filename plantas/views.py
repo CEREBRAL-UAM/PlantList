@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from usuarios.models import TokenUsuario
+from .utils import generar_clave_acceso_unica
 
 # Create your views here.
 class PlantaView(viewsets.ModelViewSet):
@@ -72,6 +73,8 @@ class CrearEspacioUsuarioView(APIView):
         serializer = CrearEspacioSerializer(data=request.data)
         if serializer.is_valid():
             espacio = serializer.save()  
+            espacio.clave_acceso = generar_clave_acceso_unica()
+            espacio.save()
             EspaciosUsuarios.objects.create(
                 id_usuario=usuario,
                 id_espacios=espacio,
