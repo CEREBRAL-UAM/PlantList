@@ -48,7 +48,7 @@ export function Experimentos() {
         {/* Logo */}
         <div className="flex items-center ">
           <img
-            src="/src/images/iconos/logo.png"
+            src="/src/images/iconos/logo.png" 
             alt="logo"
             className="h-14 ml-2"
           />
@@ -132,7 +132,7 @@ export function Experimentos() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 md:gap-6">
           {/* Monitorear planta */}
           <Link
-            to="/biolink_ipx/Monitorearplanta"
+            to="/biolink_ipx/MonitorearPlanta"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img src="/src/images/iconos/monitorear.png" alt="Monitorear planta" className="mx-auto h-20 md:h-24 mb-4" />
@@ -144,7 +144,7 @@ export function Experimentos() {
             
           {/* Realizar experimento */}
           <Link
-            to="/biolink_ipc/Realizarexperimento"
+            to="/biolink_ipc/RealizarExperimento"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img src="/src/images/iconos/monitorear.png " alt="Realizar experimento" className="mx-auto h-20 md:h-24 mb-4" />
@@ -156,7 +156,7 @@ export function Experimentos() {
 
           {/* Gestionar experimentos */}
           <Link
-            to="/biolink_ipc/Gestionexperimentos"
+            to="/biolink_ipc/GestionExperimentos"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img src="/src/images/iconos/gestionar.png" alt="Gestionar experimentos" className="mx-auto h-20 md:h-24 mb-4" />
