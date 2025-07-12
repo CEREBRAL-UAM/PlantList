@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from usuarios.models import TokenUsuario
+from .utils import generar_clave_acceso_unica
 
 # Create your views here.
 class PlantaView(viewsets.ModelViewSet):
@@ -51,11 +52,8 @@ class EspaciosPorUsuarioView(APIView):
             return Response({'error': 'Token inválido'}, status=status.HTTP_401_UNAUTHORIZED)
         
         usuario = token_obj.usuario
+        espacios = Espacio.objects.filter(usuarios_miembros=usuario)
 
-        creados_usuario = Espacio.objects.filter(id_usuario=usuario)
-        espacios_colaborados = Espacio.objects.filter(usuarios_miembros=usuario)
-
-        espacios = (creados_usuario | espacios_colaborados).distinct()
         serializer = EspacioSerializer(espacios, many=True, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -74,10 +72,13 @@ class CrearEspacioUsuarioView(APIView):
         
         serializer = CrearEspacioSerializer(data=request.data)
         if serializer.is_valid():
-            espacio = serializer.save(id_usuario=usuario)  # aquí se asocia automáticamente
+            espacio = serializer.save()  
+            espacio.clave_acceso = generar_clave_acceso_unica()
+            espacio.save()
             EspaciosUsuarios.objects.create(
                 id_usuario=usuario,
-                id_espacios=espacio
+                id_espacios=espacio,
+                isAdmin=True
             )
             return Response({'mensaje': 'Espacio creado exitosamente', 'id': espacio.id_espacios}, status=201)
         return Response(serializer.errors, status=400)
