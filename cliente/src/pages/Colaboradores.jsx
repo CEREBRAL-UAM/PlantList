@@ -46,10 +46,9 @@ export function Colaboradores() {
             text-2xl font-bold
             text-center
             font-baloo text-pl_green_a 
-            uppercase
         "
       >
-        3E5T12
+        {espacio.clave_acceso}
       </h1>
       <p
         className="
@@ -60,6 +59,29 @@ export function Colaboradores() {
       >
         Codigo de acceso
       </p>
+      <div className="justify-center items-center flex">
+        <div className="w-5xl pt-5">
+          <h1
+            className="
+            text-lg font-bold
+            font-nunito 
+            text-black
+        "
+          >
+            Administradores:
+          </h1>
+
+          <h1
+            className="
+            text-lg font-bold
+            font-nunito 
+            text-black
+        "
+          >
+            Colaboradores:
+          </h1>
+        </div>
+      </div>
     </div>
   );
 }
