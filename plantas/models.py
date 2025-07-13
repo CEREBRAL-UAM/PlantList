@@ -90,7 +90,8 @@ class EspaciosUsuarios(models.Model):
     id_usuario = models.ForeignKey(
         'usuarios.Usuario',
         on_delete=models.CASCADE,
-        db_column='id_Usuario'
+        db_column='id_Usuario',
+        primary_key=True 
     )
 
     id_espacios = models.ForeignKey(

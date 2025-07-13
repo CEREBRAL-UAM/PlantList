@@ -7,6 +7,8 @@ from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, Espacio
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from usuarios.models import Usuario
+from usuarios.serializers import UsuarioDatosSerializer 
 from usuarios.models import TokenUsuario
 from .utils import generar_clave_acceso_unica
 
@@ -41,6 +43,26 @@ class EspaciosUsuariosViewSet(viewsets.ModelViewSet):
 class EspacioViewSet(viewsets.ModelViewSet):
     queryset = Espacio.objects.all()
     serializer_class = EspacioSerializer
+
+class ColaboradoresEspacioAdmin(APIView):
+    def get(self, request): 
+        id_espacios = request.query_params.get('id_espacios')
+
+        try: 
+            espacio = Espacio.objects.get(id_espacios=id_espacios)
+        except Espacio.DoesNotExist:
+            return Response({'error':'Espacio no encontrado'},status=404)
+
+        relaciones = EspaciosUsuarios.objects.filter(
+            id_espacios=espacio,
+            isAdmin=True
+        )
+
+        usuarios_admin = [rel.id_usuario for rel in relaciones]
+
+        serializer = UsuarioDatosSerializer(usuarios_admin, many=True) 
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EspaciosPorUsuarioView(APIView):
     def get(self, request):
