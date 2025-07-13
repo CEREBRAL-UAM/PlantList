@@ -12,6 +12,6 @@ router.register(r'espacios', views.EspacioViewSet, 'espacios')
 urlpatterns = [
     path("apiv1/espacios/mis_espacios/", views.EspaciosPorUsuarioView.as_view(), name='mis_espacios'),
     path("apiv1/espacios/crear_espacio/", views.CrearEspacioUsuarioView.as_view(), name='crear_espacio'),
-    path("apiv1/colaboradores/admins", views.ColaboradoresEspacioAdmin.as_view(), name='colaboradores_admin'),
+    path("apiv1/colaboradores/admins", views.ColaboradoresEspacio.as_view(), name='colaboradores_espacio'),
     path("apiv1/",include(router.urls)),
 ]

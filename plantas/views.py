@@ -44,19 +44,21 @@ class EspacioViewSet(viewsets.ModelViewSet):
     queryset = Espacio.objects.all()
     serializer_class = EspacioSerializer
 
-class ColaboradoresEspacioAdmin(APIView):
+class ColaboradoresEspacio(APIView):
     def get(self, request): 
         id_espacios = request.query_params.get('id_espacios')
+        is_admin = request.query_params.get('isAdmin')
+
+        if not id_espacios or is_admin not in ['0', '1']:
+             return Response({'error': 'Parámetros id_espacios e isAdmin requeridos. Usa isAdmin=1 o isAdmin=0.'}, status=400)
 
         try: 
             espacio = Espacio.objects.get(id_espacios=id_espacios)
         except Espacio.DoesNotExist:
             return Response({'error':'Espacio no encontrado'},status=404)
 
-        relaciones = EspaciosUsuarios.objects.filter(
-            id_espacios=espacio,
-            isAdmin=True
-        )
+        is_admin = True if is_admin == '1' else False
+        relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio, isAdmin=is_admin)
 
         usuarios_admin = [rel.id_usuario for rel in relaciones]
 
