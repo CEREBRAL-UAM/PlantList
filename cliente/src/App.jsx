@@ -15,6 +15,7 @@ import { VerUsuario } from "./pages/VerUsuario";
 import {Experimentos} from "./pages/Experimentos";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
+import {Monitoreo} from "./pages/Monitoreo";
 
 function AppRoutes() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function AppRoutes() {
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
     "/biolink_ipc/experimentos",
+    "/biolink_ipc/monitoreo"
   ];
 
   const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
@@ -58,6 +60,7 @@ function AppRoutes() {
           element={<VerEspacio />}
         />
         <Route path="/biolink_ipc/experimentos" element={<Experimentos/>} />
+        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
       </Routes>
     </>
   );
