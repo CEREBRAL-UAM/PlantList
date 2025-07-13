@@ -16,6 +16,7 @@ import {Experimentos} from "./pages/Experimentos";
 import {RealizarExperimento} from "./pages/RealizarExperimento";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
+import {Monitoreo} from "./pages/Monitoreo";
 
 function AppRoutes() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function AppRoutes() {
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
     "/biolink_ipc/experimentos",
+    "/biolink_ipc/monitoreo",
     "/biolink_ipc/RealizarExperimento",
   ];
 
@@ -60,6 +62,7 @@ function AppRoutes() {
           element={<VerEspacio />}
         />
         <Route path="/biolink_ipc/experimentos" element={<Experimentos/>} />
+        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
         <Route path="/biolink_ipc/RealizarExperimento" element={<RealizarExperimento/>} />
       </Routes>
     </>
