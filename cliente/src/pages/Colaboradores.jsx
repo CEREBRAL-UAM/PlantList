@@ -2,10 +2,26 @@ import { SecHeader } from "../components/SecHeader";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { getEspacio } from "../api/espacios.api";
+import { getColaboradores } from "../api/espacios.api";
 
 export function Colaboradores() {
   const { id_espacios } = useParams();
   const [espacio, setEspacio] = useState([]);
+  const [administradores, setAdministradores] = useState([]);
+  const [colaboradores, setColaboradores] = useState([]);
+
+  useEffect(() => {
+    async function cargarColaboradores() {
+      if (id_espacios) {
+        const admins = await getColaboradores(id_espacios, 1); // obtenemos admins
+        setAdministradores(admins.data);
+
+        const colabs = await getColaboradores(id_espacios, 0); // obtenemos colaboradores
+        setColaboradores(colabs.data);
+      }
+    }
+    cargarColaboradores();
+  }, []);
 
   useEffect(() => {
     async function cargarEspacio() {

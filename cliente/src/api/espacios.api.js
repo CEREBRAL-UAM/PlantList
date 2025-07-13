@@ -14,6 +14,15 @@ export const crearEspacio = (espacio) => {
   });
 };
 
+export const getColaboradores = (espacio, isAdmin) => {
+  return EspacioApi.get("/colaboradores/", {
+    params: {
+      id_espacios: espacio,
+      isAdmin: isAdmin ? 1 : 0,
+    },
+  });
+};
+
 export const crearEspacioUsuario = (espacio) => {
   const token = localStorage.getItem("token");
   return EspacioApi.post("/crear_espacio/", espacio, {
