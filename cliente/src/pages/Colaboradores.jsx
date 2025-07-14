@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { getEspacio } from "../api/espacios.api";
 import { getColaboradores } from "../api/espacios.api";
+import { Colaborador } from "../components/cards/Colaborador";
 
 export function Colaboradores() {
   const { id_espacios } = useParams();
@@ -82,20 +83,33 @@ export function Colaboradores() {
             text-lg font-bold
             font-nunito 
             text-black
+            dark:text-pl_white_a
+            pt-12
         "
           >
             Administradores:
           </h1>
-
+          <div className="flex gap-2">
+            {administradores.map((usuario) => (
+              <Colaborador usuario={usuario} key={usuario.id_Usuario} />
+            ))}
+          </div>
           <h1
-            className="
+            className=" 
             text-lg font-bold
             font-nunito 
             text-black
+            dark:text-pl_white_a
+            pt-12
         "
           >
             Colaboradores:
           </h1>
+          <div className="flex gap-2">
+            {colaboradores.map((usuario) => (
+              <Colaborador usuario={usuario} key={usuario.id_Usuario} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
