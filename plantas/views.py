@@ -57,8 +57,11 @@ class ColaboradoresEspacio(APIView):
         except Espacio.DoesNotExist:
             return Response({'error':'Espacio no encontrado'},status=404)
 
-        is_admin = True if is_admin == '1' else False
-        relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio, isAdmin=is_admin)
+
+        if is_admin == '1':
+            relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio, isAdmin=True)
+        else: 
+            relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio)
 
         usuarios_admin = [rel.id_usuario for rel in relaciones]
 
