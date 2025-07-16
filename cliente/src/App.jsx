@@ -14,7 +14,9 @@ import { FormEspacio } from "./pages/FormEspacio";
 import { PantallaCarga } from "./pages/PantallaCarga";
 import { VerUsuario } from "./pages/VerUsuario";
 import {Experimentos} from "./pages/Experimentos";
+import { MonitorearPlanta } from "./pages/MonitorearPlanta";
 import {RealizarExperimento} from "./pages/RealizarExperimento";
+import { GestionExperimentos } from "./pages/GestionExperimentos";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
 import {Monitoreo} from "./pages/Monitoreo";
@@ -25,13 +27,15 @@ function AppRoutes() {
     "/biolink_ipc/login",
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
-    "/biolink_ipc/experimentos",
     "/biolink_ipc/monitoreo",
   ];
 
   const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
   const isExperimentos = 
-    location.pathname.startsWith("/biolink_ipc/RealizarExperimento");
+    location.pathname.startsWith("/biolink_ipc/experimentos") ||
+    location.pathname.startsWith("/biolink_ipc/RealizarExperimento") ||
+    location.pathname.startsWith("/biolink_ipc/MonitorearPlanta") ||
+    location.pathname.startsWith("/biolink_ipc/GestionExperimentos");
 
   return (
     <>
@@ -65,8 +69,10 @@ function AppRoutes() {
           element={<VerEspacio />}
         />
         <Route path="/biolink_ipc/experimentos" element={<Experimentos/>} />
-        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
+        <Route path="/biolink_ipc/MonitorearPlanta" element={<MonitorearPlanta/>} />
         <Route path="/biolink_ipc/RealizarExperimento" element={<RealizarExperimento/>} />
+        <Route path="/biolink_ipc/GestionExperimentos" element={<GestionExperimentos/>} />
+        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
       </Routes>
     </>
   );
