@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'plantas',
     'usuarios',
     'experimentos',
+    'monitoreo',
 ]
 
 MIDDLEWARE = [
