@@ -237,7 +237,7 @@ export function Navigation() {
           </div>
 
           <Link
-            to="/monitoreo"
+            to="/biolink_ipc/monitoreo"
             className="
           hover:text-pl_green_b
           dark:text-pl_green_b
