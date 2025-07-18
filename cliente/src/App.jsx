@@ -7,7 +7,6 @@ import { Espacios } from "./pages/Espacios";
 import { VerEspacio } from "./pages/VerEspacio";
 import { FormPlanta } from "./pages/FormPlanta";
 import { Navigation } from "./components/Navigation";
-import { HeaderExperimentos } from "./components/HeaderExperimentos";
 import { VerPlanta } from "./pages/VerPlanta";
 import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
@@ -31,23 +30,13 @@ function AppRoutes() {
     "/biolink_ipc/login",
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
-    "/biolink_ipc/monitoreo",
-    "/biolink_ipc/MonitoreoAmbiental",
-    "/biolink_ipc/MonitoreoSuelo",
-    "/biolink_ipc/MonitoreoContaminantes",
   ];
 
   const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
-  const isExperimentos = 
-    location.pathname.startsWith("/biolink_ipc/experimentos") ||
-    location.pathname.startsWith("/biolink_ipc/RealizarExperimento") ||
-    location.pathname.startsWith("/biolink_ipc/MonitorearPlanta") ||
-    location.pathname.startsWith("/biolink_ipc/GestionExperimentos");
 
   return (
     <>
-      {!shouldHideHeader && !isExperimentos && <Navigation />}
-      {!shouldHideHeader && isExperimentos && <HeaderExperimentos />}
+      {!shouldHideHeader && <Navigation />}
       <Routes>
         <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
         <Route
