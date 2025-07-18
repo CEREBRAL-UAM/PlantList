@@ -1,143 +1,56 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react"; 
 import { logoutUsuario } from "../api/usuarios.api";
 
 export function Navigation() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [plantasOpen, setPlantasOpen] = useState(false);
   const [menuHambOpen, setMenuHambOpen] = useState(false);
-  const plantasRef = useRef(null);
-  const menuHamb = useRef(null);
+  const menuHambLeft = useRef(null);
+  const menuHambRight = useRef(null);
 
   async function cerrarSesion() {
     localStorage.clear();
     await logoutUsuario();
   }
-
+    
   useEffect(() => {
     function handleClickOutside(event) {
-      if (plantasRef.current && !plantasRef.current.contains(event.target)) {
-        setPlantasOpen(false);
-      }
-      if (menuHamb.current && !menuHamb.current.contains(event.target)) {
+      if (
+        (!menuHambLeft.current || !menuHambLeft.current.contains(event.target)) &&
+        (!menuHambRight.current || !menuHambRight.current.contains(event.target))
+      ) {
         setMenuHambOpen(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
   return (
-    <nav className="bg-pl_green_a p-4 fixed top-0 left-0 w-full z-50 shadow-md">
-      {/* Móvil: boton1 y boton2 a la izquierda, hamburguesa a la derecha */}
-      <div className="flex justify-between items-center md:hidden mb-4">
-        <div className="flex gap-4">
-          <Link
-            to="/ruta1"
-            className="text-pl_white_a font-baloo hover:text-pl_green_b"
-          >
-            boton1
-          </Link>
-          <Link
-            to="/ruta2"
-            className="text-pl_white_a font-baloo hover:text-pl_green_b"
-          >
-            boton2
-          </Link>
-        </div>
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="text-pl_white_a text-2xl focus:outline-none"
-          aria-label="Abrir menú"
-        >
-          ☰
-        </button>
-      </div>
+    <>
+      {/* Header */}
+      <header className="bg-[#73AFA5] px-4 py-4 shadow flex items-center justify-between relative">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <img
+            src="/src/images/iconos/logo.png"
+            alt="logo"
+            className="h-14 ml-2"
+          />
 
-      {/* Menú móvil desplegable */}
-      {menuOpen && (
-        <div className="md:hidden flex flex-col gap-4 pb-4 border-b border-pl_green_b">
-          <div className="relative" ref={plantasRef}>
-            <button
-              onClick={() => setPlantasOpen(!plantasOpen)}
-              className="text-pl_white_a font-baloo hover:text-pl_green_b focus:outline-none"
-            >
-              PLANTAS
-            </button>
-            {plantasOpen && (
-              <div className="ml-4 mt-2 flex flex-col gap-1">
-                <Link
-                  to="/biolink_ipc/espacios"
-                  className="hover:text-pl_green_b"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  MIS ESPACIOS
-                </Link>
-                <Link
-                  to="/biolink_ipc/especies"
-                  className="hover:text-pl_green_b"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  ESPECIES
-                </Link>
-                <Link
-                  to="/biolink_ipc/padecimientos"
-                  className="hover:text-pl_green_b"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  PADECIMIENTOS
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <Link
-            to="/proyectos"
-            className="text-pl_white_a font-baloo hover:text-pl_green_b"
-            onClick={() => setMenuOpen(false)}
-          >
-            PROYECTOS
-          </Link>
-          <Link
-            to="/sabermas"
-            className="text-pl_white_a font-baloo hover:text-pl_green_b"
-            onClick={() => setMenuOpen(false)}
-          >
-            SABER MÁS
-          </Link>
-        </div>
-      )}
-
-      {/* Versión escritorio */}
-      <div className="hidden md:flex justify-between items-center">
-        <div className="flex gap-6">
-          <Link
-            to="/ruta1"
-            className="
-            text-pl_white_a 
-            hover:text-pl_green_b 
-            font-baloo
-            dark:text-pl_green_b
-            dark:hover:text-pl_white_a"
-          >
-            boton1
-          </Link>
-          <div className="relative text-pl_white_a" ref={menuHamb}>
+          {/* Botón hamburguesa izquierdo */}
+          <div className="hidden md:block relative text-pl_white_a mt-5" ref={menuHambLeft}>
             <button
               onClick={() => setMenuHambOpen(!menuHambOpen)}
-              className="
-              text-pl_white_a
-              hover:text-pl_green_b 
-              focus: outline-none
-              dark:text-pl_green_b
-              dark:hover:text-pl_white_a
-              "
+              className="text-pl_white_a hover:text-pl_green_b dark:text-pl_green_b dark:hover:text-pl_white_a focus:outline-none"
             >
-              <Menu />
+              {menuHambOpen ? <X size={25} /> : <Menu size={25} />}
             </button>
+
             {menuHambOpen && (
-              <div className="absolute top-full left-0 bg-pl_green_a text-sm mt-2 rounded shadow-lg z-10 font-baloo">
+              <div className="absolute top-full right-1/2 translate-x-1/2 bg-pl_green_a mt-2 rounded shadow-lg z-30 text-sm font-baloo text-center">
                 <Link
                   to="/biolink_ipc/#"
                   className="
@@ -151,12 +64,12 @@ export function Navigation() {
                   CONTACTO
                 </Link>
                 <Link
-                  to="/biolink_ipc/#"
+                  to="/biolink_ipc/personalizar"
                   className="
                   block px-4 py-2 
                   hover:bg-pl_green_e
-                  hover:text-white
-                  dark:text-pl_green_b
+                  hover:text-white 
+                  dark:text-pl_green_b 
                   dark:hover:text-pl_white_a"
                   onClick={() => setMenuHambOpen(false)}
                 >
@@ -182,80 +95,110 @@ export function Navigation() {
           </div>
         </div>
 
-        <div className="flex gap-6 items-center text-pl_white_a font-baloo relative">
-          <div className="relative" ref={plantasRef}>
-            <button
-              onClick={() => setPlantasOpen(!plantasOpen)}
-              className="
-              hover:text-pl_green_b 
-              focus:outline-none
-              dark:text-pl_green_b
-              dark:hover:text-pl_white_a"
-            >
-              PLANTAS
-            </button>
-            {plantasOpen && (
-              <div className="absolute top-full left-0 bg-pl_green_a text-sm mt-2 rounded shadow-lg z-10">
-                <Link
-                  to="/biolink_ipc/espacios"
-                  className="
-                  block px-4 py-2 
-                  hover:bg-pl_green_e
-                  hover:text-white
-                  dark:text-pl_green_b
-                  dark:hover:text-pl_white_a"
-                  onClick={() => setPlantasOpen(false)}
-                >
-                  MIS ESPACIOS
-                </Link>
-                <Link
-                  to="/biolink_ipc/especies"
-                  className="
-                  block px-4 py-2 
-                  hover:bg-pl_green_e
-                  hover:text-white
-                  dark:text-pl_green_b
-                  dark:hover:text-pl_white_a"
-                  onClick={() => setPlantasOpen(false)}
-                >
-                  ESPECIES
-                </Link>
-                <Link
-                  to="/biolink_ipc/padecimientos"
-                  className="
-                  block px-4 py-2 
-                  hover:bg-pl_green_e
-                  hover:text-white 
-                  dark:text-pl_green_b
-                  dark:hover:text-pl_white_a"
-                  onClick={() => setPlantasOpen(false)}
-                >
-                  PADECIMIENTOS
-                </Link>
+        {/* Navegación */}
+        <nav className="hidden md:flex ml-auto mr-10 gap-8 font-baloo text-[#F3EEEA] dark:text-[#264313] relative">
+          {[
+            {
+              title: "PLANTAS",
+              links: [
+                { to: "/biolink_ipc/espacios", label: "MIS ESPACIOS" },
+                { to: "/biolink_ipc/especies", label: "ESPECIES" },
+                { to: "/biolink_ipc/padecimientos", label: "PADECIMIENTOS" },
+              ],
+            },
+            {
+              title: "MONITOREO",
+              links: [
+                { to: "/biolink_ipc/monitoreo", label: "MONITOREO AMBIENTAL" },
+                { to: "/biolink_ipc/monitoreo", label: "MONITOREO DE SUELO" },
+                { to: "/biolink_ipc/monitoreo", label: "MONITOREO DE CONTAMINANTES" },
+                { to: "/biolink_ipc/monitoreo", label: "VER TODO"},
+              ],
+            },
+            {
+              title: "EXPERIMENTOS",
+              links: [
+                { to: "/biolink_ipc/MonitorearPlanta", label: "MONITOREAR PLANTA" },
+                { to: "/biolink_ipc/RealizarExperimento", label: "REALIZAR EXPERIMENTO" },
+                { to: "/biolink_ipc/GestionExperimentos", label: "GESTIONAR EXPERIMENTOS" },
+                { to: "/biolink_ipc/experimentos", label: "VER TODO" },
+              ],
+            },
+          ].map(({ title, links }, index) => (
+            <div key={index} className="relative group">
+              <button className="hover:text-pl_green_b focus:outline-none dark:text-pl_green_b dark:hover:text-pl_white_a">
+                {title}
+              </button>
+              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 bg-pl_green_a rounded shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 z-30 text-center">
+                {links.map((link, i) => (
+                  <Link
+                    key={i}
+                    to={link.to}
+                    className="block px-4 py-2 whitespace-nowrap hover:bg-pl_green_e hover:text-white dark:text-pl_green_b dark:hover:text-pl_white_a"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          ))}
+        </nav>
 
-          <Link
-            to="/monitoreo"
-            className="
-          hover:text-pl_green_b
-          dark:text-pl_green_b
-          dark:hover:text-pl_white_a"
+
+        {/* Botón hamburguesa derecho*/}
+        <div className="md:hidden relative z-20 text-pl_white_a" ref={menuHambRight}>
+          <button
+            onClick={() => setMenuHambOpen(!menuHambOpen)}
+            className="text-pl_white_a hover:text-pl_green_b dark:text-pl_green_b dark:hover:text-pl_white_a focus:outline-none"
           >
-            MONITOREO
-          </Link>
-          <Link
-            to="/biolink_ipc/experimentos"
-            className="
-          hover:text-pl_green_b
-          dark:text-pl_green_b
-          dark:hover:text-pl_white_a"
-          >
-            EXPERIMENTOS
-          </Link>
+            {menuHambOpen ? <X size={25} /> : <Menu size={25} />}
+          </button>
+
+          {menuHambOpen && (
+            <div className="absolute top-full right-0 bg-pl_green_a mt-2 rounded shadow-lg z-30 text-sm font-baloo text-center">
+              <Link
+                to="/biolink_ipc/#"
+                className="
+                block px-4 py-2
+                hover:bg-pl_green_e
+                hover:text-white
+                dark:text-pl_green_b
+                dark:hover:text-pl_white_a"
+                onClick={() => setMenuHambOpen(false)}
+              >
+                CONTACTO
+              </Link>
+              <Link
+                to="/biolink_ipc/personalizar"
+                className="
+                block px-4 py-2 
+                hover:bg-pl_green_e
+                hover:text-white 
+                dark:text-pl_green_b 
+                dark:hover:text-pl_white_a"
+                onClick={() => setMenuHambOpen(false)}
+              >
+                PERSONALIZAR
+              </Link>
+              <Link
+                to="/biolink_ipc/home"
+                className="
+                block px-4 py-2 
+                hover:bg-pl_green_e
+                hover:text-white
+                dark:text-pl_green_b
+                dark:hover:text-pl_white_a"
+                onClick={() => {
+                  setMenuHambOpen(false);
+                  cerrarSesion();
+                }}
+              >
+                SALIR
+              </Link>
+            </div>
+          )}
         </div>
-      </div>
-    </nav>
+      </header>
+    </>
   );
 }
