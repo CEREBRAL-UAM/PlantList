@@ -144,12 +144,27 @@ export function Navigation() {
           ))}
         </nav>
 
-
         {/* Botón hamburguesa derecho*/}
         <div className="md:hidden relative z-20 text-pl_white_a" ref={menuHambRight}>
           <button
             onClick={() => setMenuHambOpen(!menuHambOpen)}
             className="text-pl_white_a hover:text-pl_green_b dark:text-pl_green_b dark:hover:text-pl_white_a focus:outline-none"
+
+          <Link
+            to="/biolink_ipc/monitoreo"
+            className="
+          hover:text-pl_green_b
+          dark:text-pl_green_b
+          dark:hover:text-pl_white_a"
+          >
+            MONITOREO
+          </Link>
+          <Link
+            to="/biolink_ipc/experimentos"
+            className="
+          hover:text-pl_green_b
+          dark:text-pl_green_b
+          dark:hover:text-pl_white_a"
           >
             {menuHambOpen ? <X size={25} /> : <Menu size={25} />}
           </button>

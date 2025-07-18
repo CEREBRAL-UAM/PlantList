@@ -18,7 +18,11 @@ import {RealizarExperimento} from "./pages/RealizarExperimento";
 import { GestionExperimentos } from "./pages/GestionExperimentos";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
-import {Monitoreo} from "./pages/Monitoreo";
+import { Monitoreo } from "./pages/Monitoreo";
+import { MonitoreoAmbiental } from "./pages/MonitoreoAmbiental";
+import { MonitoreoSuelo } from "./pages/MonitoreoSuelo";
+import { MonitoreoContaminantes } from "./pages/MonitoreoContaminantes";
+
 
 function AppRoutes() {
   const location = useLocation();
@@ -65,6 +69,9 @@ function AppRoutes() {
         <Route path="/biolink_ipc/RealizarExperimento" element={<RealizarExperimento/>} />
         <Route path="/biolink_ipc/GestionExperimentos" element={<GestionExperimentos/>} />
         <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
+        <Route path="/biolink_ipc/monitoreoAmbiental" element={<MonitoreoAmbiental/>} />
+        <Route path="/biolink_ipc/monitoreoSuelo" element={<MonitoreoSuelo/>} />
+        <Route path="/biolink_ipc/monitoreoContaminantes" element={<MonitoreoContaminantes/>} />
       </Routes>
     </>
   );
