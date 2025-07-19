@@ -1,9 +1,9 @@
-import { SecHeader } from "../components/SecHeader";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import { getEspacio } from "../api/espacios.api";
-import { getColaboradores } from "../api/espacios.api";
-import { Colaborador } from "../components/cards/Colaborador";
+import { getEspacio } from "../../api/espacios.api";
+import { getColaboradores } from "../../api/espacios.api";
+import { Colaborador } from "../../components/cards/Colaborador";
 
 export function Colaboradores() {
   const { id_espacios } = useParams();
@@ -36,7 +36,7 @@ export function Colaboradores() {
 
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
-      <SecHeader />
+      <BannerUsuario />
       <h1
         className="
             text-xl font-bold

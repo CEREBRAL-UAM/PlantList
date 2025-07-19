@@ -1,5 +1,5 @@
-import { loginUsuario } from "../api/usuarios.api";
-import { datosUsuarioActual } from "../api/usuarios.api";
+import { loginUsuario } from "../../api/usuarios.api";
+import { datosUsuarioActual } from "../../api/usuarios.api";
 import { useForm } from "react-hook-form";
 
 export function IniciarSesion() {

@@ -1,7 +1,7 @@
-import { getPlanta } from "../api/plantas.api";
+import { getPlanta } from "../../api/plantas.api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Planta } from "../components/Planta";
+import { Planta } from "../../components/layout/Planta";
 
 export function VerPlanta() {
   const params = useParams();

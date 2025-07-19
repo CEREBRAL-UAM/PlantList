@@ -1,33 +1,52 @@
+import { useEffect, useState } from "react";
+import { getEspacio } from "../../api/espacios.api";
 import { useForm } from "react-hook-form";
+import { crearPlanta } from "../../api/plantas.api";
 import { useNavigate } from "react-router-dom";
-import { crearEspecie } from "../api/especies.api";
+import { useParams } from "react-router-dom";
 
-export function FormEspecie() {
+export function FormPlanta() {
+  const { id_espacios } = useParams();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+  const [espacio, setEspacio] = useState([]);
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
     formData.append("nombre_cientifico", data.nombre_cientifico);
     formData.append("alias", data.alias);
     formData.append("descripcion", data.descripcion);
-    formData.append("origen", data.origen);
+    formData.append("familia", data.familia);
+    formData.append("id_espacios", parseInt(id_espacios, 10));
+    //formData.append("usuario", 1); // IMPORTNTE: ESTO ES TEMPORAL, CUANDO HAYA USUARIOS LO CAMBIO
+    // LA LINEA DE ARRIBA IMPORTANTEE
 
     if (data.foto[0]) {
       formData.append("foto", data.foto[0]);
     }
 
     try {
-      const res = await crearEspecie(formData);
-      console.log("Especie creada:", res);
-      navigate("/plantlist/especies");
+      const res = await crearPlanta(formData);
+      console.log("Planta creada:", res);
+      navigate(`/plantlist/verEspacio/${espacio.id_espacios}`);
     } catch (error) {
-      console.error("Error al crear especie:", error.response?.data || error);
+      console.error("Error al crear planta:", error.response?.data || error);
     }
   });
 
+  useEffect(() => {
+    async function cargarEspacio() {
+      if (id_espacios) {
+        const res = await getEspacio(id_espacios);
+        setEspacio(res.data);
+      }
+    }
+    cargarEspacio();
+  }, []);
+
   return (
-    <div>
+    <div className="pt-20">
+      <h1 className="text-xl font-bold text-center mb-4">AGREGAR PLANTA</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -41,8 +60,8 @@ export function FormEspecie() {
         />
         <input
           type="text"
-          placeholder="Origen"
-          {...register("origen", { required: true })}
+          placeholder="Familia"
+          {...register("familia", { required: true })}
         />
         <textarea
           rows="3"
@@ -56,7 +75,7 @@ export function FormEspecie() {
           {...register("foto", { required: false })}
         />
 
-        <button>Agregar especie</button>
+        <button>Agregar planta</button>
       </form>
     </div>
   );

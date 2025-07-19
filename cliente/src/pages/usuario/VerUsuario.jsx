@@ -1,6 +1,6 @@
-import { datosUsuarioActual } from "../api/usuarios.api";
+import { datosUsuarioActual } from "../../api/usuarios.api";
 import { useEffect, useState } from "react";
-import { BotonAtras } from "../components/botones/BotonAtras";
+import { BotonAtras } from "../../components/botones/BotonAtras";
 
 export function VerUsuario() {
   const [usuario, setUsuario] = useState([]);
