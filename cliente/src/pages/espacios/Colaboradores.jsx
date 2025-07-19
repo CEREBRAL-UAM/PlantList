@@ -35,7 +35,7 @@ export function Colaboradores() {
   }, []);
 
   return (
-    <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+    <div className="lg:pt-2">
       <BannerUsuario />
       <h1
         className="

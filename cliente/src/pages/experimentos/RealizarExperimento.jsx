@@ -5,7 +5,7 @@ import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function RealizarExperimento() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col lg:pt-2">
       <BannerUsuario />
 
       <div className="w-full max-w-4xl px-4 mx-auto mt-10">

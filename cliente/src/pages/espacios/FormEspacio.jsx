@@ -25,7 +25,7 @@ export function FormEspacio() {
   });
 
   return (
-    <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+    <div className="lg:pt-2">
       <h1 className="text-xl font-bold text-center mt-2 font-nunito text-pl_green_b">
         AGREGAR ESPACIO
       </h1>

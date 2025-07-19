@@ -18,7 +18,7 @@ export function Espacios() {
   }, []);
 
   return (
-    <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
+    <div className="lg:pt-2">
       <BannerUsuario />
       <h1 className="text-xl font-bold text-center font-nunito text-pl_green_b dark:text-pl_white_a">
         MIS ESPACIOS

@@ -27,7 +27,7 @@ export function FormEspecie() {
   });
 
   return (
-    <div>
+    <div className=" lg:pt-2">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           type="text"
