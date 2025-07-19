@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { EspecieCard } from "../components/cards/EspecieCard";
-import { getEspecies } from "../api/especies.api";
+import { EspecieCard } from "../../components/cards/EspecieCard";
+import { getEspecies } from "../../api/especies.api";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
-import { BannerUsuario } from "../components/layout/BannerUsuario";
-import { Buscador } from "../components/layout/Buscador";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
+import { Buscador } from "../../components/layout/Buscador";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Especies() {

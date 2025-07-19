@@ -1,9 +1,9 @@
-import { BannerUsuario } from "../components/layout/BannerUsuario";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import { getEspacio } from "../api/espacios.api";
-import { getColaboradores } from "../api/espacios.api";
-import { Colaborador } from "../components/cards/Colaborador";
+import { getEspacio } from "../../api/espacios.api";
+import { getColaboradores } from "../../api/espacios.api";
+import { Colaborador } from "../../components/cards/Colaborador";
 
 export function Colaboradores() {
   const { id_espacios } = useParams();

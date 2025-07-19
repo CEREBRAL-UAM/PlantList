@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { crearEspacioUsuario } from "../api/espacios.api";
+import { crearEspacioUsuario } from "../../api/espacios.api";
 
 export function FormEspacio() {
   const navigate = useNavigate();

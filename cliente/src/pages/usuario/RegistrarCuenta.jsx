@@ -1,4 +1,4 @@
-import { registrarUsuario } from "../api/usuarios.api";
+import { registrarUsuario } from "../../api/usuarios.api";
 import { useForm } from "react-hook-form";
 
 export function RegistrarCuenta() {

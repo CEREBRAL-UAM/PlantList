@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPlantasPorEspacio } from "../api/plantas.api";
-import { getEspacio } from "../api/espacios.api";
-import { PlantaCard } from "../components/cards/PlantaCard";
-import { BotonAgregar } from "../components/botones/BotonAgregar";
-import { BannerUsuario } from "../components/layout/BannerUsuario";
-import { Buscador } from "../components/layout/Buscador";
+import { getPlantasPorEspacio } from "../../api/plantas.api";
+import { getEspacio } from "../../api/espacios.api";
+import { PlantaCard } from "../../components/cards/PlantaCard";
+import { BotonAgregar } from "../../components/botones/BotonAgregar";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
+import { Buscador } from "../../components/layout/Buscador";
 import { motion, AnimatePresence } from "framer-motion";
-import { BotonColab } from "../components/botones/BotonColab";
+import { BotonColab } from "../../components/botones/BotonColab";
 
 export function VerEspacio() {
   const { id_espacios } = useParams();

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getEspaciosUsuario } from "../api/espacios.api";
-import { EspacioCard } from "../components/cards/EspacioCard";
-import { BotonAgregar } from "../components/botones/BotonAgregar";
+import { getEspaciosUsuario } from "../../api/espacios.api";
+import { EspacioCard } from "../../components/cards/EspacioCard";
+import { BotonAgregar } from "../../components/botones/BotonAgregar";
 import { motion, AnimatePresence } from "framer-motion";
-import { BannerUsuario } from "../components/layout/BannerUsuario";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function Espacios() {
   const [espacios, setEspacios] = useState([]);

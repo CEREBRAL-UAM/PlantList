@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { BannerUsuario } from "../components/layout/BannerUsuario";
+import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function RealizarExperimento() {
   return (
