@@ -29,7 +29,7 @@ export function Especies() {
   );
 
   return (
-    <div className="pt-15">
+    <div className=" lg:pt-2">
       <div className="flex items-center">
         <BannerUsuario />
         <Buscador
@@ -57,7 +57,7 @@ export function Especies() {
           ))}
         </AnimatePresence>
         <button
-          onClick={() => navigate("/plantlist/especies/AgregarEspecie")}
+          onClick={() => navigate("/biolink_ipc/especies/AgregarEspecie")}
           className="fixed bottom-6 right-6 bg-pl_green_a text-white rounded-full p-5 shadow-lg"
           aria-label="Agregar especie"
         >

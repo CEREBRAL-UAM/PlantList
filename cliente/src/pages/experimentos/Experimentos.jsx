@@ -5,7 +5,7 @@ import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function Experimentos() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col lg:pt-2">
       {/* Bienvenida */}
       {/* <section className="text-[#264313] dark:text-[#F3EEEA] px-4 md:px-6 py-8 md:py-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="text-center md:text-left">

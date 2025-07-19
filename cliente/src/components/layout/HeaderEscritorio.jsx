@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { logoutUsuario } from "../../api/usuarios.api";
 
-export function Navigation() {
+export function HeaderEscritorio() {
   const [menuHambOpen, setMenuHambOpen] = useState(false);
   const menuHambLeft = useRef(null);
   const menuHambRight = useRef(null);

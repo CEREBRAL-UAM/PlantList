@@ -1,12 +1,11 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { RegistrarCuenta } from "./pages/usuario/RegistrarCuenta";
 import { IniciarSesion } from "./pages/usuario/IniciarSesion";
-import { Plantas } from "./pages/plantas/Plantas";
 import { Especies } from "./pages/plantas/Especies";
 import { Espacios } from "./pages/espacios/Espacios";
 import { VerEspacio } from "./pages/espacios/VerEspacio";
 import { FormPlanta } from "./pages/plantas/FormPlanta";
-import { Navigation } from "./components/layout/Navigation";
+import { HeaderEscritorio } from "./components/layout/HeaderEscritorio";
 import { VerPlanta } from "./pages/plantas/VerPlanta";
 import { FormEspecie } from "./pages/plantas/FormEspecie";
 import { FormEspacio } from "./pages/espacios/FormEspacio";
@@ -35,7 +34,7 @@ function AppRoutes() {
 
   return (
     <>
-      {!shouldHideHeader && <Navigation />}
+      {!shouldHideHeader && <HeaderEscritorio />}
       <Routes>
         <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
         <Route
@@ -44,7 +43,6 @@ function AppRoutes() {
         />
         <Route path="/biolink_ipc/login" element={<IniciarSesion />} />
         <Route path="/biolink_ipc/home" element={<Home />} />
-        <Route path="/biolink_ipc/plantas" element={<Plantas />} />
         <Route path="/biolink_ipc/loading" element={<PantallaCarga />} />
         <Route
           path="/biolink_ipc/plantas/AgregarPlanta/:id_espacios"
