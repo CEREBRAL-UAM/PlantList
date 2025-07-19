@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 //import { datosUsuarioActual } from "../api/usuarios.api";
-import { Menu, X } from "lucide-react"; 
-import { SecHeader } from "../components/SecHeader";
+import { Menu, X } from "lucide-react";
+import { BannerUsuario } from "../components/layout/BannerUsuario";
 
 export function Monitoreo() {
   // const [usuario, setUsuario] = useState([]);
@@ -11,7 +11,6 @@ export function Monitoreo() {
   const [menuHambOpen, setMenuHambOpen] = useState(false);
   const plantasRef = useRef(null);
   const menuHamb = useRef(null);
-
 
   // async function cargarDatosUsuario() {
   //   const res = await datosUsuarioActual();
@@ -23,8 +22,8 @@ export function Monitoreo() {
   // }, []);
 
   async function cerrarSesion() {
-      localStorage.clear();
-      await logoutUsuario();
+    localStorage.clear();
+    await logoutUsuario();
   }
 
   useEffect(() => {
@@ -42,7 +41,6 @@ export function Monitoreo() {
 
   return (
     <div className="min-h-screen flex flex-col">
-
       {/* Header */}
       <header className="bg-[#73AFA5] px-4 py-4 shadow flex items-center justify-between md:justify-start md:gap-4 relative">
         {/* Logo */}
@@ -54,7 +52,10 @@ export function Monitoreo() {
           />
         </div>
 
-        <div className="relative text-pl_white_a mt-5 ml-[-10px]" ref={menuHamb}>
+        <div
+          className="relative text-pl_white_a mt-5 ml-[-10px]"
+          ref={menuHamb}
+        >
           <button
             onClick={() => setMenuHambOpen(!menuHambOpen)}
             className="
@@ -65,7 +66,7 @@ export function Monitoreo() {
             dark:hover:text-pl_white_a
             "
           >
-            <Menu size={25}/>
+            <Menu size={25} />
           </button>
           {menuHambOpen && (
             <div className="absolute top-full left-0 bg-pl_green_a text-sm mt-2 rounded shadow-lg z-10 font-baloo">
@@ -105,7 +106,7 @@ export function Monitoreo() {
                   setMenuHambOpen(false);
                   cerrarSesion();
                 }}
-                >
+              >
                 SALIR
               </Link>
             </div>
@@ -122,34 +123,46 @@ export function Monitoreo() {
           <p className="mt-1 text-[#446957] dark:text-[#F3EEEA] font-nunito">¿Estás list@ para comenzar?</p>
         </div>
       </section> */}
-      <SecHeader dir="/biolink_ipc/especies" /> 
+      <BannerUsuario />
 
       {/* Opciones */}
       <section className="text-center py-8 md:py-10 px-4 flex-grow">
         <h2 className="text-2xl font-baloo text-[#264313] dark:text-[#F3EEEA] mb-6 md:mb-10">
           ¿Qué deseas hacer hoy?
         </h2>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 md:gap-6">
           {/* Monitoreo Ambiental */}
           <Link
             to="/biolink_ipc/monitoreoAmbiental"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
-            <img src="/src/images/iconos/monitorear.png" alt="Monitoreo Ambiental" className="mx-auto h-20 md:h-24 mb-4" />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">Monitoreo Ambiental</h3>
+            <img
+              src="/src/images/iconos/monitorear.png"
+              alt="Monitoreo Ambiental"
+              className="mx-auto h-20 md:h-24 mb-4"
+            />
+            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+              Monitoreo Ambiental
+            </h3>
             <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
               Aquí se visualizarán los datos ambientales.
             </p>
           </Link>
-            
+
           {/* Monitoteo de Suelo */}
           <Link
             to="/biolink_ipc/monitoreoSuelo"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
-            <img src="/src/images/iconos/monitorear.png " alt="Monitoreo de Suelo" className="mx-auto h-20 md:h-24 mb-4" />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">Monitoreo de Suelo</h3>
+            <img
+              src="/src/images/iconos/monitorear.png "
+              alt="Monitoreo de Suelo"
+              className="mx-auto h-20 md:h-24 mb-4"
+            />
+            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+              Monitoreo de Suelo
+            </h3>
             <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
               Aquí se visualizarán los datos de suelo.
             </p>
@@ -160,8 +173,14 @@ export function Monitoreo() {
             to="/biolink_ipc/monitoreoContaminantes"
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
-            <img src="/src/images/iconos/gestionar.png" alt="Monitoreo de Contaminantes" className="mx-auto h-20 md:h-24 mb-4" />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">Monitoreo de Contaminantes</h3>
+            <img
+              src="/src/images/iconos/gestionar.png"
+              alt="Monitoreo de Contaminantes"
+              className="mx-auto h-20 md:h-24 mb-4"
+            />
+            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+              Monitoreo de Contaminantes
+            </h3>
             <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
               Aquí se visualizarán los datos de contaminantes.
             </p>

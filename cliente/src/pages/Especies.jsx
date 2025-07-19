@@ -3,8 +3,8 @@ import { EspecieCard } from "../components/cards/EspecieCard";
 import { getEspecies } from "../api/especies.api";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
-import { SecHeader } from "../components/SecHeader";
-import { Buscador } from "../components/Buscador";
+import { BannerUsuario } from "../components/layout/BannerUsuario";
+import { Buscador } from "../components/layout/Buscador";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Especies() {
@@ -31,7 +31,7 @@ export function Especies() {
   return (
     <div className="pt-15">
       <div className="flex items-center">
-        <SecHeader />
+        <BannerUsuario />
         <Buscador
           placeholder="Buscar especie por nombre"
           value={terminoBusqueda}

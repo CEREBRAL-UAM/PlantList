@@ -1,4 +1,4 @@
-import { SecHeader } from "../components/SecHeader";
+import { BannerUsuario } from "../components/layout/BannerUsuario";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { getEspacio } from "../api/espacios.api";
@@ -36,7 +36,7 @@ export function Colaboradores() {
 
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
-      <SecHeader />
+      <BannerUsuario />
       <h1
         className="
             text-xl font-bold

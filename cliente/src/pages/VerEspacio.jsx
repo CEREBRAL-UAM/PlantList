@@ -4,8 +4,8 @@ import { getPlantasPorEspacio } from "../api/plantas.api";
 import { getEspacio } from "../api/espacios.api";
 import { PlantaCard } from "../components/cards/PlantaCard";
 import { BotonAgregar } from "../components/botones/BotonAgregar";
-import { SecHeader } from "../components/SecHeader";
-import { Buscador } from "../components/Buscador";
+import { BannerUsuario } from "../components/layout/BannerUsuario";
+import { Buscador } from "../components/layout/Buscador";
 import { motion, AnimatePresence } from "framer-motion";
 import { BotonColab } from "../components/botones/BotonColab";
 
@@ -54,7 +54,7 @@ export function VerEspacio() {
   return (
     <div className="pt-20 sm:pt-20 md:pt-16 lg:pt-16">
       <div className="flex items-center">
-        <SecHeader dir="/biolink_ipc/espacios" />
+        <BannerUsuario />
         <Buscador
           placeholder="Buscar planta por nombre"
           value={terminoBusqueda}

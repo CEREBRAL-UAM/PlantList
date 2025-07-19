@@ -6,15 +6,15 @@ import { Especies } from "./pages/Especies";
 import { Espacios } from "./pages/Espacios";
 import { VerEspacio } from "./pages/VerEspacio";
 import { FormPlanta } from "./pages/FormPlanta";
-import { Navigation } from "./components/Navigation";
+import { Navigation } from "./components/layout/Navigation";
 import { VerPlanta } from "./pages/VerPlanta";
 import { FormEspecie } from "./pages/FormEspecie";
 import { FormEspacio } from "./pages/FormEspacio";
 import { PantallaCarga } from "./pages/PantallaCarga";
 import { VerUsuario } from "./pages/VerUsuario";
-import {Experimentos} from "./pages/Experimentos";
+import { Experimentos } from "./pages/Experimentos";
 import { MonitorearPlanta } from "./pages/MonitorearPlanta";
-import {RealizarExperimento} from "./pages/RealizarExperimento";
+import { RealizarExperimento } from "./pages/RealizarExperimento";
 import { GestionExperimentos } from "./pages/GestionExperimentos";
 import { Home } from "./pages/Home";
 import { Colaboradores } from "./pages/Colaboradores";
@@ -22,7 +22,6 @@ import { Monitoreo } from "./pages/Monitoreo";
 import { MonitoreoAmbiental } from "./pages/MonitoreoAmbiental";
 import { MonitoreoSuelo } from "./pages/MonitoreoSuelo";
 import { MonitoreoContaminantes } from "./pages/MonitoreoContaminantes";
-
 
 function AppRoutes() {
   const location = useLocation();
@@ -64,14 +63,32 @@ function AppRoutes() {
           path="/biolink_ipc/VerEspacio/:id_espacios"
           element={<VerEspacio />}
         />
-        <Route path="/biolink_ipc/experimentos" element={<Experimentos/>} />
-        <Route path="/biolink_ipc/MonitorearPlanta" element={<MonitorearPlanta/>} />
-        <Route path="/biolink_ipc/RealizarExperimento" element={<RealizarExperimento/>} />
-        <Route path="/biolink_ipc/GestionExperimentos" element={<GestionExperimentos/>} />
-        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo/>} />
-        <Route path="/biolink_ipc/monitoreoAmbiental" element={<MonitoreoAmbiental/>} />
-        <Route path="/biolink_ipc/monitoreoSuelo" element={<MonitoreoSuelo/>} />
-        <Route path="/biolink_ipc/monitoreoContaminantes" element={<MonitoreoContaminantes/>} />
+        <Route path="/biolink_ipc/experimentos" element={<Experimentos />} />
+        <Route
+          path="/biolink_ipc/MonitorearPlanta"
+          element={<MonitorearPlanta />}
+        />
+        <Route
+          path="/biolink_ipc/RealizarExperimento"
+          element={<RealizarExperimento />}
+        />
+        <Route
+          path="/biolink_ipc/GestionExperimentos"
+          element={<GestionExperimentos />}
+        />
+        <Route path="/biolink_ipc/monitoreo" element={<Monitoreo />} />
+        <Route
+          path="/biolink_ipc/monitoreoAmbiental"
+          element={<MonitoreoAmbiental />}
+        />
+        <Route
+          path="/biolink_ipc/monitoreoSuelo"
+          element={<MonitoreoSuelo />}
+        />
+        <Route
+          path="/biolink_ipc/monitoreoContaminantes"
+          element={<MonitoreoContaminantes />}
+        />
       </Routes>
     </>
   );

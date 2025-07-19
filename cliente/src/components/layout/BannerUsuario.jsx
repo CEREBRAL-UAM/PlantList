@@ -1,7 +1,7 @@
-import { BotonAtras } from "./botones/BotonAtras";
+import { BotonAtras } from "../botones/BotonAtras";
 import { Link } from "react-router";
 
-export function SecHeader({ dir }) {
+export function BannerUsuario({ dir }) {
   const fotoPerfil = localStorage.getItem("foto");
 
   const imagenUrl =

@@ -1,4 +1,4 @@
-import { eliminarPlanta } from "../api/plantas.api";
+import { eliminarPlanta } from "../../api/plantas.api";
 import { useNavigate } from "react-router-dom";
 
 export function Planta({ planta }) {
