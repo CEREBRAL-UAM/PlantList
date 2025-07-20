@@ -32,16 +32,22 @@ export function HeaderEscritorio() {
   return (
     <header className="hidden md:flex bg-pl_green_a pt-2 pb-2 shadow items-center justify-between relative">
       {/* Header */}
-      <div className="flex items-center gap-2">
+      <div className="justify-center flex items-center gap-2">
         <img
           src="/src/images/iconos/logo.png"
-          alt="logo"
-          className="h-14 ml-2"
+          alt="logo modo claro"
+          className="h-14 ml-2 block dark:hidden"
+        />
+
+        <img
+          src="/src/images/iconos/logo_oscuro.png"
+          alt="logo modo oscuro"
+          className="h-14 ml-2 hidden dark:block"
         />
 
         {/* Botón hamburguesa izquierdo */}
         <div
-          className="hidden md:block relative text-pl_white_a mt-5"
+          className="hidden md:block relative text-pl_white_a"
           ref={menuHambLeft}
         >
           <button
@@ -51,7 +57,7 @@ export function HeaderEscritorio() {
                 hover:text-pl_green_b 
                 dark:text-pl_green_b 
                 dark:hover:text-pl_white_a 
-                focus:outline-none
+                focus:outline-none mt-2
               "
           >
             {menuHambOpen ? <X size={25} /> : <Menu size={25} />}
