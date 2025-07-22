@@ -19,6 +19,16 @@ class SensadoAmbiental(models.Model):
     def __str__(self):
         return f"Sensado {self.FechaSensado}"
 
+class Suelo(models.Model):
+    id_Suelo = models.AutoField(primary_key=True)
+    CP = models.IntegerField()
+    Nombre_Cientifico = models.CharField(max_length=45, null=True)
+    Descripcion = models.CharField(max_length=45, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'suelo'
+
 class sensadoSuelo(models.Model):
     id_EnergiaPlanta = models.AutoField(primary_key=True)
     id_Circuito = models.IntegerField()
@@ -26,7 +36,7 @@ class sensadoSuelo(models.Model):
     Voltaje = models.FloatField()
     Amperaje = models.FloatField()
     id_Electrodos = models.IntegerField()
-    id_Suelo = models.IntegerField(null=True, blank=True)
+    suelo = models.ForeignKey(Suelo, db_column='id_Suelo', null=True, blank=True, on_delete=models.DO_NOTHING)
     PhSuelo = models.CharField(max_length=45, null=True, blank=True)
     HumedadSuelo = models.FloatField(null=True, blank=True)
     id_PlantaIndividuo = models.IntegerField(null=True, blank=True)
@@ -39,7 +49,7 @@ class sensadoSuelo(models.Model):
         return f"Sensado Suelo {self.fechaSensado}"
 
 class SensadoContaminantes(models.Model):
-    id_Circuito = models.IntegerField()
+    circuito = models.ForeignKey('Circuito', db_column='id_Circuito', on_delete=models.DO_NOTHING)
     fechaSensado = models.DateTimeField(primary_key=True)
     CO = models.DecimalField(max_digits=5, decimal_places=2)
     CO2 = models.DecimalField(max_digits=5, decimal_places=2)
@@ -52,3 +62,12 @@ class SensadoContaminantes(models.Model):
 
     def __str__(self):
         return f"Contaminantes - {self.fechaSensado}"
+
+class Circuito(models.Model):
+    id_Circuito = models.AutoField(primary_key=True)
+    id_bluetooth = models.CharField(max_length=100)
+    descripcion = models.TextField()
+
+    class Meta:
+        db_table = 'circuito'
+        managed = False

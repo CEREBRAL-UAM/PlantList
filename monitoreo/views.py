@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework import generics
 from .models import SensadoAmbiental,  sensadoSuelo, SensadoContaminantes
 from .serializers import SensadoAmbientalSerializer, SensadoSueloSerializer, SensadoContaminantesSerializer
 
@@ -12,4 +13,8 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SensadoContaminantes.objects.all().order_by('-fechaSensado')
+    serializer_class = SensadoContaminantesSerializer
+
+class SensadoContaminantesListAPIView(generics.ListAPIView):
+    queryset = SensadoContaminantes.objects.select_related('circuito').all()
     serializer_class = SensadoContaminantesSerializer
