@@ -11,6 +11,7 @@ urlpatterns = [
     path('plantas/', include('plantas.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/monitoreo/', include('monitoreo.urls')),
+    path('api/experimentos/', include('experimentos.urls')),
 
     path('usuarios/', include('usuarios.urls')),
 
