@@ -109,11 +109,11 @@ class PlantaIndividuo(models.Model):
         on_delete=models.CASCADE,
         db_column='id_Plaga'
     )
-    # id_espacios = models.ForeignKey(
-    #     'plantas.Espacio',
-    #     on_delete=models.CASCADE,
-    #     db_column='id_espacios'
-    # )
+    id_espacios = models.ForeignKey(
+        'plantas.Espacio',
+        on_delete=models.CASCADE,
+        db_column='id_espacios'
+    )
 
     class Meta:
         db_table = 'plantaindividuo'
