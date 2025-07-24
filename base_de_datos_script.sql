@@ -211,7 +211,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
--- Table `bd_ipc`.`etapadesarrollo`
+-- Table `bd_ipc`.`	sarrollo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`etapadesarrollo` (
   `id_Etapa` INT NOT NULL AUTO_INCREMENT,
@@ -222,6 +222,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`etapadesarrollo` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
+ALTER TABLE etapadesarrollo CHANGE ` Alias` `Alias` VARCHAR(45) NOT NULL;
 
 -- -----------------------------------------------------
 -- Table `bd_ipc`.`origencrianzaplanta`
