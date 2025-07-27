@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const ExperimentosApi = axios.create({
-    baseURL: "http://localhost:8000/experimentos",
+    baseURL: "http://localhost:8000/api/experimentos",
 });
 
 export const getTipoEstimulacion = () => {
