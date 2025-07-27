@@ -1,20 +1,22 @@
 from django.db import models
 
 # Create your models here.
-class ModeloGenerico(models.Model):
-    nombre = models.CharField(max_length=45, blank=True)
-    descripcion = models.CharField(max_length=550, blank=True)
+# class ModeloGenerico(models.Model):
+#     nombre = models.CharField(max_length=45, blank=True)
+#     descripcion = models.CharField(max_length=550, blank=True)
 
 class TipoEstimulacion(models.Model):
-    id_TipoEstiulacion = models.AutoField(primary_key=True)
+    id_TipoEstimulacion = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, blank=True)
     descripcion = models.CharField(max_length=45, blank=True)
     
     class Meta:
         db_table = 'tipoestimulacion'
     
-class Material(ModeloGenerico):
+class Material(models.Model):
     id_material = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=45, blank=True)
+    descripcion = models.CharField(max_length=550, blank=True)
 
     class Meta:
         db_table = 'material'
@@ -66,8 +68,10 @@ class EtapaDesarrollo(models.Model):
     class Meta:
         db_table = 'etapadesarrollo'
 
-class OrigenCrianza(ModeloGenerico):
+class OrigenCrianza(models.Model):
     id_OrigenCrianza = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=45, blank=True)
+    descripcion = models.CharField(max_length=550, blank=True)
 
     class Meta:
         db_table = 'origencrianzaplanta'
@@ -107,7 +111,7 @@ class PlantaIndividuo(models.Model):
     plagas_id_Plaga = models.ForeignKey(
         Plagas,
         on_delete=models.CASCADE,
-        db_column='id_Plaga'
+        db_column='plagas_id_Plaga'
     )
     id_espacios = models.ForeignKey(
         'plantas.Espacio',
