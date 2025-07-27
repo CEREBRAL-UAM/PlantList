@@ -30,6 +30,16 @@ class Command(BaseCommand):
             Contrasenia=make_password("1234"),
         )
 
+        usuario_admin_demo = Usuario.objects.create(
+            Nombre="Montserrat",
+            ApellidoPaterno="Adonis",
+            ApellidoMaterno="Martinez",
+            Telefono="5554234337",
+            CorreoElectronico="alguien2@algo.com",
+            Contrasenia=make_password("1234"),
+            isAdmin="True",
+        )
+
         foto_usuario = os.path.join(base_dir, "usuario.jpg")
         with open(foto_usuario, "rb") as img_file:
             usuario_demo.Foto.save("usuario.jpg", File(img_file), save=True)
@@ -41,7 +51,13 @@ class Command(BaseCommand):
             token = token
         )
 
-        self.stdout.write(self.style.SUCCESS("Usuario creado con exito ! \nToken: " +token))
+        token = str(uuid.uuid4())
+        TokenUsuario.objects.create(
+            usuario = usuario_admin_demo, 
+            token = token
+        )
+
+        self.stdout.write(self.style.SUCCESS("Usuarios (admin y participante) creados con exito !"))
 
         # Espacios
         espacios_data = [
