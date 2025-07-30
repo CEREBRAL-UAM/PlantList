@@ -11,7 +11,7 @@ export function HeaderEscritorio() {
   return (
     <header
       className="
-        hidden md:flex 
+        hidden sm:flex 
         bg-pl_green_a pt-2 pb-2 
         shadow items-center 
         justify-between relative"
@@ -31,7 +31,7 @@ export function HeaderEscritorio() {
         />
 
         {/* Botón hamburguesa izquierdo */}
-        <div className="hidden md:block relative text-pl_white_a group">
+        <div className=" relative text-pl_white_a group">
           <div
             className="
               text-pl_white_a 
@@ -96,7 +96,8 @@ export function HeaderEscritorio() {
       {/* Navegación */}
       <nav
         className="
-          hidden md:flex ml-auto 
+          pt-2.5
+          hidden sm:flex ml-auto 
           mr-10 gap-8 font-baloo 
           text-pl_white_a 
           dark:text-pl_green_b relative"
