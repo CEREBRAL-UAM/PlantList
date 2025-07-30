@@ -7,6 +7,7 @@ export function BotonAgregar({ dir }) {
     <button
       onClick={() => navigate(dir)}
       className="
+      mb-20 md:mb-0
       fixed bottom-6 right-6 bg-pl_green_a text-white 
       rounded-full p-5 shadow-lg hover:bg-pl_green_e 
       dark:text-pl_green_b z-30"
