@@ -29,6 +29,9 @@ class Suelo(models.Model):
         managed = False
         db_table = 'suelo'
 
+    def __str__(self):
+        return f"Sensado {self.FechaSensado}"
+
 class sensadoSuelo(models.Model):
     id_EnergiaPlanta = models.AutoField(primary_key=True)
     id_Circuito = models.IntegerField()
