@@ -115,10 +115,10 @@ export function HeaderEscritorio() {
             title: "MONITOREO",
             to: "/biolink_ipc/monitoreo",
             links: [
-              { to: "/biolink_ipc/monitoreo", label: "MONITOREO AMBIENTAL" },
-              { to: "/biolink_ipc/monitoreo", label: "MONITOREO DE SUELO" },
+              { to: "/biolink_ipc/monitoreoAmbiental", label: "MONITOREO AMBIENTAL" },
+              { to: "/biolink_ipc/monitoreoSuelo", label: "MONITOREO DE SUELO" },
               {
-                to: "/biolink_ipc/monitoreo",
+                to: "/biolink_ipc/monitoreoContaminantes",
                 label: "MONITOREO DE CONTAMINANTES",
               },
             ],
