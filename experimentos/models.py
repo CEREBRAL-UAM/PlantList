@@ -37,7 +37,7 @@ class Electrodos(models.Model):
         db_table = 'electrodos'
 
 class Ubicaciones(models.Model):
-    cp = models.AutoField(primary_key=True)
+    cp = models.IntegerField(primary_key=True)
     estado = models.CharField(max_length=45,blank=True)
     municipio = models.CharField(max_length=45, blank=True)
     colonia = models.CharField(max_length=45, blank=True)
