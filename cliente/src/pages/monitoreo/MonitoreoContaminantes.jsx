@@ -16,10 +16,12 @@ export function MonitoreoContaminantes() {
   }, []);
 
   return (
-    <div className="px-6 pt-6 pb-10 min-h-screen" style={{ fontFamily: "'Baloo Bhai 2', cursive" }}>
+    <div
+      className="px-6 pt-6 pb-10 min-h-screen"
+      style={{ fontFamily: "'Baloo Bhai 2', cursive" }}
+    >
       <BannerUsuario />
-      <h1 className="text-5xl font-extrabold text-center mb-8 drop-shadow-md"
-        style={{ color: "darkgreen", textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
+      <h1 className="text-xl font-bold text-center font-nunito text-pl_green_b dark:text-pl_white_a">
         MONITOREO DE CONTAMINANTES
       </h1>
 
@@ -31,11 +33,7 @@ export function MonitoreoContaminantes() {
             style={{ backgroundColor: "rgb(235, 229, 223)" }}
           >
             <div className="flex items-center space-x-3">
-              <img
-                src={DateIcon}
-                alt="Icono de fecha"
-                className="w-6 h-6"
-              />
+              <img src={DateIcon} alt="Icono de fecha" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>Fecha:</strong>{" "}
                 {new Date(datos[0].fechaSensado).toLocaleString()}
@@ -77,7 +75,7 @@ export function MonitoreoContaminantes() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-10">
             <div
               className="flex items-center justify-between rounded-full px-6 py-4 shadow"
-              style={{ backgroundColor: "rgb(177, 203, 168)" }} 
+              style={{ backgroundColor: "rgb(177, 203, 168)" }}
             >
               <span className="text-2xl">🌫️ CO</span>
               <span className="text-xl font-bold text-gray-800">
@@ -87,7 +85,7 @@ export function MonitoreoContaminantes() {
 
             <div
               className="flex items-center justify-between rounded-full px-6 py-4 shadow"
-              style={{ backgroundColor: "rgb(161, 197, 191)" }} 
+              style={{ backgroundColor: "rgb(161, 197, 191)" }}
             >
               <span className="text-2xl">🌬️ CO₂</span>
               <span className="text-xl font-bold text-gray-800">
@@ -97,7 +95,7 @@ export function MonitoreoContaminantes() {
 
             <div
               className="flex items-center justify-between rounded-full px-6 py-4 shadow"
-              style={{ backgroundColor: "rgb(189, 156, 137)" }} 
+              style={{ backgroundColor: "rgb(189, 156, 137)" }}
             >
               <span className="text-2xl">🍃 O</span>
               <span className="text-xl font-bold text-gray-800">
@@ -107,7 +105,7 @@ export function MonitoreoContaminantes() {
 
             <div
               className="flex items-center justify-between rounded-full px-6 py-4 shadow"
-              style={{ backgroundColor: "rgb(107, 135, 121)" }} 
+              style={{ backgroundColor: "rgb(107, 135, 121)" }}
             >
               <span className="text-3xl">🧪 COVs</span>
               <span className="text-xl font-bold text-gray-800">

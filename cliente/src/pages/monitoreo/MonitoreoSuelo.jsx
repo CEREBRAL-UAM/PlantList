@@ -18,12 +18,14 @@ export function MonitoreoSuelo() {
   }, []);
 
   return (
-    <div className="px-6 pt-6 pb-10 min-h-screen" style={{ fontFamily: "'Baloo Bhai 2', cursive" }}>
-              <BannerUsuario />
-              <h1 className="text-5xl font-extrabold text-center mb-8 drop-shadow-md"
-                style={{ color: "darkgreen", textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
-                MONITOREO DE SUELO
-              </h1>
+    <div
+      className="px-6 pt-6 pb-10 min-h-screen"
+      style={{ fontFamily: "'Baloo Bhai 2', cursive" }}
+    >
+      <BannerUsuario />
+      <h1 className="text-xl font-bold text-center font-nunito text-pl_green_b dark:text-pl_white_a">
+        MONITOREO DE SUELO
+      </h1>
 
       {datos.length > 0 ? (
         <>
@@ -33,11 +35,7 @@ export function MonitoreoSuelo() {
             style={{ backgroundColor: "rgb(235, 229, 223)" }}
           >
             <div className="flex items-center space-x-3">
-              <img
-                src={DateIcon}
-                alt="Icono de fecha"
-                className="w-6 h-6"
-              />
+              <img src={DateIcon} alt="Icono de fecha" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>Fecha:</strong>{" "}
                 {new Date(datos[0].fechaSensado).toLocaleString()}
@@ -45,22 +43,14 @@ export function MonitoreoSuelo() {
             </div>
 
             <div className="flex items-center space-x-3">
-              <img
-                src={IdIcon}
-                alt="Icono de ID"
-                className="w-6 h-6"
-              />
+              <img src={IdIcon} alt="Icono de ID" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>ID Circuito:</strong> {datos[0].id_Circuito}
               </p>
             </div>
 
             <div className="flex items-center space-x-3">
-              <img
-                src={BluetoothIcon}
-                alt="Bluetooth"
-                className="w-6 h-6"
-              />
+              <img src={BluetoothIcon} alt="Bluetooth" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>Bluetooth:</strong> {datos[0].id_bluetooth}
               </p>
@@ -78,11 +68,7 @@ export function MonitoreoSuelo() {
             </div>
 
             <div className="flex items-center space-x-3">
-              <img
-                src={PlantIcon}
-                alt="Icono de planta"
-                className="w-6 h-6"
-              />
+              <img src={PlantIcon} alt="Icono de planta" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>ID Planta Individuo:</strong>{" "}
                 {datos[0].id_PlantaIndividuo ?? "No asignado"}
@@ -90,13 +76,10 @@ export function MonitoreoSuelo() {
             </div>
 
             <div className="flex items-center space-x-3">
-              <img
-                src={FloorIcon}
-                alt="Icono de suelo"
-                className="w-6 h-6"
-              />
+              <img src={FloorIcon} alt="Icono de suelo" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
-                <strong>Suelo:</strong> {datos[0].nombre_suelo} — {datos[0].descripcion_suelo}
+                <strong>Suelo:</strong> {datos[0].nombre_suelo} —{" "}
+                {datos[0].descripcion_suelo}
               </p>
             </div>
           </div>
