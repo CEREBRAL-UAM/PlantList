@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.files import File
 import uuid
 import os
+from django.db import connection, transaction
 
 class Command(BaseCommand):
     help = 'Llena la base de datos con datos de prueba incluyendo fotos'
@@ -266,8 +267,107 @@ class Command(BaseCommand):
                 especie.foto.save(os.path.basename(foto_path), File(img_file), save=True)
             especies.append(especie)
 
-        self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
+            self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
 
+        with transaction.atomic():
+            first_space_id = espacios[0].pk
+            first_plant_id = ficus_lindo.pk
+
+            with connection.cursor() as cursor:
+                # Circuito
+                cursor.execute(
+                    "INSERT INTO bd_ipc.circuito (Descripcion, id_Bluetooth, id_espacios) VALUES (%s, %s, %s)",
+                    ["Circuito principal", "BT001-MAIN", first_space_id]
+                )
+                circuito_id = cursor.lastrowid
+                cursor.execute(
+                    """INSERT INTO sensadoambiental
+                    (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
+                     id_Circuito, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
+                    VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
+                    [26.5, 45.2, 300.0, 520.0, circuito_id, 50.0, 100.0, 75.0]
+                )
+                cursor.execute(
+                    """INSERT INTO sensadoambiental
+                    (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
+                     id_Circuito, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
+                    VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
+                    [25.5, 60.2, 320.5, 0.75, circuito_id, 12.5, 18.7, 7.9]
+                )
+
+                # Ubicaciones
+                cursor.execute(
+                    "INSERT INTO bd_ipc.ubicaciones (CP, Estado, Municipio, Colonia) VALUES (%s, %s, %s, %s)",
+                    [12345, 'EstadoTest', 'MunicipioTest', 'ColoniaTest']
+                )
+
+                # Suelo
+                cursor.execute(
+                    "INSERT INTO bd_ipc.suelo (CP, Nombre_Cientifico, Descripcion) VALUES (%s, %s, %s)",
+                    [12345, 'Suelo test', 'Suelo para pruebas']
+                )
+                suelo_id = cursor.lastrowid
+
+                # Etapa de desarrollo
+                cursor.execute(
+                    "INSERT INTO bd_ipc.etapadesarrollo (Nombre_Cientifico, Alias) VALUES (%s, %s)",
+                    ['Etapa Inicial', 'Inicio']
+                )
+                etapa_id = cursor.lastrowid
+
+                # Origen crianza
+                cursor.execute(
+                    "INSERT INTO bd_ipc.origencrianzaplanta (Nombre, Descripcion) VALUES (%s, %s)",
+                    ['Cultivo local', 'Criada en vivero local para prueba']
+                )
+                origen_id = cursor.lastrowid
+
+                # Plagas
+                cursor.execute(
+                    "INSERT INTO bd_ipc.plagas (Nombre_Cientifico, Alias, Descripcion, Tratamiento) VALUES (%s, %s, %s, %s)",
+                    ['Plaga testica', 'Testín', 'Plaga común de prueba', 'Agua con jabón']
+                )
+                plaga_id = cursor.lastrowid
+
+                # Planta individuo
+                cursor.execute(
+                    """INSERT INTO bd_ipc.plantaindividuo
+                    (id_Suelo, id_Planta, id_Etapa, id_OrigenCrianza, plagas_id_Plaga, id_espacios)
+                    VALUES (%s, %s, %s, %s, %s, %s)""",
+                    [suelo_id, first_plant_id, etapa_id, origen_id, plaga_id, first_space_id]
+                )
+
+                # Material
+                cursor.execute(
+                    "INSERT INTO bd_ipc.material (Nombre, Descripcion) VALUES (%s, %s)",
+                    ['Acero inoxidable', 'Material conductor para pruebas']
+                )
+                material_id = cursor.lastrowid
+
+                # Electrodos
+                cursor.execute(
+                    "INSERT INTO bd_ipc.electrodos (id_Material, Forma, Largo, Ancho, Calibre_Cable) VALUES (%s, %s, %s, %s, %s)",
+                    [material_id, 'Cilíndrica', '10cm', '0.5cm', '22AWG']
+                )
+                electrodos_id = cursor.lastrowid
+
+                # Sensado Suelo
+                cursor.execute(
+                    """INSERT INTO bd_ipc.sensadoSuelo
+                    (id_Circuito, fechaSensado, Voltaje, Amperaje, id_Electrodos, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
+                    VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s, %s)""",
+                    [circuito_id, 3.15, 0.045, electrodos_id, suelo_id, '6.7', 38.5, 1]
+                )
+
+                # Sensado contaminantes
+                cursor.execute(
+                    """INSERT INTO bd_ipc.sensadocontaminantes
+                    (id_Circuito, fechaSensado, CO, CO2, O, COVs)
+                    VALUES (%s, NOW(), %s, %s, %s, %s)""",
+                    [circuito_id, 1.25, 410.00, 20.50, 0.98]
+                )
+
+        self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
 
         # Crear experimento
         tipos_data = [
@@ -340,3 +440,4 @@ class Command(BaseCommand):
         ])
 
         self.stdout.write(self.style.SUCCESS("Datos de 'experimentos' creados correctamente."))
+
