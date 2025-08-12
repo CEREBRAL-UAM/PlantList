@@ -78,7 +78,7 @@ export function HeaderEscritorio() {
               PERSONALIZAR
             </Link>
             <Link
-              to="/biolink_ipc/home"
+              to="/biolink_ipc/login"
               onClick={cerrarSesion}
               className="
                 block px-3 py-2
@@ -115,8 +115,14 @@ export function HeaderEscritorio() {
             title: "MONITOREO",
             to: "/biolink_ipc/monitoreo",
             links: [
-              { to: "/biolink_ipc/monitoreoAmbiental", label: "MONITOREO AMBIENTAL" },
-              { to: "/biolink_ipc/monitoreoSuelo", label: "MONITOREO DE SUELO" },
+              {
+                to: "/biolink_ipc/monitoreoAmbiental",
+                label: "MONITOREO AMBIENTAL",
+              },
+              {
+                to: "/biolink_ipc/monitoreoSuelo",
+                label: "MONITOREO DE SUELO",
+              },
               {
                 to: "/biolink_ipc/monitoreoContaminantes",
                 label: "MONITOREO DE CONTAMINANTES",
