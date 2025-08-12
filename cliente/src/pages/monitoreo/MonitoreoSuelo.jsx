@@ -31,8 +31,13 @@ export function MonitoreoSuelo() {
         <>
           {/* Información general */}
           <div
-            className="max-w-md mx-auto mt-8 p-6 rounded-xl shadow-lg space-y-4 transition-colors"
-            style={{ backgroundColor: "rgb(235, 229, 223)" }}
+            className="
+                max-w-md mx-auto mt-8 
+                p-6 rounded-xl shadow-lg 
+                space-y-4 transition-colors
+                bg-pl_gray_input 
+                dark:bg-pl_gray_dark_input
+            "
           >
             <div className="flex items-center space-x-3">
               <img src={DateIcon} alt="Icono de fecha" className="w-6 h-6" />
