@@ -1,9 +1,14 @@
 import { loginUsuario } from "../../api/usuarios.api";
 import { datosUsuarioActual } from "../../api/usuarios.api";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router";
+import { PantallaCarga } from "../common/PantallaCarga";
 
 export function IniciarSesion() {
   const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [cargando, setCargando] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
     const formData = new FormData();
@@ -20,10 +25,19 @@ export function IniciarSesion() {
       localStorage.setItem("nombre", usuario.data.Nombre);
       localStorage.setItem("apellidoP", usuario.data.ApellidoPaterno);
       localStorage.setItem("foto", usuario.data.Foto);
+
+      setCargando(true);
+      setTimeout(() => {
+        navigate("/biolink_ipc/espacios");
+      }, 1500);
     } catch (error) {
       console.error("Error al acceder:", error.response?.data || error);
     }
   });
+
+  if (cargando) {
+    return <PantallaCarga />;
+  }
 
   return (
     <div className="min-h-screen w-full bg-no-repeat bg-center bg-cover bg-[url(/src/images/fondos/iniciarSesion.png)] lg:bg-[length:100%_100%] relative">

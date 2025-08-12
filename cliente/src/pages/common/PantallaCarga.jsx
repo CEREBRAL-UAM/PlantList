@@ -1,7 +1,7 @@
 import { EfectoMaquinaEscribir } from "../../components/visuales/EfectoMaquinaEscribir";
 
 export function PantallaCarga() {
-  const textToType = "Biolink...";
+  const textToType = "Biolink ";
 
   return (
     <div
