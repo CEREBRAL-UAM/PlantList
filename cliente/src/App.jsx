@@ -6,6 +6,7 @@ import { Espacios } from "./pages/espacios/Espacios";
 import { VerEspacio } from "./pages/espacios/VerEspacio";
 import { FormPlanta } from "./pages/plantas/FormPlanta";
 import { HeaderEscritorio } from "./components/layout/HeaderEscritorio";
+import { HeaderMovil } from "./components/layout/HeaderMovil";
 import { VerPlanta } from "./pages/plantas/VerPlanta";
 import { FormEspecie } from "./pages/plantas/FormEspecie";
 import { FormEspacio } from "./pages/espacios/FormEspacio";
@@ -88,6 +89,7 @@ function AppRoutes() {
           element={<MonitoreoContaminantes />}
         />
       </Routes>
+      {!shouldHideHeader && <HeaderMovil />}
     </>
   );
 }

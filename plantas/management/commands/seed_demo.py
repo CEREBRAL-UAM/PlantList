@@ -2,6 +2,10 @@ from django.core.management.base import BaseCommand
 from plantas.utils import generar_clave_acceso_unica
 from plantas.models import Espacio, Especie, Planta, EspaciosUsuarios
 from usuarios.models import Usuario, TokenUsuario
+from experimentos.models import (
+    TipoEstimulacion, Material, Electrodos, Ubicaciones, Suelo,
+    EtapaDesarrollo, OrigenCrianza, Plagas, PlantaIndividuo
+)
 from django.contrib.auth.hashers import make_password
 from django.core.files import File
 import uuid
@@ -20,6 +24,17 @@ class Command(BaseCommand):
         Espacio.objects.all().delete()
         Usuario.objects.all().delete()
         TokenUsuario.objects.all().delete()
+
+        # Experimentos
+        PlantaIndividuo.objects.all().delete()
+        Electrodos.objects.all().delete()
+        Plagas.objects.all().delete()
+        OrigenCrianza.objects.all().delete()
+        EtapaDesarrollo.objects.all().delete()
+        Suelo.objects.all().delete()
+        Ubicaciones.objects.all().delete()
+        Material.objects.all().delete()
+        TipoEstimulacion.objects.all().delete()
 
         # Usuario de prueba 
         usuario_demo = Usuario.objects.create(
@@ -212,6 +227,11 @@ class Command(BaseCommand):
         lavanda_real = Planta.objects.get(nombre_cientifico="Lavanda Real")
         aloe_vera = Planta.objects.get(nombre_cientifico="Aloe Vera")
 
+        ####
+        patio = ficus_lindo.id_espacios
+        encinal = lavanda_real.id_espacios
+        interior = aloe_vera.id_espacios
+
         # Especies
         especies_data = [
             {
@@ -348,3 +368,76 @@ class Command(BaseCommand):
                 )
 
         self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
+
+        # Crear experimento
+        tipos_data = [
+            {"nombre": "Tacto", "descripcion": "Tacto"},
+            {"nombre": "Proximidad",  "descripcion": "Proximidad"},
+        ]
+        TipoEstimulacion.objects.bulk_create(
+            [TipoEstimulacion(**d) for d in tipos_data]
+        )
+
+        mat_oro = Material.objects.create(nombre="Oro", descripcion="Oro")
+        mat_cobre = Material.objects.create(nombre="Cobre", descripcion="Conductividad excelente, maleable")
+
+        Electrodos.objects.bulk_create([
+            Electrodos(id_material=mat_oro, forma="Circilar", largo="20mm", ancho="10mm", calibre_cable="24 AWG"),
+            Electrodos(id_material=mat_cobre, forma="Circular", largo="15mm", ancho="2mm", calibre_cable="26 AWG"),
+        ])
+
+        ub1 = Ubicaciones.objects.create(cp="4000", estado="CDMX", municipio="Coyoacán", colonia="Del Carmen")
+        ub2 = Ubicaciones.objects.create(cp="52779", estado="Edomex", municipio="Naucalpan", colonia="Satélite")
+
+        suelo_arcilloso = Suelo.objects.create(cp=ub1, nombre_cientifico="Suelo arcilloso", descripcion="Alto contenido de arcilla")
+        suelo_arenoso = Suelo.objects.create(cp=ub2, nombre_cientifico="Suelo arenoso", descripcion="Drenaje rápido, nutrientes bajos")
+
+        et_semilla = EtapaDesarrollo.objects.create(nombre_cientifico="Germinación", alias="Semilla")
+        et_juvenil = EtapaDesarrollo.objects.create(nombre_cientifico="Juvenil", alias="Plántula")
+        et_adulta  = EtapaDesarrollo.objects.create(nombre_cientifico="Adulta", alias="Madura")
+
+        origen_vivero = OrigenCrianza.objects.create(nombre="Vivero", descripcion="Adquirida en vivero")
+        origen_semilla = OrigenCrianza.objects.create(nombre="Semilla propia", descripcion="Germinada localmente")
+
+        pl_cochinilla = Plagas.objects.create(
+            nombre_cientifico="Pseudococcidae spp.",
+            alias="Cochinilla algodonosa",
+            descripcion="Manchas blancas algodonosas en tallos",
+            tratamiento="Jabón potásico, aceite de neem"
+        )
+        pl_pulgon = Plagas.objects.create(
+            nombre_cientifico="Aphididae spp.",
+            alias="Pulgón",
+            descripcion="Enrosque de hojas por succión de savia",
+            tratamiento="Ajo-macero, control biológico con catarinitas"
+        )
+
+        PlantaIndividuo.objects.bulk_create([
+            PlantaIndividuo(
+                id_suelo=suelo_arcilloso,
+                id_planta=ficus_lindo,
+                id_etapa=et_juvenil,
+                id_OrigenCrianza=origen_vivero,
+                plagas_id_Plaga=pl_cochinilla,
+                id_espacios=patio
+            ),
+            PlantaIndividuo(
+                id_suelo=suelo_arenoso,
+                id_planta=lavanda_real,
+                id_etapa=et_adulta,
+                id_OrigenCrianza=origen_semilla,
+                plagas_id_Plaga=pl_pulgon,
+                id_espacios=encinal
+            ),
+            PlantaIndividuo(
+                id_suelo=suelo_arenoso,
+                id_planta=aloe_vera,
+                id_etapa=et_juvenil,
+                id_OrigenCrianza=origen_vivero,
+                plagas_id_Plaga=pl_pulgon,
+                id_espacios=interior
+            ),
+        ])
+
+        self.stdout.write(self.style.SUCCESS("Datos de 'experimentos' creados correctamente."))
+
