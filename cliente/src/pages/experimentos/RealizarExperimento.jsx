@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getPlantas } from "../../api/plantas.api";
-import { getPlantaIndividuo, getTipoEstimulacion, getElectrodos, getMaterial } from "../../api/experimentos.api";
+import { getPlantaIndividuo, getTipoEstimulacion, getElectrodos, getMaterial, getPlagas } from "../../api/experimentos.api";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function RealizarExperimento() {
@@ -11,16 +11,18 @@ export function RealizarExperimento() {
   const [electrodos, setElectrodos] = useState([]);
   const [materiales, setMateriales] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState("");
+  const [plagas, setPlagas] = useState([]);
 
   useEffect(() => {
     async function cargarDatos() {
       try {
-      const [resPlantas, resPlantaInd, resTipoEsti, resElectrodos, resMaterial] = await Promise.all([
+      const [resPlantas, resPlantaInd, resTipoEsti, resElectrodos, resMaterial, resPlagas] = await Promise.all([
         getPlantas(),
         getPlantaIndividuo(),
         getTipoEstimulacion(),
         getElectrodos(),
         getMaterial(),
+        getPlagas(),
       ]);
       console.log("Electrodos:", resElectrodos.data);
       console.log("Materiales:", resMaterial.data);
@@ -30,6 +32,7 @@ export function RealizarExperimento() {
       setTipoEsti(resTipoEsti.data);
       setElectrodos(resElectrodos.data);
       setMateriales(resMaterial.data);
+      setPlagas(resPlagas.data);
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -84,10 +87,11 @@ export function RealizarExperimento() {
               <label className="block mb-2 font-nunito text-[#264313] dark:text-[#F3EEEA]">
                 Tipo de experimento
               </label>
-              <select className="bg-[#F3EEEA] dark:bg-[#BCC8B2] text-[#85A27A] dark:text-green-900 rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none border border-[#446957]">
+              <select className="bg-[#F3EEEA] dark:bg-[#BCC8B2] text-[#85A27A] dark:text-green-900 rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none border border-[#446957]"
+              onChange={(e) => setTipoSeleccionado(e.target.value)}>
                 <option disabled selected>Seleccione tipo de experimento</option>
                 {tipoEsti.map((te) => (
-                  <option key={te.id_TipoEstimulacion} value={te.id_TipoEstimulacion}>
+                  <option key={te.id_TipoEstimulacion} value={te.nombre}>
                     {te.nombre}
                   </option>
                 ))}
@@ -97,7 +101,8 @@ export function RealizarExperimento() {
               <label className="block mb-2 font-nunito text-[#264313] dark:text-[#F3EEEA]">
                 Material de electrodos
               </label>
-              <select className="bg-[#F3EEEA] dark:bg-[#BCC8B2] text-[#85A27A] dark:text-green-900 rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none border border-[#446957]">
+              <select className="bg-[#F3EEEA] dark:bg-[#BCC8B2] text-[#85A27A] dark:text-green-900 rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none border border-[#446957]"
+              onChange={(e) => setTipoSeleccionado(e.target.value)}>
                 <option disabled selected>Seleccione material de electrodos</option>
                 {electrodos.map((e) => {
                   const material = materiales.find((m) => m.id_material === e.id_material);
@@ -119,7 +124,11 @@ export function RealizarExperimento() {
                   className="bg-[#F3EEEA] dark:bg-[#BCC8B2] text-[#85A27A] dark:text-green-900 rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none border border-[#446957]"
                 >
                 <option disabled selected>Seleccione tipo de tacto</option>
-                <option>Opción</option>
+                {plagas.map((p) => (
+                  <option key={p.id_plaga} value={p.id_plaga}>
+                    {p.alias}
+                  </option>
+                ))}
                 </select>
               </div>
               <div className="w-full max-w-md">
