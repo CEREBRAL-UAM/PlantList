@@ -12,6 +12,7 @@ class Usuario(models.Model):
     Contrasenia = models.CharField(max_length=128)
     Foto = models.ImageField(upload_to='fotos_perfil_usuarios/', blank=True, null=True)
     isAdmin = models.BooleanField(default=False)
+    Suscrito = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'usuario'
