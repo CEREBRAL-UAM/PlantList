@@ -26,7 +26,10 @@ export function Experimentos() {
           {/* Monitorear planta */}
           <Link
             to="/biolink_ipc/MonitorearPlanta"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+            className="
+            bg-white dark:bg-[#76916D] rounded-3xl 
+            p-4 md:p-6 shadow-md hover:shadow-xl
+            dark:hover:bg-[#6d8864] transition block"
           >
             <img
               src="/src/images/iconos/monitorear.png"
@@ -45,7 +48,9 @@ export function Experimentos() {
           {/* Realizar experimento */}
           <Link
             to="/biolink_ipc/RealizarExperimento"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+            className="bg-white dark:bg-[#76916D] rounded-3xl
+                       p-4 md:p-6 shadow-md hover:shadow-xl
+                       dark:hover:bg-[#6d8864] transition block"
           >
             <img
               src="/src/images/iconos/monitorear.png "
@@ -64,7 +69,9 @@ export function Experimentos() {
           {/* Gestionar experimentos */}
           <Link
             to="/biolink_ipc/GestionExperimentos"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+            className="bg-white dark:bg-[#76916D] rounded-3xl
+                       p-4 md:p-6 shadow-md hover:shadow-xl
+                       dark:hover:bg-[#6d8864] transition block"
           >
             <img
               src="/src/images/iconos/gestionar.png"

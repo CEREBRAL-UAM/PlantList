@@ -13,7 +13,7 @@ import { FormEspacio } from "./pages/espacios/FormEspacio";
 import { PantallaCarga } from "./pages/common/PantallaCarga";
 import { VerUsuario } from "./pages/usuario/VerUsuario";
 import { Experimentos } from "./pages/experimentos/Experimentos";
-import { MonitorearPlanta } from "./pages/monitoreo/MonitorearPlanta";
+import { MonitorearPlanta } from "./pages/experimentos/MonitorearPlanta";
 import { RealizarExperimento } from "./pages/experimentos/RealizarExperimento";
 import { GestionExperimentos } from "./pages/experimentos/GestionExperimentos";
 import { Home } from "./pages/common/Home";
@@ -22,6 +22,8 @@ import { Monitoreo } from "./pages/monitoreo/Monitoreo";
 import { MonitoreoAmbiental } from "./pages/monitoreo/MonitoreoAmbiental";
 import { MonitoreoSuelo } from "./pages/monitoreo/MonitoreoSuelo";
 import { MonitoreoContaminantes } from "./pages/monitoreo/MonitoreoContaminantes";
+import { CuentaRegresiva } from "./components/visuales/CuentaRegresiva";
+import { ExperimentoProceso } from "./pages/experimentos/ExperimentoProceso";
 
 function AppRoutes() {
   const location = useLocation();
@@ -29,6 +31,7 @@ function AppRoutes() {
     "/biolink_ipc/login",
     "/biolink_ipc/registro",
     "/biolink_ipc/loading",
+    "/biolink_ipc/cuentaRegresiva",
   ];
 
   const shouldHideHeader = hideHeaderOnRoutes.includes(location.pathname);
@@ -71,6 +74,8 @@ function AppRoutes() {
           path="/biolink_ipc/RealizarExperimento"
           element={<RealizarExperimento />}
         />
+        <Route path="/biolink_ipc/cuentaRegresiva" element={<CuentaRegresiva />} />
+        <Route path="/biolink_ipc/ExperimentoProceso" element={<ExperimentoProceso />} />
         <Route
           path="/biolink_ipc/GestionExperimentos"
           element={<GestionExperimentos />}
