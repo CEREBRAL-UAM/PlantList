@@ -1,12 +1,118 @@
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { logoutUsuario } from "../../api/usuarios.api";
+import { logoutUsuario, datosUsuarioActual } from "../../api/usuarios.api";
+import { useEffect, useState } from "react";
 
 export function HeaderEscritorio() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsAdmin(false);
+      localStorage.removeItem("isAdmin");
+      return;
+    }
+
+    let alive = true;
+
+    (async () => {
+      try {
+        const resp = await datosUsuarioActual();
+        // defensivo: si la API no trae isAdmin, caemos a false
+        const admin =
+          !!(resp?.data && typeof resp.data.isAdmin !== "undefined"
+            ? resp.data.isAdmin
+            : false);
+
+        if (alive) {
+          setIsAdmin(admin);
+          // 🔹 Guardamos para que ProtectedAdminRoute lo use
+          localStorage.setItem("isAdmin", String(admin));
+        }
+      } catch (err) {
+        console.error("Error obteniendo usuario actual:", err);
+        if (alive) {
+          setIsAdmin(false);
+          localStorage.removeItem("isAdmin");
+        }
+        localStorage.clear();
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   async function cerrarSesion() {
-    localStorage.clear();
-    await logoutUsuario();
+    try {
+      await logoutUsuario();
+    } catch (e) {
+      console.warn("Logout falló (continuamos limpiando):", e);
+    } finally {
+      localStorage.clear();
+      // Redirección segura sin useNavigate
+      window.location.assign("/biolink_ipc/login");
+    }
   }
+
+  const menu = [
+    {
+      title: "PLANTAS",
+      links: [
+        { to: "/biolink_ipc/espacios", label: "MIS ESPACIOS" },
+        { to: "/biolink_ipc/especies", label: "ESPECIES" },
+        { to: "/biolink_ipc/padecimientos", label: "PADECIMIENTOS" },
+      ],
+    },
+    {
+      title: "MONITOREO",
+      to: "/biolink_ipc/monitoreo",
+      links: [
+        {
+          to: "/biolink_ipc/monitoreoAmbiental",
+          label: "MONITOREO AMBIENTAL",
+        },
+        {
+          to: "/biolink_ipc/monitoreoSuelo",
+          label: "MONITOREO DE SUELO",
+        },
+        {
+          to: "/biolink_ipc/monitoreoContaminantes",
+          label: "MONITOREO DE CONTAMINANTES",
+        },
+      ],
+    },
+    // 🔹 Solo admins ven este bloque
+    ...(isAdmin
+      ? [
+          {
+            title: "EXPERIMENTOS",
+            to: "/biolink_ipc/experimentos",
+            links: [
+              {
+                to: "/biolink_ipc/MonitorearPlanta",
+                label: "MONITOREAR PLANTA",
+              },
+              {
+                to: "/biolink_ipc/RealizarExperimento",
+                label: "REALIZAR EXPERIMENTO",
+              },
+              {
+                to: "/biolink_ipc/GestionExperimentos",
+                label: "GESTIONAR EXPERIMENTOS",
+              },
+            ],
+          },
+        ]
+      : []),
+    {
+      title: "APLICACIONES",
+      to: "/biolink_ipc/aplicaciones",
+      links: [],
+    },
+  ];
 
   return (
     <header
@@ -102,57 +208,7 @@ export function HeaderEscritorio() {
           text-pl_white_a 
           dark:text-pl_green_b relative"
       >
-        {[
-          {
-            title: "PLANTAS",
-            links: [
-              { to: "/biolink_ipc/espacios", label: "MIS ESPACIOS" },
-              { to: "/biolink_ipc/especies", label: "ESPECIES" },
-              { to: "/biolink_ipc/padecimientos", label: "PADECIMIENTOS" },
-            ],
-          },
-          {
-            title: "MONITOREO",
-            to: "/biolink_ipc/monitoreo",
-            links: [
-              {
-                to: "/biolink_ipc/monitoreoAmbiental",
-                label: "MONITOREO AMBIENTAL",
-              },
-              {
-                to: "/biolink_ipc/monitoreoSuelo",
-                label: "MONITOREO DE SUELO",
-              },
-              {
-                to: "/biolink_ipc/monitoreoContaminantes",
-                label: "MONITOREO DE CONTAMINANTES",
-              },
-            ],
-          },
-          {
-            title: "EXPERIMENTOS",
-            to: "/biolink_ipc/experimentos",
-            links: [
-              {
-                to: "/biolink_ipc/MonitorearPlanta",
-                label: "MONITOREAR PLANTA",
-              },
-              {
-                to: "/biolink_ipc/RealizarExperimento",
-                label: "REALIZAR EXPERIMENTO",
-              },
-              {
-                to: "/biolink_ipc/GestionExperimentos",
-                label: "GESTIONAR EXPERIMENTOS",
-              },
-            ],
-          },
-          {
-            title: "APLICACIONES",
-            to: "/biolink_ipc/aplicaciones",
-            links: [],
-          },
-        ].map(({ title, links, to }, index) => (
+        {menu.map(({ title, links, to }, index) => (
           <div key={index} className="relative group">
             {to ? (
               <Link
