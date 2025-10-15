@@ -24,6 +24,7 @@ import { MonitoreoSuelo } from "./pages/monitoreo/MonitoreoSuelo";
 import { MonitoreoContaminantes } from "./pages/monitoreo/MonitoreoContaminantes";
 import { CuentaRegresiva } from "./components/visuales/CuentaRegresiva";
 import { ExperimentoProceso } from "./pages/experimentos/ExperimentoProceso";
+import { RutasProtegidas } from "./pages/experimentos/RutasProtegidas"; 
 
 function AppRoutes() {
   const location = useLocation();
@@ -65,21 +66,14 @@ function AppRoutes() {
           path="/biolink_ipc/VerEspacio/:id_espacios"
           element={<VerEspacio />}
         />
-        <Route path="/biolink_ipc/experimentos" element={<Experimentos />} />
-        <Route
-          path="/biolink_ipc/MonitorearPlanta"
-          element={<MonitorearPlanta />}
-        />
-        <Route
-          path="/biolink_ipc/RealizarExperimento"
-          element={<RealizarExperimento />}
-        />
-        <Route path="/biolink_ipc/cuentaRegresiva" element={<CuentaRegresiva />} />
-        <Route path="/biolink_ipc/ExperimentoProceso" element={<ExperimentoProceso />} />
-        <Route
-          path="/biolink_ipc/GestionExperimentos"
-          element={<GestionExperimentos />}
-        />
+        <Route element={<RutasProtegidas />}>
+          <Route path="/biolink_ipc/experimentos" element={<Experimentos />} />
+          <Route path="/biolink_ipc/MonitorearPlanta" element={<MonitorearPlanta />} />
+          <Route path="/biolink_ipc/RealizarExperimento" element={<RealizarExperimento />} />
+          <Route path="/biolink_ipc/GestionExperimentos" element={<GestionExperimentos />} />
+          <Route path="/biolink_ipc/ExperimentoProceso" element={<ExperimentoProceso />} />
+          <Route path="/biolink_ipc/cuentaRegresiva" element={<CuentaRegresiva />} />
+        </Route>
         <Route path="/biolink_ipc/monitoreo" element={<Monitoreo />} />
         <Route
           path="/biolink_ipc/monitoreoAmbiental"

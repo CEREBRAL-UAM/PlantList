@@ -15,4 +15,5 @@ router.register(r'plantaindividuo', PlantaIndividuoView)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('apiv1/experimentos/', ExperimentosListadoView.as_view(), name='experimentos-listado'),
 ]

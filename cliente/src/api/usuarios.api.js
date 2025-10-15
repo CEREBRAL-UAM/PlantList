@@ -14,7 +14,7 @@ export const loginUsuario = (datos) => {
 
 export const logoutUsuario = () => {
   const token = localStorage.getItem("token");
-  return UsuarioApi.post("/logout/", {
+  return UsuarioApi.post("/logout/", null, {
     headers: { Authorization: `Token ${token}` },
   });
 };
