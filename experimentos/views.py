@@ -1,44 +1,44 @@
 from .models import *
 from .serializers import *
-from .base import ModelViewSet, APIView
+from .base import RolModelViewSet, RolAPIView
 from rest_framework.response import Response
 
-class TipoEstimulacionView(ModelViewSet):
+class TipoEstimulacionView(RolModelViewSet):
     serializer_class = TipoEstimulacionSerializer
     queryset = TipoEstimulacion.objects.all()
 
-class MaterialView(ModelViewSet):
+class MaterialView(RolModelViewSet):
     serializer_class = MaterialSerializer
     queryset = Material.objects.all()
 
-class ElectrodosView(ModelViewSet):
+class ElectrodosView(RolModelViewSet):
     serializer_class = ElectrodosSerializer
     queryset = Electrodos.objects.all()
 
-class UbicacionesView(ModelViewSet):
+class UbicacionesView(RolModelViewSet):
     serializer_class = UbicacionesSerializer
     queryset = Ubicaciones.objects.all()
 
-class SueloView(ModelViewSet):
+class SueloView(RolModelViewSet):
     serializer_class = SueloSerializer
     queryset = Suelo.objects.all()
 
-class EtapaDesarrolloView(ModelViewSet):
+class EtapaDesarrolloView(RolModelViewSet):
     serializer_class = EtapaDesarrolloSerializer
     queryset = EtapaDesarrollo.objects.all()
 
-class OrigenCrianzaView(ModelViewSet):
+class OrigenCrianzaView(RolModelViewSet):
     serializer_class = OrigenCrianzaSerializer
     queryset = OrigenCrianza.objects.all()
 
-class PlagasView(ModelViewSet):
+class PlagasView(RolModelViewSet):
     serializer_class = PlagasSerializer
     queryset = Plagas.objects.all()
 
-class PlantaIndividuoView(ModelViewSet):
+class PlantaIndividuoView(RolModelViewSet):
     serializer_class = PlantaIndividuoSerializer
     queryset = PlantaIndividuo.objects.all()
 
-class ExperimentosListadoView(APIView):
+class ExperimentosListadoView(RolAPIView):
     def get(self, request):
         return Response({"Solo roles autorizados ven esto."})
