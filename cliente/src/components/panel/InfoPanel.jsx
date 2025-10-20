@@ -1,4 +1,5 @@
-  export function InfoPanel({
+export function InfoPanel({
+  espacioNombre = "",
   plantaNombre = "",
   plantaId = "",
   tipoExperimento = "",
@@ -28,6 +29,7 @@
             Planta
           </span>
         </div>
+        <Row label="Espacio" value={espacioNombre || "—"} />
         <Row label="Planta" value={plantaNombre || "—"} />
         <Row label="Id Planta" value={plantaId || "—"} />
       </div>

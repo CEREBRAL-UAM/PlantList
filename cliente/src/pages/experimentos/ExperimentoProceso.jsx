@@ -7,6 +7,7 @@ export function ExperimentoProceso() {
   const { state } = useLocation();
 
   const {
+    espacioNombre = "",
     plantaNombre = "",
     plantaId = "",
     tipoExperimento = "",
@@ -25,6 +26,7 @@ export function ExperimentoProceso() {
           {/* Panel de Información */}
           <div className="flex">
             <InfoPanel
+              espacioNombre={espacioNombre}
               plantaNombre={plantaNombre}
               plantaId={plantaId}
               tipoExperimento={tipoExperimento}

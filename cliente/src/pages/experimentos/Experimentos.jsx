@@ -19,7 +19,7 @@ export function Experimentos() {
 
       {/* Opciones */}
       <section className="text-center py-8 md:py-10 px-4 flex-grow">
-        <h2 className="text-2xl font-baloo text-[#264313] dark:text-[#F3EEEA] mb-6 md:mb-10">
+        <h2 className="text-2xl font-baloo text-pl_green_b dark:text-pl_white_a mb-6 md:mb-10">
           ¿Qué deseas hacer hoy?
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 md:gap-6">
@@ -27,8 +27,8 @@ export function Experimentos() {
           <Link
             to="/biolink_ipc/MonitorearPlanta"
             className="
-            bg-white dark:bg-[#76916D] rounded-3xl 
-            p-4 md:p-6 shadow-md hover:shadow-xl
+            bg-pl_green_c rounded-3xl 
+            p-4 md:p-6 shadow-xl hover:shadow-xl
             dark:hover:bg-[#6d8864] transition block"
           >
             <img
@@ -36,10 +36,10 @@ export function Experimentos() {
               alt="Monitorear planta"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-pl_white_a font-baloo">
               Monitorear planta
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
+            <p className="text-sm font-nunito text-pl_white_a mt-2">
               Observa la reacción eléctrica de cualquier planta, sin ingresar o
               recolectar datos.
             </p>
@@ -48,8 +48,8 @@ export function Experimentos() {
           {/* Realizar experimento */}
           <Link
             to="/biolink_ipc/RealizarExperimento"
-            className="bg-white dark:bg-[#76916D] rounded-3xl
-                       p-4 md:p-6 shadow-md hover:shadow-xl
+            className="bg-pl_green_c rounded-3xl
+                       p-4 md:p-6 shadow-xl hover:shadow-xl
                        dark:hover:bg-[#6d8864] transition block"
           >
             <img
@@ -57,10 +57,10 @@ export function Experimentos() {
               alt="Realizar experimento"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-pl_white_a font-baloo">
               Realizar experimento
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
+            <p className="text-sm font-nunito text-pl_white_a mt-2">
               Recolecta los datos del momento cuando te aproximas o tocas una
               planta.
             </p>
@@ -69,8 +69,8 @@ export function Experimentos() {
           {/* Gestionar experimentos */}
           <Link
             to="/biolink_ipc/GestionExperimentos"
-            className="bg-white dark:bg-[#76916D] rounded-3xl
-                       p-4 md:p-6 shadow-md hover:shadow-xl
+            className="bg-pl_green_c rounded-3xl
+                       p-4 md:p-6 shadow-xl hover:shadow-xl
                        dark:hover:bg-[#6d8864] transition block"
           >
             <img
@@ -78,10 +78,10 @@ export function Experimentos() {
               alt="Gestionar experimentos"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-pl_white_a font-baloo">
               Gestionar experimentos
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
+            <p className="text-sm font-nunito text-pl_white_a mt-2">
               Elimina, observa o envía los experimentos que tienes almacenados
               de manera local.
             </p>
