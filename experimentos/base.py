@@ -4,10 +4,10 @@ from usuarios.authentication import TokenAuthentication
 from rest_framework.views import APIView
 from usuarios.permisos import IsAdmin
 
-class ModelViewSet(ModelViewSet):
+class RolModelViewSet(ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
 
-class APIView(APIView):
+class RolAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
