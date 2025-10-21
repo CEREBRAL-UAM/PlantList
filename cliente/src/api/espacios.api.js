@@ -14,11 +14,11 @@ export const crearEspacio = (espacio) => {
   });
 };
 
-export const getColaboradores = (espacio, isAdmin) => {
+export const getColaboradores = (espacio, isAdminEspacio) => {
   return EspacioApi.get("/colaboradores/", {
     params: {
       id_espacios: espacio,
-      isAdmin: isAdmin ? 1 : 0,
+      isAdminEspacio: isAdminEspacio ? 1 : 0,
     },
   });
 };

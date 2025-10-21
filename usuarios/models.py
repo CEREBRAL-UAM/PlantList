@@ -11,8 +11,7 @@ class Usuario(models.Model):
     CorreoElectronico = models.CharField(max_length=100, unique=True)
     Contrasenia = models.CharField(max_length=128)
     Foto = models.ImageField(upload_to='fotos_perfil_usuarios/', blank=True, null=True)
-    isAdmin = models.BooleanField(default=False)
-    Suscrito = models.BooleanField(default=False)
+    TipoUsuario = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         db_table = 'usuario'
@@ -22,6 +21,18 @@ class Usuario(models.Model):
 
     def is_authenticated(self):
         return True  
+    
+    @property
+    def isAdmin(self):
+        return self.TipoUsuario == 'isAdmin'
+
+    @property
+    def isSuscrito(self):
+        return self.TipoUsuario == 'isSuscrito'
+
+    @property
+    def isParticipant(self):
+        return self.TipoUsuario == 'isParticipant'
 
 class TokenUsuario(models.Model):
     id_tokens = models.AutoField(primary_key=True)

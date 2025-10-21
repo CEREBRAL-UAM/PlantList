@@ -47,7 +47,7 @@ class EspacioViewSet(viewsets.ModelViewSet):
 class ColaboradoresEspacio(APIView):
     def get(self, request): 
         id_espacios = request.query_params.get('id_espacios')
-        is_admin = request.query_params.get('isAdmin')
+        is_admin = request.query_params.get('isAdminEspacio')
 
         if not id_espacios or is_admin not in ['0', '1']:
              return Response({'error': 'Parámetros id_espacios e isAdmin requeridos. Usa isAdmin=1 o isAdmin=0.'}, status=400)
@@ -59,7 +59,7 @@ class ColaboradoresEspacio(APIView):
 
 
         if is_admin == '1':
-            relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio, isAdmin=True)
+            relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio, isAdminEspacio=True)
         else: 
             relaciones = EspaciosUsuarios.objects.filter(id_espacios=espacio)
 
@@ -105,7 +105,7 @@ class CrearEspacioUsuarioView(APIView):
             EspaciosUsuarios.objects.create(
                 id_usuario=usuario,
                 id_espacios=espacio,
-                isAdmin=True
+                isAdminEspacio=True
             )
             return Response({'mensaje': 'Espacio creado exitosamente', 'id': espacio.id_espacios}, status=201)
         return Response(serializer.errors, status=400)
