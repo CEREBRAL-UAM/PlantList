@@ -53,7 +53,7 @@ class Command(BaseCommand):
             Telefono="5554234337",
             CorreoElectronico="alguien2@algo.com",
             Contrasenia=make_password("1234"),
-            isAdmin="True",
+            TipoUsuario='isAdmin'
         )
 
         foto_usuario = os.path.join(base_dir, "usuario.jpg")
@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 EspaciosUsuarios.objects.create(
                     id_usuario = usuario_demo,
                     id_espacios = espacio,
-                    isAdmin = True
+                    isAdminEspacio = True
                 )
 
         self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))

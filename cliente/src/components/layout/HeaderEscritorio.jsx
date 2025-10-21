@@ -4,45 +4,32 @@ import { logoutUsuario, datosUsuarioActual } from "../../api/usuarios.api";
 import { useEffect, useState } from "react";
 
 export function HeaderEscritorio() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [acceso, setAcceso] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      setIsAdmin(false);
-      localStorage.removeItem("isAdmin");
+      setAcceso(false);
+      localStorage.removeItem("TipoUsuario");
       return;
     }
 
     let alive = true;
-
     (async () => {
       try {
-        const resp = await datosUsuarioActual();
-        // defensivo: si la API no trae isAdmin, caemos a false
-        const admin =
-          !!(resp?.data && typeof resp.data.isAdmin !== "undefined"
-            ? resp.data.isAdmin
-            : false);
+        const { data } = await datosUsuarioActual(); // { TipoUsuario?: 'isAdmin'|'isParticipant' }
+        const tipo = data?.TipoUsuario;
+        const access = tipo === 'isAdmin' || tipo === 'isParticipant';
 
-        if (alive) {
-          setIsAdmin(admin);
-          // 🔹 Guardamos para que ProtectedAdminRoute lo use
-          localStorage.setItem("isAdmin", String(admin));
-        }
-      } catch (err) {
-        console.error("Error obteniendo usuario actual:", err);
-        if (alive) {
-          setIsAdmin(false);
-          localStorage.removeItem("isAdmin");
-        }
-        localStorage.clear();
+        localStorage.setItem("TipoUsuario", tipo || "");
+        if (alive) setAcceso(access);
+      } catch(e) {
+        if (alive) setAcceso(false);
+        localStorage.removeItem("TipoUsuario");
       }
     })();
 
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   async function cerrarSesion() {
@@ -85,7 +72,7 @@ export function HeaderEscritorio() {
       ],
     },
     // 🔹 Solo admins ven este bloque
-    ...(isAdmin
+    ...(acceso
       ? [
           {
             title: "EXPERIMENTOS",
