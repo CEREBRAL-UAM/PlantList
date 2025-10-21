@@ -436,8 +436,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`usuario` (
   `CorreoElectronico` VARCHAR(100) NOT NULL,
   `Contrasenia` VARCHAR(128) NOT NULL,
   `Foto` VARCHAR(150) NULL,
-  `isAdmin` TINYINT NOT NULL DEFAULT 0,
-  `Suscrito` TINYINT NOT NULL DEFAULT 0,
+   `TipoUsuario` ENUM('isAdmin','isSuscrito','isParticipant'),
   PRIMARY KEY (`id_Usuario`),
   UNIQUE INDEX `CorreoElectronico_UNIQUE` (`CorreoElectronico` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -854,7 +853,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`espaciosUsuarios` (
   `id_Usuario` INT NOT NULL,
   `id_espacios` INT NOT NULL,
-  `isAdmin` TINYINT NOT NULL DEFAULT 0,
+  `isAdminEspacio` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_Usuario`, `id_espacios`),
   INDEX `fk_espaciosUsuarios_espacios1_idx` (`id_espacios` ASC) VISIBLE,
   CONSTRAINT `fk_espaciosUsuarios_espacios1`
