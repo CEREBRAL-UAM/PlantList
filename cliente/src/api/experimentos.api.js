@@ -35,7 +35,7 @@ export const getEtapaDesarrollo = () => {
 };
 
 export const getOrigenCrianza = () => {
-    return ExperimentosApi.get("/origencrianza")
+    return ExperimentosApi.get("/origencrianza/")
 };
 
 export const getPlagas = () => {
@@ -44,4 +44,23 @@ export const getPlagas = () => {
 
 export const getPlantaIndividuo = () => {
     return ExperimentosApi.get("/plantaindividuo/")
+};
+
+export const searchGestionExperimentos = ({ q, limit, offset } = {}) => {
+  const params = new URLSearchParams();
+  if (q) params.append("q", q);
+  if (limit) params.append("limit", limit);
+  if (offset) params.append("offset", offset);
+  const qs = params.toString();
+  return ExperimentosApi.get(`/apiv1/gestion/${qs ? `?${qs}` : ""}`);
+};
+
+export const deleteExperimento = (tipo, id) => {
+  const map = {
+    Tacto: `/experimentotacto/${id}/`,
+    Proximidad: `/experimentoproximidad/${id}/`,
+  };
+  const url = map[tipo];
+  if (!url) throw new Error(`Tipo desconocido: ${tipo}`);
+  return ExperimentosApi.delete(url);
 };
