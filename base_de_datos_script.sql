@@ -571,6 +571,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoproximidad` (
   `id_ExperimentoProximidad` INT NOT NULL AUTO_INCREMENT,
+  `id_TipoEstimulacion` INT NOT NULL,
   `Distancia` FLOAT NOT NULL,
   `Fecha_Sensado` DATE NOT NULL,
   `Hora_inicio` DATETIME NOT NULL,
@@ -580,12 +581,15 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoproximidad` (
   `id_Circuito` INT NOT NULL,
   `id_Video` INT NOT NULL,
   `id_Usuario` INT NOT NULL,
+  `id_espacios` INT NOT NULL,
   PRIMARY KEY (`id_ExperimentoProximidad`),
   INDEX `id_Usuario` (`id_Usuario` ASC) VISIBLE,
   INDEX `id_PlantaIndividuo` (`id_PlantaIndividuo` ASC) VISIBLE,
   INDEX `id_Electrodos` (`id_Electrodos` ASC) VISIBLE,
   INDEX `id_Video` (`id_Video` ASC) VISIBLE,
   INDEX `id_Circuito` (`id_Circuito` ASC) VISIBLE,
+  INDEX `id_TipoEstimulacion` (`id_TipoEstimulacion` ASC) VISIBLE,
+  INDEX `id_espacios` (`id_espacios` ASC) VISIBLE,
   CONSTRAINT `experimentoproximidad_ibfk_1`
     FOREIGN KEY (`id_Usuario`)
     REFERENCES `bd_ipc`.`usuario` (`id_Usuario`)
@@ -605,6 +609,14 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoproximidad` (
   CONSTRAINT `experimentoproximidad_ibfk_5`
     FOREIGN KEY (`id_Circuito`)
     REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `experimentoproximidad_ibfk_6`
+    FOREIGN KEY (`id_TipoEstimulacion`)
+    REFERENCES `bd_ipc`.`tipoestimulacion` (`id_TipoEstimulacion`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `experimentoproximidad_ibfk_7`
+    FOREIGN KEY (`id_espacios`)
+    REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -653,6 +665,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentotacto` (
   `id_Circuito` INT NOT NULL,
   `id_Video` INT NOT NULL,
   `id_Usuario` INT NOT NULL,
+  `id_espacios` INT NOT NULL,
   PRIMARY KEY (`id_ExperimentoTacto`),
   INDEX `id_Usuario` (`id_Usuario` ASC) VISIBLE,
   INDEX `id_PlantaIndividuo` (`id_PlantaIndividuo` ASC) VISIBLE,
@@ -661,6 +674,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentotacto` (
   INDEX `id_Circuito` (`id_Circuito` ASC) VISIBLE,
   INDEX `id_TipoEstimulacion` (`id_TipoEstimulacion` ASC) VISIBLE,
   INDEX `id_PartePlanta` (`id_PartePlanta` ASC) VISIBLE,
+  INDEX `id_espacios` (`id_espacios` ASC) VISIBLE,
   CONSTRAINT `experimentotacto_ibfk_1`
     FOREIGN KEY (`id_Usuario`)
     REFERENCES `bd_ipc`.`usuario` (`id_Usuario`)
@@ -688,6 +702,10 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentotacto` (
   CONSTRAINT `experimentotacto_ibfk_7`
     FOREIGN KEY (`id_PartePlanta`)
     REFERENCES `bd_ipc`.`partesdeplanta` (`id_PartePlanta`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `experimentotacto_ibfk_8`
+    FOREIGN KEY (`id_espacios`)
+    REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;

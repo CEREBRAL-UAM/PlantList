@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPlantasPorEspacio } from "../../api/plantas.api";
+import { getPlantasPorEspacio, getPartePlanta } from "../../api/plantas.api";
 import { getEspaciosUsuario } from "../../api/espacios.api";
 import {
   getPlantaIndividuo,
@@ -13,28 +13,30 @@ import { BannerUsuario } from "../../components/layout/BannerUsuario";
 import { ConfirmarGrabacion } from "../../components/modal/ConfirmarGrabacion";
 
 export function RealizarExperimento() {
+  // Espacios / plantas
   const [espacios, setEspacios] = useState([]);
   const [espacioId, setEspacioId] = useState("");
-
   const [plantas, setPlantas] = useState([]);
 
-  // Copia base y otra filtrada para IDs de planta (individuos)
-  const [plantaIndAll, setPlantaIndAll] = useState([]);       // base
-  const [plantaIndFiltered, setPlantaIndFiltered] = useState([]); // derivada
+  // Individuos (base y filtrado)
+  const [plantaIndAll, setPlantaIndAll] = useState([]);
+  const [plantaIndFiltered, setPlantaIndFiltered] = useState([]);
 
+  // Catálogos
   const [tipoEsti, setTipoEsti] = useState([]);
   const [electrodos, setElectrodos] = useState([]);
   const [materiales, setMateriales] = useState([]);
   const [plagas, setPlagas] = useState([]);
+  const [partesPlanta, setPartesPlanta] = useState([]); 
 
-  // Estado del formulario
+  // Formulario
   const [plantaNombre, setPlantaNombre] = useState("");
   const [plantaId, setPlantaId] = useState("");
   const [tipoSeleccionado, setTipoSeleccionado] = useState("");
   const [materialElectrodosId, setMaterialElectrodosId] = useState("");
   const [materialElectrodosNombre, setMaterialElectrodosNombre] = useState("");
   const [tactoTipo, setTactoTipo] = useState("");
-  const [partePlanta, setPartePlanta] = useState("");
+  const [partePlanta, setPartePlanta] = useState(""); 
   const [distancia, setDistancia] = useState("");
 
   // Modal
@@ -44,42 +46,51 @@ export function RealizarExperimento() {
 
   const navigate = useNavigate();
 
-  // Limpiar campos específicos al cambiar tipo
+  // Reset de campos dependientes cuando cambia el tipo
   useEffect(() => {
     setTactoTipo("");
     setPartePlanta("");
     setDistancia("");
   }, [tipoSeleccionado]);
 
-  // Cargar catálogos base
+  // Cargar catálogos base 
   useEffect(() => {
     async function cargarDatosBase() {
       try {
-        const [{ data: espaciosUsuario }, resPlantaInd, resTipoEsti, resElectrodos, resMaterial, resPlagas] =
-          await Promise.all([
-            getEspaciosUsuario(),
-            getPlantaIndividuo(),
-            getTipoEstimulacion(),
-            getElectrodos(),
-            getMaterial(),
-            getPlagas(),
-          ]);
+        const [
+          { data: espaciosUsuario },
+          resPlantaInd,
+          resTipoEsti,
+          resElectrodos,
+          resMaterial,
+          resPlagas,
+          resPartesPlanta,
+        ] = await Promise.all([
+          getEspaciosUsuario(),
+          getPlantaIndividuo(),
+          getTipoEstimulacion(),
+          getElectrodos(),
+          getMaterial(),
+          getPlagas(),
+          getPartePlanta(), 
+        ]);
 
         setEspacios(Array.isArray(espaciosUsuario) ? espaciosUsuario : []);
-        setTipoEsti(resTipoEsti.data || []);
-        setElectrodos(resElectrodos.data || []);
-        setMateriales(resMaterial.data || []);
-        setPlagas(resPlagas.data || []);
+        setTipoEsti(resTipoEsti?.data || []);
+        setElectrodos(resElectrodos?.data || []);
+        setMateriales(resMaterial?.data || []);
+        setPlagas(resPlagas?.data || []);
+        setPartesPlanta(resPartesPlanta?.data || []); 
 
-        // Base de individuos: ya filtrada por los espacios del usuario (si viene id_espacios)
+        // Filtra individuos por espacios del usuario (si aplica)
         const idsEspaciosUsuario = new Set((espaciosUsuario || []).map((e) => e.id_espacios));
-        const individuos = Array.isArray(resPlantaInd.data) ? resPlantaInd.data : [];
+        const individuos = Array.isArray(resPlantaInd?.data) ? resPlantaInd.data : [];
         const individuosFiltradosUsuario = individuos.filter((pi) =>
           pi?.id_espacios ? idsEspaciosUsuario.has(pi.id_espacios) : true
         );
 
-        setPlantaIndAll(individuosFiltradosUsuario);      // base
-        setPlantaIndFiltered(individuosFiltradosUsuario); // por defecto sin espacio seleccionado
+        setPlantaIndAll(individuosFiltradosUsuario);
+        setPlantaIndFiltered(individuosFiltradosUsuario);
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -88,16 +99,16 @@ export function RealizarExperimento() {
     cargarDatosBase();
   }, []);
 
-  // Cuando cambia el espacio: cargar plantas y recalcular IDs usando la base (NO filtrar sobre el previo)
+  // Cuando cambia el espacio,recarga plantas y recalcula individuos desde la base
   useEffect(() => {
     async function actualizarPorEspacio() {
-      // Reset selecciones dependientes
+      // Reset selecciones de planta
       setPlantaNombre("");
       setPlantaId("");
 
       if (!espacioId) {
         setPlantas([]);
-        setPlantaIndFiltered(plantaIndAll); // sin espacio => muestra todos los que tenga el usuario
+        setPlantaIndFiltered(plantaIndAll);
         return;
       }
 
@@ -109,7 +120,6 @@ export function RealizarExperimento() {
         setPlantas([]);
       }
 
-      // Filtrado de IDs basado en la BASE
       const filtrados = plantaIndAll.filter((pi) =>
         pi?.id_espacios ? String(pi.id_espacios) === String(espacioId) : true
       );
@@ -119,7 +129,7 @@ export function RealizarExperimento() {
     actualizarPorEspacio();
   }, [espacioId, plantaIndAll]);
 
-  // Cambio en electrodos -> guarda ID y nombre del material
+  // Cambio en electrodos 
   const onChangeElectrodos = (e) => {
     const idElectro = e.target.value;
     setMaterialElectrodosId(idElectro);
@@ -133,26 +143,42 @@ export function RealizarExperimento() {
     }
   };
 
-  // Helper para mostrar nombre del espacio
+  // Helper para nombre del espacio
   const nombreEspacio = (e) =>
     (e?.nombre && String(e.nombre).trim()) ||
     (e?.nombre_espacio && String(e.nombre_espacio).trim()) ||
     `Espacio ${e.id_espacios}`;
 
-  const espSel = espacios.find(e => String(e.id_espacios) === String(espacioId));
+  const espSel = espacios.find((e) => String(e.id_espacios) === String(espacioId));
   const espacioNombre = espSel ? nombreEspacio(espSel) : "";
+
+  // Helper para nombre de la parte de planta (con fallbacks)
+  const nombreParte = (pp) =>
+    (pp?.Nombre_Cientifico && String(pp.Nombre_Cientifico).trim()) ||
+    (pp?.nombre_cientifico && String(pp.nombre_cientifico).trim()) ||
+    (pp?.Alias && String(pp.Alias).trim()) ||
+    (pp?.alias && String(pp.alias).trim()) ||
+    (pp?.Nombre && String(pp.Nombre).trim()) ||
+    `Parte #${pp?.id_PartePlanta ?? ""}`;
+
+  // Parte de planta seleccionada (a partir del id guardado en estado `partePlanta`)
+  const partePlantaObj = partesPlanta.find(
+    (pp) => String(pp.id_PartePlanta) === String(partePlanta)
+  );
+  const partePlantaNombre = partePlantaObj ? nombreParte(partePlantaObj) : "";
 
   const navState = {
     espacioNombre,
+    espacioId,
     plantaNombre,
     plantaId,
     tipoExperimento: tipoSeleccionado,
     materialElectrodosId,
     materialElectrodosNombre,
     tactoTipo,
-    partePlanta,
+    partePlanta: partePlantaNombre,  
+    partePlantaId: partePlanta,                       
     distancia,
-    espacioId,
   };
 
   return (
@@ -165,7 +191,6 @@ export function RealizarExperimento() {
         </h2>
 
         <form className="flex flex-col space-y-8 items-center w-full" onSubmit={(e) => e.preventDefault()}>
-
           {/* Contenedor planta */}
           <div className="relative w-full rounded-2xl border border-pl_green_b p-4">
             <div className="absolute -top-3 left-4 bg-pl_white_b px-2">
@@ -182,9 +207,7 @@ export function RealizarExperimento() {
                   value={espacioId}
                   onChange={(e) => setEspacioId(e.target.value)}
                 >
-                  <option value="" disabled>
-                    Seleccione el espacio
-                  </option>
+                  <option value="" disabled>Seleccione el espacio</option>
                   {espacios.map((e) => (
                     <option key={e.id_espacios} value={e.id_espacios}>
                       {nombreEspacio(e)}
@@ -193,7 +216,7 @@ export function RealizarExperimento() {
                 </select>
               </div>
 
-              {/* Planta (filtrada por espacio) */}
+              {/* Planta (por espacio) */}
               <div className="w-full max-w-md">
                 <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Planta</label>
                 <select
@@ -214,7 +237,7 @@ export function RealizarExperimento() {
                 </select>
               </div>
 
-              {/* ID de la planta */}
+              {/* ID de la planta (individuos) */}
               <div className="w-full max-w-md md:col-span-2">
                 <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">ID de la planta</label>
                 <select
@@ -246,18 +269,14 @@ export function RealizarExperimento() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-15 w-full justify-items-center mt-4">
               {/* Tipo de experimento */}
               <div className="w-full max-w-md">
-                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
-                  Tipo de experimento
-                </label>
+                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Tipo de experimento</label>
                 <select
                   className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
                              font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                   value={tipoSeleccionado}
                   onChange={(e) => setTipoSeleccionado(e.target.value)}
                 >
-                  <option value="" disabled>
-                    Seleccione tipo de experimento
-                  </option>
+                  <option value="" disabled>Seleccione tipo de experimento</option>
                   {tipoEsti.map((te) => (
                     <option key={te.id_TipoEstimulacion} value={te.nombre}>
                       {te.nombre}
@@ -268,18 +287,14 @@ export function RealizarExperimento() {
 
               {/* Material de electrodos */}
               <div className="w-full max-w-md">
-                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
-                  Material de electrodos
-                </label>
+                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Material de electrodos</label>
                 <select
                   className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
                              font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                   value={materialElectrodosId}
                   onChange={onChangeElectrodos}
                 >
-                  <option value="" disabled>
-                    Seleccione material de electrodos
-                  </option>
+                  <option value="" disabled>Seleccione material de electrodos</option>
                   {electrodos.map((e) => {
                     const material = materiales.find((m) => m.id_material === e.id_material);
                     return (
@@ -291,22 +306,18 @@ export function RealizarExperimento() {
                 </select>
               </div>
 
-              {/* Campos adicionales para "Tacto" */}
+              {/* Campos adicionales para Tacto */}
               {tipoSeleccionado === "Tacto" && (
                 <>
                   <div className="w-full max-w-md">
-                    <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
-                      Tipo de tacto
-                    </label>
+                    <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Tipo de tacto</label>
                     <select
                       className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
                                  font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                       value={tactoTipo}
                       onChange={(e) => setTactoTipo(e.target.value)}
                     >
-                      <option value="" disabled>
-                        Seleccione tipo de tacto
-                      </option>
+                      <option value="" disabled>Seleccione tipo de tacto</option>
                       {plagas.map((p) => (
                         <option key={p.id_plaga} value={p.alias}>
                           {p.alias}
@@ -316,31 +327,29 @@ export function RealizarExperimento() {
                   </div>
 
                   <div className="w-full max-w-md">
-                    <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
-                      Parte de la planta
-                    </label>
+                    <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Parte de la planta</label>
                     <select
                       className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
                                  font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                       value={partePlanta}
                       onChange={(e) => setPartePlanta(e.target.value)}
+                      disabled={!partesPlanta.length}
                     >
-                      <option value="" disabled>
-                        Seleccione parte de la planta
-                      </option>
-                      <option>Hoja</option>
-                      <option>Tallo</option>
-                      <option>Flor</option>
-                      <option>Raíz</option>
+                      <option value="" disabled>Seleccione parte de la planta</option>
+                      {partesPlanta.map((pp) => (
+                        <option key={pp.id_PartePlanta} value={pp.id_PartePlanta}>
+                          {pp.Nombre_Cientifico || pp.nombre_cientifico || pp.alias || `Parte #${pp.id_PartePlanta}`}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </>
               )}
 
-              {/* Campo adicional para "Proximidad" */}
+              {/* Campo adicional para Proximidad */}
               {tipoSeleccionado === "Proximidad" && (
                 <div className="w-full max-w-md">
-                  <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Distancia(m)</label>
+                  <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Distancia (m)</label>
                   <input
                     type="number"
                     min="0"
@@ -356,7 +365,7 @@ export function RealizarExperimento() {
             </div>
           </div>
 
-          {/* Botón */}
+          {/* Botón + modal */}
           <div className="pt-2">
             <button
               type="button"
@@ -367,7 +376,11 @@ export function RealizarExperimento() {
               Iniciar experimento
             </button>
 
-            <ConfirmarGrabacion visible={mostrarModal} onCancelar={handleCancelar} navState={navState} />
+            <ConfirmarGrabacion
+              visible={mostrarModal}
+              onCancelar={handleCancelar}
+              navState={navState}
+            />
           </div>
         </form>
       </div>
