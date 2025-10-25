@@ -191,19 +191,18 @@ export function RealizarExperimento() {
         </h2>
 
         <form className="flex flex-col space-y-8 items-center w-full" onSubmit={(e) => e.preventDefault()}>
-          {/* Contenedor planta */}
+          {/* Contenedor espacios */}
           <div className="relative w-full rounded-2xl border border-pl_green_b p-4">
             <div className="absolute -top-3 left-4 bg-pl_white_b px-2">
-              <span className="font-nunito text-pl_green_b dark:text-pl_white_a">Planta</span>
+              <span className="font-nunito text-pl_green_b dark:text-pl_white_a">Espacio</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-15 w-full justify-items-center mt-4">
-              {/* Espacios */}
-              <div className="w-full max-w-md">
-                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Espacios</label>
+              <div className="w-full max-w-md md:col-span-2">
+                <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Seleccione el espacio</label>
                 <select
                   className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
-                             font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
+                            font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                   value={espacioId}
                   onChange={(e) => setEspacioId(e.target.value)}
                 >
@@ -215,13 +214,22 @@ export function RealizarExperimento() {
                   ))}
                 </select>
               </div>
+            </div>
+          </div>
 
+          {/* Contenedor planta */}
+          <div className="relative w-full rounded-2xl border border-pl_green_b p-4">
+            <div className="absolute -top-3 left-4 bg-pl_white_b px-2">
+              <span className="font-nunito text-pl_green_b dark:text-pl_white_a">Planta</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-15 w-full justify-items-center mt-4">
               {/* Planta (por espacio) */}
               <div className="w-full max-w-md">
                 <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">Planta</label>
                 <select
                   className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
-                             font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
+                            font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                   value={plantaNombre}
                   onChange={(e) => setPlantaNombre(e.target.value)}
                   disabled={!espacioId}
@@ -238,11 +246,11 @@ export function RealizarExperimento() {
               </div>
 
               {/* ID de la planta (individuos) */}
-              <div className="w-full max-w-md md:col-span-2">
+              <div className="w-full max-w-md">
                 <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">ID de la planta</label>
                 <select
                   className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
-                             font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
+                            font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
                   value={plantaId}
                   onChange={(e) => setPlantaId(e.target.value)}
                   disabled={!espacioId}
