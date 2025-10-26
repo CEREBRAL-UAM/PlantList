@@ -3,13 +3,18 @@ import { BannerUsuario } from "../../components/layout/BannerUsuario";
 import { BuscadorGestionExp } from "../../components/layout/BuscadorGestionExp";
 import { searchGestionExperimentos, deleteExperimento } from "../../api/experimentos.api";
 import { Play, Trash2, Send } from "lucide-react";
+import { ConfirmarEliminarExp } from "../../components/modal/ConfirmarEliminarExp";
 
 export function GestionExperimentos() {
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([]);
 
-  // Buscar con debounce
+  // Modal de eliminar 
+  const [showDelete, setShowDelete] = useState(false);
+  const [rowToDelete, setRowToDelete] = useState(null);
+
+  // Buscar con debounce 
   useEffect(() => {
     let alive = true;
     const t = setTimeout(async () => {
@@ -52,26 +57,35 @@ export function GestionExperimentos() {
     }
   };
 
-  // Acciones
-  const onVer = (row) => {
-    const tipoSlug = row.tipo.toLowerCase(); // tacto | proximidad
-    window.location.assign(`/biolink_ipc/experimentos/${tipoSlug}/${row.id_experimento}`);
+  // Acciones 
+  // const onVer = (row) => {
+    
+  // };
+
+  // const onEnviar = async (row) => {
+   
+  // };
+
+  // Abrir modal
+  const openDeleteModal = (row) => {
+    setRowToDelete(row);
+    setShowDelete(true);
   };
 
-  const onEnviar = async (row) => {
-    alert(`Enviar experimento ${row.id_experimento} (${row.tipo})`);
-  };
-
-  const onDelete = async (row) => {
-    if (!confirm(`¿Eliminar el experimento ${row.id_experimento} (${row.tipo})?`)) return;
+  const handleEliminar = async () => {
+    if (!rowToDelete) return;
     try {
-      await deleteExperimento(row.tipo, row.id_experimento);
+      await deleteExperimento(rowToDelete.tipo, rowToDelete.id_experimento);
       setRows((prev) =>
-        prev.filter((r) => !(r.id_experimento === row.id_experimento && r.tipo === row.tipo))
+        prev.filter(
+          (r) => !(r.id_experimento === rowToDelete.id_experimento && r.tipo === rowToDelete.tipo)
+        )
       );
+      setShowDelete(false);
+      setRowToDelete(null);
     } catch (e) {
       console.error(e);
-      alert("No se pudo eliminar. Revisa permisos o dependencias.");
+      alert("No se pudo eliminar.");
     }
   };
 
@@ -84,10 +98,10 @@ export function GestionExperimentos() {
           Gestión de Experimentos
         </h2>
 
-        {/* 🔍 Searchbox */}
+        {/* Searchbox */}
         <BuscadorGestionExp value={q} onChange={setQ} />
 
-        {/* 🧾 Tabla */}
+        {/* Tabla */}
         <div className="overflow-x-auto rounded-3xl shadow mt-10">
           <table className="min-w-full bg-white dark:bg-[#1b1f1b]">
             <thead>
@@ -102,13 +116,7 @@ export function GestionExperimentos() {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={7} className="px-5 py-6 text-center font-nunito">
-                    Buscando…
-                  </td>
-                </tr>
-              ) : rows.length === 0 ? (
+              {rows.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-6 text-center font-nunito">
                     Sin resultados
@@ -128,7 +136,7 @@ export function GestionExperimentos() {
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => onVer(row)}
+                        // onClick={() => onVer(row)}
                         className="p-2 rounded-full hover:bg-black/5"
                       >
                         <Play />
@@ -136,7 +144,7 @@ export function GestionExperimentos() {
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => onDelete(row)}
+                        onClick={() => openDeleteModal(row)}  // solo abre el modal
                         className="p-2 rounded-full hover:bg-black/5"
                       >
                         <Trash2 />
@@ -144,7 +152,7 @@ export function GestionExperimentos() {
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => onEnviar(row)}
+                        // onClick={() => onEnviar(row)}
                         className="p-2 rounded-full hover:bg-black/5"
                       >
                         <Send />
@@ -157,6 +165,16 @@ export function GestionExperimentos() {
           </table>
         </div>
       </div>
+
+      {/* Modal de confirmación */}
+      <ConfirmarEliminarExp
+        visible={showDelete}
+        onCancelar={() => {
+          setShowDelete(false);
+          setRowToDelete(null);
+        }}
+        onEliminar={handleEliminar}
+      />
     </div>
   );
 }
