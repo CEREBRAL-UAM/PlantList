@@ -1,14 +1,7 @@
+// ConfirmarEliminarExp.jsx
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
-export function ConfirmarGrabacion({ visible, onCancelar, navState }) {
-  const navigate = useNavigate();
-
-  const handleComenzar = () => {
-    // Encadena el state hacia la ruta de cuenta regresiva
-    navigate("/biolink_ipc/cuentaRegresiva", { state: navState });
-  };
-
+export function ConfirmarEliminarExp({ visible, onCancelar, onEliminar }) {
   if (!visible) return null;
 
   return (
@@ -32,12 +25,8 @@ export function ConfirmarGrabacion({ visible, onCancelar, navState }) {
             onClick={(e) => e.stopPropagation()} 
           >
             <h2 className="text-xl font-nunito mb-4 text-pl_white_a">
-              ¿Desea comenzar la grabación?
+              ¿Estás seguro de eliminar el experimento?
             </h2>
-            <p className="font-baloo text-pl_white_a mb-6">
-              Se comenzarán a recolectar los datos del experimento, así como se
-              comenzará a grabar la pantalla y el video de la cámara.
-            </p>
             <div className="flex justify-around">
               <button
                 className="hover:text-pl_gray_dark_input text-pl_white_a font-nunito px-4 py-2"
@@ -47,9 +36,9 @@ export function ConfirmarGrabacion({ visible, onCancelar, navState }) {
               </button>
               <button
                 className="hover:text-pl_green_b text-pl_white_a font-nunito px-4 py-2"
-                onClick={handleComenzar}
+                onClick={onEliminar}
               >
-                Comenzar
+                Eliminar
               </button>
             </div>
           </motion.div>

@@ -100,7 +100,7 @@ class EspaciosUsuarios(models.Model):
         db_column='id_espacios'
     )
 
-    isAdmin = models.BooleanField(default=False)
+    isAdminEspacio = models.BooleanField(default=False)
     class Meta:
         db_table = 'espaciosusuarios'
         managed = False

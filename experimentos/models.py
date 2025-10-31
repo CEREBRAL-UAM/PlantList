@@ -1,10 +1,5 @@
 from django.db import models
 
-# Create your models here.
-# class ModeloGenerico(models.Model):
-#     nombre = models.CharField(max_length=45, blank=True)
-#     descripcion = models.CharField(max_length=550, blank=True)
-
 class TipoEstimulacion(models.Model):
     id_TipoEstimulacion = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, blank=True)
@@ -89,7 +84,7 @@ class Plagas(models.Model):
 class PlantaIndividuo(models.Model):
     id_PlantaIndividuo = models.AutoField(primary_key=True)
     id_suelo = models.ForeignKey(
-        Suelo,
+        'Suelo',
         on_delete=models.CASCADE,
         db_column='id_Suelo'
     )
@@ -99,17 +94,17 @@ class PlantaIndividuo(models.Model):
         db_column='id_Planta'
     )
     id_etapa = models.ForeignKey(
-        EtapaDesarrollo,
+        'EtapaDesarrollo',
         on_delete=models.CASCADE,
         db_column='id_Etapa'
     )
     id_OrigenCrianza = models.ForeignKey(
-        OrigenCrianza,
+        'OrigenCrianza',
         on_delete=models.CASCADE,
         db_column='id_OrigenCrianza'
     )
     plagas_id_Plaga = models.ForeignKey(
-        Plagas,
+        'Plagas',
         on_delete=models.CASCADE,
         db_column='plagas_id_Plaga'
     )
@@ -122,3 +117,104 @@ class PlantaIndividuo(models.Model):
     class Meta:
         db_table = 'plantaindividuo'
 
+class Video(models.Model):
+    id_Video = models.AutoField(primary_key=True)
+    Direccion = models.CharField(max_length=150, blank=True)
+    Nombre = models.CharField(max_length=45, blank=True)
+
+    class Meta:
+        db_table = 'video'
+
+class ExperimentoTacto(models.Model):
+    id_ExperimentoTacto = models.AutoField(primary_key=True)
+    id_TipoEstimulacion = models.ForeignKey(
+        'TipoEstimulacion',
+        on_delete=models.CASCADE,
+        db_column='id_TipoEstimulacion'
+    )
+    id_PartePlanta = models.ForeignKey(
+        'plantas.PartePlanta',
+        on_delete=models.CASCADE,
+        db_column='id_PartePlanta'
+    )
+    Fecha_Sensado = models.DateField()
+    Hora_inicio = models.DateTimeField()
+    Hora_fin = models.DateTimeField()
+    id_PlantaIndividuo = models.ForeignKey(
+        'PlantaIndividuo',
+        on_delete=models.CASCADE,
+        db_column='id_PlantaIndividuo'
+    )
+    id_Electrodos = models.ForeignKey(
+        'Electrodos',
+        on_delete=models.CASCADE,
+        db_column='id_electrodos'
+    )
+    id_Circuito = models.ForeignKey(
+        'monitoreo.Circuito',
+        on_delete=models.CASCADE,
+        db_column='id_Circuito'
+    )
+    id_Video = models.ForeignKey(
+        'Video',
+        on_delete=models.CASCADE,
+        db_column='id_Video'
+    )
+    id_Usuario = models.ForeignKey(
+        'usuarios.Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_Usuario'
+    )
+    id_espacios = models.ForeignKey(
+        'plantas.Espacio',
+        on_delete=models.CASCADE,
+        db_column='id_espacios'
+    )
+
+    class Meta:
+        db_table = 'experimentotacto'
+
+class ExperimentoProximidad(models.Model):
+    id_ExperimentoProximidad = models.AutoField(primary_key=True)
+    id_TipoEstimulacion = models.ForeignKey(
+        'TipoEstimulacion',
+        on_delete=models.CASCADE,
+        db_column='id_TipoEstimulacion'
+    )
+    Distancia = models.FloatField()
+    Fecha_Sensado = models.DateField()
+    Hora_inicio = models.DateTimeField()
+    Hora_fin = models.DateTimeField()
+    id_PlantaIndividuo = models.ForeignKey(
+        'PlantaIndividuo',
+        on_delete=models.CASCADE,
+        db_column='id_PlantaIndividuo'
+    )
+    id_Electrodos = models.ForeignKey(
+        'Electrodos',
+        on_delete=models.CASCADE,
+        db_column='id_electrodos'
+    )
+    id_Circuito = models.ForeignKey(
+        'monitoreo.Circuito',
+        on_delete=models.CASCADE,
+        db_column='id_Circuito'
+    )
+    id_Video = models.ForeignKey(
+        'Video',
+        on_delete=models.CASCADE,
+        db_column='id_Video'
+    )
+    id_Usuario = models.ForeignKey(
+        'usuarios.Usuario',
+        on_delete=models.CASCADE,
+        db_column='id_Usuario'
+    )
+    id_espacios = models.ForeignKey(
+        'plantas.Espacio',
+        on_delete=models.CASCADE,
+        db_column='id_espacios'
+    )
+
+    class Meta:
+        db_table = 'experimentoproximidad'

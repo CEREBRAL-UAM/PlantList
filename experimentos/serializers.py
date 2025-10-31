@@ -8,7 +8,10 @@ from .models import (
     EtapaDesarrollo, 
     OrigenCrianza, 
     Plagas, 
-    PlantaIndividuo)
+    PlantaIndividuo,
+    Video,
+    ExperimentoTacto,
+    ExperimentoProximidad)
 
 class TipoEstimulacionSerializer(serializers.ModelSerializer): #
     class Meta:
@@ -54,4 +57,19 @@ class PlagasSerializer(serializers.ModelSerializer): #
 class PlantaIndividuoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlantaIndividuo
+        fields = '__all__'
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = '__all__'
+    
+class ExperimentoTactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExperimentoTacto
+        fields = '__all__'
+
+class ExperimentoProximidadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExperimentoProximidad
         fields = '__all__'
