@@ -808,6 +808,27 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
+-- Table `bd_ipc`.`experimentoDifPot`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoDifPot` (
+  `id_DifPot` INT NOT NULL AUTO_INCREMENT,
+  `id_Experimento` INT NOT NULL,
+  `Fecha_sensado` DATETIME NOT NULL,
+  `Hora` TIME NOT NULL,
+  `DifPot` FLOAT NOT NULL,
+  PRIMARY KEY (`id_DifPot`),
+  INDEX `fk_experimentoDifPot_experimento_idx` (`id_Experimento` ASC),
+  CONSTRAINT `fk_experimentoDifPot_experimento`
+    FOREIGN KEY (`id_Experimento`)
+    REFERENCES `bd_ipc`.`experimento` (`id_Experimento`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+
+
+-- -----------------------------------------------------
 -- Table `bd_ipc`.`plantapartes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`plantapartes` (
