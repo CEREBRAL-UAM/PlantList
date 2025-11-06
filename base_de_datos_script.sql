@@ -139,14 +139,14 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`plantasespacios` (
   `id_Planta` INT NOT NULL,
   `id_espacio` INT NOT NULL,
   `cantidad` INT DEFAULT 1,
-  UNIQUE INDEX `id_Planta` (`id_Planta` ASC, `id_espacio` ASC),
-  INDEX `id_espacio` (`id_espacio` ASC),
-  CONSTRAINT `plantasespacios_ibfk_1`
+  PRIMARY KEY (`id_Planta`, `id_espacio`),
+  INDEX `fk_plantasespacios_espacios_idx` (`id_espacio` ASC),
+  CONSTRAINT `fk_plantasespacios_plantas`
     FOREIGN KEY (`id_Planta`)
     REFERENCES `bd_ipc`.`plantas` (`id_Planta`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `plantasespacios_ibfk_2`
+  CONSTRAINT `fk_plantasespacios_espacios`
     FOREIGN KEY (`id_espacio`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON DELETE CASCADE
@@ -250,18 +250,12 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`plantas` (
   `Foto` VARCHAR(150) NULL,
   `Familia` VARCHAR(45) NULL,
   `Descripcion` VARCHAR(300) NULL,
-  `id_espacios` INT NOT NULL,
   PRIMARY KEY (`id_Planta`),
-  UNIQUE INDEX `Nombre_Cientifico` (`Nombre_Cientifico` ASC), 
-  INDEX `fk_plantas_espacios1_idx` (`id_espacios` ASC), 
-  CONSTRAINT `fk_plantas_espacios1`
-    FOREIGN KEY (`id_espacios`)
-    REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+  UNIQUE INDEX `Nombre_Cientifico` (`Nombre_Cientifico` ASC)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
+
 
 
 -- -----------------------------------------------------
@@ -654,7 +648,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   `Fecha_Sensado` DATE NOT NULL,
   `Hora_inicio` DATETIME NOT NULL,
   `Hora_fin` DATETIME NOT NULL,
-  `duracion` INT NULL,  
+  `Distancia` FLOAT NULL,  
   `id_PlantaIndividuo` INT NOT NULL,
   `id_Electrodos` INT NOT NULL,
   `id_Circuito` INT NOT NULL,
@@ -690,11 +684,11 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
     FOREIGN KEY (`id_Circuito`)
     REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
     ON UPDATE CASCADE,
-  CONSTRAINT `experimento_ibfk_7`
+  CONSTRAINT `experimento_ibfk_6`
     FOREIGN KEY (`id_PartePlanta`)
     REFERENCES `bd_ipc`.`partesdeplanta` (`id_PartePlanta`)
     ON UPDATE CASCADE,
-  CONSTRAINT `experimento_ibfk_8`
+  CONSTRAINT `experimento_ibfk_7`
     FOREIGN KEY (`id_espacios`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON UPDATE CASCADE
@@ -707,13 +701,11 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `bd_ipc`.`experimentoDifPot`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoDifPot` (
-  `id_DifPot` INT NOT NULL AUTO_INCREMENT,
   `id_Experimento` INT NOT NULL,
   `Fecha_sensado` DATETIME NOT NULL,
   `Hora` TIME NOT NULL,
   `DifPot` FLOAT NOT NULL,
-  PRIMARY KEY (`id_DifPot`),
-  INDEX `fk_experimentoDifPot_experimento_idx` (`id_Experimento` ASC),
+  PRIMARY KEY (`id_Experimento`, `Fecha_sensado`, `Hora`),
   CONSTRAINT `fk_experimentoDifPot_experimento`
     FOREIGN KEY (`id_Experimento`)
     REFERENCES `bd_ipc`.`experimento` (`id_Experimento`)
