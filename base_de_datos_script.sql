@@ -685,16 +685,21 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
     REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_6`
+    FOREIGN KEY (`id_TipoEstimulacion`)
+    REFERENCES `bd_ipc`.`tipoestimulacion` (`id_TipoEstimulacion`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `experimento_ibfk_7`
     FOREIGN KEY (`id_PartePlanta`)
     REFERENCES `bd_ipc`.`partesdeplanta` (`id_PartePlanta`)
     ON UPDATE CASCADE,
-  CONSTRAINT `experimento_ibfk_7`
+  CONSTRAINT `experimento_ibfk_8`
     FOREIGN KEY (`id_espacios`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON UPDATE CASCADE
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
+
 
 
 -- -----------------------------------------------------
