@@ -644,7 +644,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   `id_Experimento` INT NOT NULL AUTO_INCREMENT,
   `id_TipoEstimulacion` INT NOT NULL,
-  `id_PartePlanta` INT NOT NULL,
+  `id_PartePlanta` INT NULL,
   `Fecha_Sensado` DATE NOT NULL,
   `Hora_inicio` DATETIME NOT NULL,
   `Hora_fin` DATETIME NOT NULL,
