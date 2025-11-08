@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from plantas.utils import generar_clave_acceso_unica
-from plantas.models import Espacio, Especie, Planta, EspaciosUsuarios
+from plantas.models import Espacio, Especie, Planta, EspaciosUsuarios, PlantasEspacios
 from usuarios.models import Usuario, TokenUsuario
 from experimentos.models import (
     TipoEstimulacion, Material, Electrodos, Ubicaciones, Suelo,
@@ -18,7 +18,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         base_dir = 'media/demo/'  
 
-        # Borro la info de prueabs anteriores 
+        # --- BORRADO EN ORDEN SEGURO (primero intermedias que dependan de Planta/Espacio) ---
+        # Intermedia plantas_espacios
+        try:
+            PlantasEspacios.objects.all().delete()
+        except Exception:
+            # Si aún no existe la tabla/modelo, continuamos sin fallar
+            pass
+
+        # Borro la info de pruebas anteriores
         Planta.objects.all().delete()
         Especie.objects.all().delete()
         Espacio.objects.all().delete()
@@ -36,7 +44,7 @@ class Command(BaseCommand):
         Material.objects.all().delete()
         TipoEstimulacion.objects.all().delete()
 
-        # Usuario de prueba 
+        # --- USUARIOS ---
         usuario_demo = Usuario.objects.create(
             Nombre="Carlos",
             ApellidoPaterno="Pérez",
@@ -60,26 +68,16 @@ class Command(BaseCommand):
         with open(foto_usuario, "rb") as img_file:
             usuario_demo.Foto.save("usuario.jpg", File(img_file), save=True)
 
-
-        token = str(uuid.uuid4())
-        TokenUsuario.objects.create(
-            usuario = usuario_demo,
-            token = token
-        )
-
-        token = str(uuid.uuid4())
-        TokenUsuario.objects.create(
-            usuario = usuario_admin_demo, 
-            token = token
-        )
+        TokenUsuario.objects.create(usuario=usuario_demo, token=str(uuid.uuid4()))
+        TokenUsuario.objects.create(usuario=usuario_admin_demo, token=str(uuid.uuid4()))
 
         self.stdout.write(self.style.SUCCESS("Usuarios (admin y participante) creados con exito !"))
 
-        # Espacios
+        # --- ESPACIOS ---
         espacios_data = [
-            {"nombre_espacio": "Patio", "foto": os.path.join(base_dir, "espacio1.jpg"),"clave_acceso":generar_clave_acceso_unica()},
-            {"nombre_espacio": "Encinal", "foto": os.path.join(base_dir, "espacio2.jpg"),"clave_acceso":generar_clave_acceso_unica()},
-            {"nombre_espacio": "Interior", "foto": os.path.join(base_dir, "espacio3.jpg"),"clave_acceso":generar_clave_acceso_unica()},
+            {"nombre_espacio": "Patio",    "foto": os.path.join(base_dir, "espacio1.jpg"), "clave_acceso": generar_clave_acceso_unica()},
+            {"nombre_espacio": "Encinal",  "foto": os.path.join(base_dir, "espacio2.jpg"), "clave_acceso": generar_clave_acceso_unica()},
+            {"nombre_espacio": "Interior", "foto": os.path.join(base_dir, "espacio3.jpg"), "clave_acceso": generar_clave_acceso_unica()},
         ]
         espacios = []
         for data in espacios_data:
@@ -88,16 +86,16 @@ class Command(BaseCommand):
                 espacio.foto.save(os.path.basename(data["foto"]), File(img_file), save=True)
                 espacios.append(espacio)
                 EspaciosUsuarios.objects.create(
-                    id_usuario = usuario_demo,
-                    id_espacios = espacio,
-                    isAdminEspacio = True
+                    id_usuario=usuario_demo,
+                    id_espacios=espacio,
+                    isAdminEspacio=True
                 )
 
         self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))
 
-
-        
-        #Plantas
+        # --- PLANTAS + RELACIONES EN TABLA INTERMEDIA ---
+        # Nota: mantenemos 'id_espacios' dentro de cada dict SOLO para saber a qué espacio va,
+        # pero ya no lo pasamos al constructor de Planta.
         plantas_data = [
             # Espacio 0 - 4 plantas con foto
             {
@@ -210,29 +208,46 @@ class Command(BaseCommand):
             },
         ]
 
-
+        relaciones = []  # acumulará PlantasEspacios
         for data in plantas_data:
-            foto_path = data.pop("foto")  # Remueve la clave 'foto' del diccionario
+            foto_path = data.pop("foto")              # quitamos foto del dict
+            espacio_rel = data.pop("id_espacios")     # quitamos el espacio (para la intermedia)
 
-            planta = Planta(**data)  # Crea la planta sin foto
-            planta.save()  # Guarda primero para tener una instancia en BD
-
-            if foto_path:  # Si hay foto, la abrimos y asignamos
+            # Construimos Planta sin el campo id_espacios
+            planta = Planta(**data)
+            # Guardamos y cargamos foto si aplica
+            if foto_path:
                 with open(foto_path, "rb") as img_file:
                     planta.foto.save(os.path.basename(foto_path), File(img_file), save=True)
+            else:
+                planta.save()
 
-        self.stdout.write(self.style.SUCCESS("Plantas creadas con y sin imágenes correctamente."))
-        
+            # Creamos la relación en tabla intermedia (cantidad por defecto = 1)
+            relaciones.append(
+                PlantasEspacios(
+                    id_Planta=planta,
+                    id_espacio=espacio_rel,
+                    cantidad=1
+                )
+            )
+
+        # Insertamos de golpe las relaciones
+        if relaciones:
+            PlantasEspacios.objects.bulk_create(relaciones)
+
+        self.stdout.write(self.style.SUCCESS("Plantas creadas y relaciones en plantas_espacios insertadas correctamente."))
+
+        # Obtén referencias por nombre (no dependen ya de id_espacios en Planta)
         ficus_lindo = Planta.objects.get(nombre_cientifico="Ficus Lindo")
         lavanda_real = Planta.objects.get(nombre_cientifico="Lavanda Real")
-        aloe_vera = Planta.objects.get(nombre_cientifico="Aloe Vera")
+        aloe_vera   = Planta.objects.get(nombre_cientifico="Aloe Vera")
 
-        ####
-        patio = ficus_lindo.id_espacios
-        encinal = lavanda_real.id_espacios
-        interior = aloe_vera.id_espacios
+        # Espacios directos (ya no a través de planta.id_espacios)
+        patio    = espacios[0]
+        encinal  = espacios[1]
+        interior = espacios[2]
 
-        # Especies
+        # --- ESPECIES ---
         especies_data = [
             {
                 "nombre_cientifico": "Ficus lyrata",
@@ -240,7 +255,7 @@ class Command(BaseCommand):
                 "descripcion": "Árbol ornamental tropical",
                 "origen": "África Occidental",
                 "foto": os.path.join(base_dir, "especie1.jpg"),
-                "id_Planta" : ficus_lindo
+                "id_Planta": ficus_lindo
             },
             {
                 "nombre_cientifico": "Lavandula angustifolia",
@@ -248,7 +263,7 @@ class Command(BaseCommand):
                 "descripcion": "Planta aromática",
                 "origen": "Mediterráneo",
                 "foto": os.path.join(base_dir, "especie2.jpg"),
-                "id_Planta" : lavanda_real
+                "id_Planta": lavanda_real
             },
             {
                 "nombre_cientifico": "Aloe vera",
@@ -256,7 +271,7 @@ class Command(BaseCommand):
                 "descripcion": "Planta medicinal",
                 "origen": "Arabia",
                 "foto": os.path.join(base_dir, "especie3.jpg"),
-                "id_Planta" : aloe_vera
+                "id_Planta": aloe_vera
             },
         ]
         especies = []
@@ -267,8 +282,9 @@ class Command(BaseCommand):
                 especie.foto.save(os.path.basename(foto_path), File(img_file), save=True)
             especies.append(especie)
 
-            self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
+        self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
 
+        # --- DATOS DE MONITOREO (RAW SQL) ---
         with transaction.atomic():
             first_space_id = espacios[0].pk
             first_plant_id = ficus_lindo.pk
@@ -276,10 +292,17 @@ class Command(BaseCommand):
             with connection.cursor() as cursor:
                 # Circuito
                 cursor.execute(
-                    "INSERT INTO bd_ipc.circuito (Descripcion, id_Bluetooth, id_espacios) VALUES (%s, %s, %s)",
-                    ["Circuito principal", "BT001-MAIN", first_space_id]
+                    "INSERT INTO bd_ipc.tipoCircuitos (descripcion) VALuES (%s)",
+                    ["Ambiental"]
+                )
+                tipocircuito_id = cursor.lastrowid
+
+                cursor.execute(
+                    "INSERT INTO bd_ipc.circuito (bluetooth, tipo_circuito, id_espacios) VALUES (%s, %s, %s)",
+                    ["BT001-MAIN", tipocircuito_id ,first_space_id]
                 )
                 circuito_id = cursor.lastrowid
+
                 cursor.execute(
                     """INSERT INTO sensadoambiental
                     (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
@@ -369,14 +392,15 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
 
-        # Crear experimento
+        # --- EXPERIMENTOS (ORM) ---
         tipos_data = [
-            {"nombre": "Tacto", "descripcion": "Tacto"},
-            {"nombre": "Proximidad",  "descripcion": "Proximidad"},
+            {"nombre": "Proximidad",  "descripcion": "La persona se acerca a la planta"},
+            {"nombre": "Tocar con un dedo", "descripcion": "Tocar con un dedo"},
+            {"nombre": "Tocar con dos dedos", "descripcion": "Tocar con dos dedos"},
+            {"nombre": "Apachurrar", "descripcion": "Presionar con dos dedos"},
+            {"nombre": "Plagas", "descripcion": "Estimulación con plaga"},
         ]
-        TipoEstimulacion.objects.bulk_create(
-            [TipoEstimulacion(**d) for d in tipos_data]
-        )
+        TipoEstimulacion.objects.bulk_create([TipoEstimulacion(**d) for d in tipos_data])
 
         mat_oro = Material.objects.create(nombre="Oro", descripcion="Oro")
         mat_cobre = Material.objects.create(nombre="Cobre", descripcion="Conductividad excelente, maleable")
@@ -386,17 +410,17 @@ class Command(BaseCommand):
             Electrodos(id_material=mat_cobre, forma="Circular", largo="15mm", ancho="2mm", calibre_cable="26 AWG"),
         ])
 
-        ub1 = Ubicaciones.objects.create(cp="4000", estado="CDMX", municipio="Coyoacán", colonia="Del Carmen")
+        ub1 = Ubicaciones.objects.create(cp="4000",  estado="CDMX",   municipio="Coyoacán", colonia="Del Carmen")
         ub2 = Ubicaciones.objects.create(cp="52779", estado="Edomex", municipio="Naucalpan", colonia="Satélite")
 
         suelo_arcilloso = Suelo.objects.create(cp=ub1, nombre_cientifico="Suelo arcilloso", descripcion="Alto contenido de arcilla")
-        suelo_arenoso = Suelo.objects.create(cp=ub2, nombre_cientifico="Suelo arenoso", descripcion="Drenaje rápido, nutrientes bajos")
+        suelo_arenoso  = Suelo.objects.create(cp=ub2, nombre_cientifico="Suelo arenoso",  descripcion="Drenaje rápido, nutrientes bajos")
 
         et_semilla = EtapaDesarrollo.objects.create(nombre_cientifico="Germinación", alias="Semilla")
-        et_juvenil = EtapaDesarrollo.objects.create(nombre_cientifico="Juvenil", alias="Plántula")
-        et_adulta  = EtapaDesarrollo.objects.create(nombre_cientifico="Adulta", alias="Madura")
+        et_juvenil = EtapaDesarrollo.objects.create(nombre_cientifico="Juvenil",     alias="Plántula")
+        et_adulta  = EtapaDesarrollo.objects.create(nombre_cientifico="Adulta",      alias="Madura")
 
-        origen_vivero = OrigenCrianza.objects.create(nombre="Vivero", descripcion="Adquirida en vivero")
+        origen_vivero = OrigenCrianza.objects.create(nombre="Vivero",        descripcion="Adquirida en vivero")
         origen_semilla = OrigenCrianza.objects.create(nombre="Semilla propia", descripcion="Germinada localmente")
 
         pl_cochinilla = Plagas.objects.create(
@@ -439,5 +463,4 @@ class Command(BaseCommand):
             ),
         ])
 
-        self.stdout.write(self.style.SUCCESS("Datos de 'experimentos' creados correctamente."))
-
+        self.stdout.write(self.style.SUCCESS("Datos de experimentos creados correctamente."))

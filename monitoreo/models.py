@@ -68,9 +68,14 @@ class SensadoContaminantes(models.Model):
 
 class Circuito(models.Model):
     id_Circuito = models.AutoField(primary_key=True)
-    id_bluetooth = models.CharField(max_length=100)
-    descripcion = models.TextField()
+    bluetooth = models.CharField(max_length=100)
+    tipo_circuito = models.IntegerField()
+    id_espacios = models.IntegerField()
 
     class Meta:
         db_table = 'circuito'
         managed = False
+
+class TipoCircuito(models.Model):
+    id_circuito = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=50)

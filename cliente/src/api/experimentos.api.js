@@ -55,12 +55,6 @@ export const searchGestionExperimentos = ({ q, limit, offset } = {}) => {
   return ExperimentosApi.get(`/apiv1/gestion/${qs ? `?${qs}` : ""}`);
 };
 
-export const deleteExperimento = (tipo, id) => {
-  const map = {
-    Tacto: `/experimentotacto/${id}/`,
-    Proximidad: `/experimentoproximidad/${id}/`,
-  };
-  const url = map[tipo];
-  if (!url) throw new Error(`Tipo desconocido: ${tipo}`);
-  return ExperimentosApi.delete(url);
+export const deleteExperimento = (id) => {
+  return ExperimentosApi.delete(`/experimento/${id}/`);
 };

@@ -6,7 +6,8 @@ export function BuscadorGestionExp({ onChange, value }) {
   const frases = [
     "20/10/2025",
     "Patio",
-    "Tacto/Proximidad",
+    "Plagas/Tocar",
+    "00:00"
   ];
 
   const [pIndex, setPIndex] = useState(0);

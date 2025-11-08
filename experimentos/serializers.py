@@ -10,8 +10,8 @@ from .models import (
     Plagas, 
     PlantaIndividuo,
     Video,
-    ExperimentoTacto,
-    ExperimentoProximidad)
+    Experimento,
+)
 
 class TipoEstimulacionSerializer(serializers.ModelSerializer): #
     class Meta:
@@ -64,12 +64,7 @@ class VideoSerializer(serializers.ModelSerializer):
         model = Video
         fields = '__all__'
     
-class ExperimentoTactoSerializer(serializers.ModelSerializer):
+class ExperimentoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ExperimentoTacto
-        fields = '__all__'
-
-class ExperimentoProximidadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ExperimentoProximidad
+        model = Experimento
         fields = '__all__'

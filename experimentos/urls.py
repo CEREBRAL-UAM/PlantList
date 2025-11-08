@@ -12,8 +12,7 @@ router.register(r'etapadesarrollo', EtapaDesarrolloView)
 router.register(r'origencrianza', OrigenCrianzaView)
 router.register(r'plagas', PlagasView)
 router.register(r'plantaindividuo', PlantaIndividuoView)
-router.register(r'experimentotacto', ExperimentoTactoView, basename='experimentotacto')
-router.register(r'experimentoproximidad', ExperimentoProximidadView, basename='experimentoproximidad')
+router.register(r'experimento', ExperimentoView, basename='experimento')
 
 urlpatterns = [
     path('', include(router.urls)),

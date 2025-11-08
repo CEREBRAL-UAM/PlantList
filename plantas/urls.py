@@ -8,6 +8,7 @@ router.register(r'especies', views.EspecieView, 'especies')
 router.register(r'parte_planta', views.PartePlantaView, 'parte_planta')
 router.register(r'planta_partes', views.PlantaPartesViewSet, 'planta_partes')
 router.register(r'espacios', views.EspacioViewSet, 'espacios')
+router.register(r'plantas_espacios', views.PlantasEspaciosViewSet, 'plantas_espacios')
 
 urlpatterns = [
     path("apiv1/espacios/mis_espacios/", views.EspaciosPorUsuarioView.as_view(), name='mis_espacios'),

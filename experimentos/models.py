@@ -80,6 +80,11 @@ class Plagas(models.Model):
 
     class Meta:
         db_table = 'plagas'
+
+class Tacto(models.Model):
+    id_tipotacto = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=15, blank=True)
+    descripcion = models.CharField(max_length=50, blank=True)
     
 class PlantaIndividuo(models.Model):
     id_PlantaIndividuo = models.AutoField(primary_key=True)
@@ -125,8 +130,8 @@ class Video(models.Model):
     class Meta:
         db_table = 'video'
 
-class ExperimentoTacto(models.Model):
-    id_ExperimentoTacto = models.AutoField(primary_key=True)
+class Experimento(models.Model):
+    id_Experimento = models.AutoField(primary_key=True)
     id_TipoEstimulacion = models.ForeignKey(
         'TipoEstimulacion',
         on_delete=models.CASCADE,
@@ -140,51 +145,7 @@ class ExperimentoTacto(models.Model):
     Fecha_Sensado = models.DateField()
     Hora_inicio = models.DateTimeField()
     Hora_fin = models.DateTimeField()
-    id_PlantaIndividuo = models.ForeignKey(
-        'PlantaIndividuo',
-        on_delete=models.CASCADE,
-        db_column='id_PlantaIndividuo'
-    )
-    id_Electrodos = models.ForeignKey(
-        'Electrodos',
-        on_delete=models.CASCADE,
-        db_column='id_electrodos'
-    )
-    id_Circuito = models.ForeignKey(
-        'monitoreo.Circuito',
-        on_delete=models.CASCADE,
-        db_column='id_Circuito'
-    )
-    id_Video = models.ForeignKey(
-        'Video',
-        on_delete=models.CASCADE,
-        db_column='id_Video'
-    )
-    id_Usuario = models.ForeignKey(
-        'usuarios.Usuario',
-        on_delete=models.CASCADE,
-        db_column='id_Usuario'
-    )
-    id_espacios = models.ForeignKey(
-        'plantas.Espacio',
-        on_delete=models.CASCADE,
-        db_column='id_espacios'
-    )
-
-    class Meta:
-        db_table = 'experimentotacto'
-
-class ExperimentoProximidad(models.Model):
-    id_ExperimentoProximidad = models.AutoField(primary_key=True)
-    id_TipoEstimulacion = models.ForeignKey(
-        'TipoEstimulacion',
-        on_delete=models.CASCADE,
-        db_column='id_TipoEstimulacion'
-    )
     Distancia = models.FloatField()
-    Fecha_Sensado = models.DateField()
-    Hora_inicio = models.DateTimeField()
-    Hora_fin = models.DateTimeField()
     id_PlantaIndividuo = models.ForeignKey(
         'PlantaIndividuo',
         on_delete=models.CASCADE,
@@ -217,4 +178,4 @@ class ExperimentoProximidad(models.Model):
     )
 
     class Meta:
-        db_table = 'experimentoproximidad'
+        db_table = 'experimento'
