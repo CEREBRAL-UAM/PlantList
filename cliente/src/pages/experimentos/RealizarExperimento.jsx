@@ -8,6 +8,7 @@
     getElectrodos,
     getMaterial,
     getPlagas,
+    getCircuitosPorEspacio
   } from "../../api/experimentos.api";
   import { BannerUsuario } from "../../components/layout/BannerUsuario";
   import { ConfirmarGrabacion } from "../../components/modal/ConfirmarGrabacion";
@@ -21,6 +22,11 @@
     // Individuos (base y filtrado)
     const [plantaIndAll, setPlantaIndAll] = useState([]);
     const [plantaIndFiltered, setPlantaIndFiltered] = useState([]);
+
+    // Circuitos
+    const [circuitos, setCircuitos] = useState([]);
+    const [circuitoId, setCircuitoId] = useState("");
+    const [circuitoLabel, setCircuitoLabel] = useState("");
 
     // Catálogos
     const [tipoEsti, setTipoEsti] = useState([]);
@@ -105,6 +111,9 @@
         // Reset selecciones de planta
         setPlantaNombre("");
         setPlantaId("");
+        setCircuitos([]);
+        setCircuitoId("");
+        setCircuitoLabel("");
 
         if (!espacioId) {
           setPlantas([]);
@@ -118,6 +127,14 @@
         } catch (error) {
           console.error("Error al cargar plantas del espacio:", error);
           setPlantas([]);
+        }
+
+        try {
+          const { data } = await getCircuitosPorEspacio(espacioId);
+          setCircuitos(Array.isArray(data?.results) ? data.results : []);
+        } catch (error) {
+          console.error("Error al cargar circuitos del espacio:", error);
+          setCircuitos([]);
         }
 
         const filtrados = plantaIndAll.filter((pi) =>
@@ -176,6 +193,8 @@
       plantaNombre,
       plantaId,
       tipoEstimulacion: tipoSeleccionado,
+      circuitoId,
+      circuitoLabel,
       materialElectrodosNombre,
 
       // Solo si es Proximidad
@@ -332,6 +351,38 @@
                             </option>
                           );
                         })}
+                      </select>
+                    </div>
+
+                    {/* Circuito */}
+                    <div className="w-full max-w-md">
+                      <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
+                        Circuito
+                      </label>
+                      <select
+                        className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
+                                  font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
+                        value={circuitoId}
+                        onChange={(e) => {
+                          const id = e.target.value;
+                          setCircuitoId(id);
+
+                          // Busca el circuito seleccionado
+                          const c = circuitos.find((x) => String(x.id_circuito) === String(id));
+                          // Crea el label legible igual que en el select
+                          const label = c ? `${c.tipo || "Circuito"}${c.bluetooth ? " · " + c.bluetooth : ""}` : "";
+                          setCircuitoLabel(label);
+                        }}
+                        disabled={!espacioId || !circuitos.length}
+                      >
+                        <option value="" disabled>
+                          {espacioId ? "Seleccione el circuito" : "Seleccione un espacio primero"}
+                        </option>
+                        {circuitos.map((c) => (
+                          <option key={c.id_circuito} value={c.id_circuito}>
+                            {`${c.tipo || "Circuito"}${c.bluetooth ? " · " + c.bluetooth : ""}`}
+                          </option>
+                        ))}
                       </select>
                     </div>
 

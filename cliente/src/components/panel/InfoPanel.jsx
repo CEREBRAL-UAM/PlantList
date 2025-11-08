@@ -3,6 +3,8 @@ export function InfoPanel({
   plantaNombre = "",
   plantaId = "",
   tipoEstimulacion = "",
+  circuitoId = "",
+  circuitoLabel = "",
   materialElectrodosNombre = "",
   partePlanta = "",
   distancia = "",
@@ -47,8 +49,6 @@ export function InfoPanel({
             <Row label="Parte de la planta" value={partePlanta || "—"} />
         )}
 
-        
-          
         {tipoEstimulacion === "Proximidad" && (
           <Row label="Distancia (m)" value={distancia !== "" ? String(distancia) : "—"} />
         )}
@@ -58,6 +58,7 @@ export function InfoPanel({
         )}
       
         <Row label="Material de electrodos" value={materialElectrodosNombre || "—"} />
+        <Row label="Circuito" value={circuitoLabel || "—"} />
       </div>
     </div>
   );
