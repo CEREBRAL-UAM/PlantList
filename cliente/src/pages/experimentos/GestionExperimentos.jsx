@@ -57,14 +57,24 @@ export function GestionExperimentos() {
     }
   };
 
-  // Acciones 
-  // const onVer = (row) => {
-    
-  // };
-
-  // const onEnviar = async (row) => {
-   
-  // };
+  const fmtHora = (s) => {
+    if (!s) return "—";
+    // Soporta 'HH:MM:SS' o ISO DateTime
+    if (/^\d{2}:\d{2}(:\d{2})?$/.test(s)) {
+      return s.slice(0, 8); // HH:MM:SS
+    }
+    try {
+      const dt = new Date(s);
+      return new Intl.DateTimeFormat("es-MX", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(dt);
+    } catch {
+      return s;
+    }
+  };
 
   // Abrir modal
   const openDeleteModal = (row) => {
@@ -75,12 +85,8 @@ export function GestionExperimentos() {
   const handleEliminar = async () => {
     if (!rowToDelete) return;
     try {
-      await deleteExperimento(rowToDelete.tipo, rowToDelete.id_experimento);
-      setRows((prev) =>
-        prev.filter(
-          (r) => !(r.id_experimento === rowToDelete.id_experimento && r.tipo === rowToDelete.tipo)
-        )
-      );
+      await deleteExperimento(rowToDelete.id_experimento);
+      setRows((prev) => prev.filter((r) => r.id_experimento !== rowToDelete.id_experimento));
       setShowDelete(false);
       setRowToDelete(null);
     } catch (e) {
@@ -107,8 +113,10 @@ export function GestionExperimentos() {
             <thead>
               <tr className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80 font-nunito">
                 <th className="text-left px-5 py-3 rounded-l-3xl">ID</th>
-                <th className="text-left px-5 py-3">Tipo</th>
+                <th className="text-left px-5 py-3">Estimulación</th>
                 <th className="text-left px-5 py-3">Fecha</th>
+                <th className="text-left px-5 py-3">Inicio</th> 
+                <th className="text-left px-5 py-3">Fin</th>   
                 <th className="text-left px-5 py-3">Espacio</th>
                 <th className="text-center px-5 py-3">Ver</th>
                 <th className="text-center px-5 py-3">Eliminar</th>
@@ -118,34 +126,38 @@ export function GestionExperimentos() {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-6 text-center font-nunito">
-                    Sin resultados
+                  <td colSpan={9} className="px-5 py-6 text-center font-nunito">
+                    {loading ? "Buscando..." : "Sin resultados"}
                   </td>
                 </tr>
               ) : (
                 rows.map((row) => (
                   <tr
-                    key={`${row.tipo}-${row.id_experimento}`}
+                    key={row.id_experimento} // ✅ no dependemos de 'tipo'
                     className="border-b-2 border-pl_green_input last:border-0 font-nunito"
                   >
                     <td className="px-5 py-4">{String(row.id_experimento).padStart(4, "0")}</td>
-                    <td className="px-5 py-4">{row.tipo}</td>
+                    <td className="px-5 py-4">{row.tipo_estimulacion || "—"}</td>
                     <td className="px-5 py-4">{fmtFecha(row.fecha)}</td>
+                    <td className="px-5 py-4">{fmtHora(row.inicio)}</td>
+                    <td className="px-5 py-4">{fmtHora(row.fin)}</td>   
                     <td className="px-5 py-4">
-                      {row.espacio_nombre || `Espacio ${row.espacio_id}`}
+                      {row.espacio_nombre || (row.espacio_id ? `Espacio ${row.espacio_id}` : "—")}
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
                         // onClick={() => onVer(row)}
                         className="p-2 rounded-full hover:bg-black/5"
+                        title="Ver"
                       >
                         <Play />
                       </button>
                     </td>
                     <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => openDeleteModal(row)}  // solo abre el modal
+                        onClick={() => openDeleteModal(row)}
                         className="p-2 rounded-full hover:bg-black/5"
+                        title="Eliminar"
                       >
                         <Trash2 />
                       </button>
@@ -154,6 +166,7 @@ export function GestionExperimentos() {
                       <button
                         // onClick={() => onEnviar(row)}
                         className="p-2 rounded-full hover:bg-black/5"
+                        title="Enviar"
                       >
                         <Send />
                       </button>

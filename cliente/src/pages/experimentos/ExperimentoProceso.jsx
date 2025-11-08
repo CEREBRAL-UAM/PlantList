@@ -10,11 +10,11 @@ export function ExperimentoProceso() {
     espacioNombre = "",
     plantaNombre = "",
     plantaId = "",
-    tipoExperimento = "",
+    tipoEstimulacion = "",
     materialElectrodosNombre = "",
-    tactoTipo = "",
     partePlanta = "",
     distancia = "",
+    plagaTipo = "",
   } = state || {};
 
   return (
@@ -29,11 +29,11 @@ export function ExperimentoProceso() {
               espacioNombre={espacioNombre}
               plantaNombre={plantaNombre}
               plantaId={plantaId}
-              tipoExperimento={tipoExperimento}
+              tipoEstimulacion={tipoEstimulacion}
               materialElectrodosNombre={materialElectrodosNombre}
-              tactoTipo={tactoTipo}
               partePlanta={partePlanta}
               distancia={distancia}
+              plagaTipo={plagaTipo}
             />
           </div>
 

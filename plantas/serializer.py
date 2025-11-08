@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios
+from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios, PlantasEspacios
 
 class PlantaSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -25,6 +25,11 @@ class EspaciosUsuariosSerializer(serializers.ModelSerializer):
     class Meta: 
         model = EspaciosUsuarios
         fields = ['id_usuario', 'id_espacios']
+    
+class PlantasEspaciosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantasEspacios
+        fields = '__all__'
 
 class EspacioSerializer(serializers.ModelSerializer):
     def get_foto(self, obj):

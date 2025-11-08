@@ -2,11 +2,11 @@ export function InfoPanel({
   espacioNombre = "",
   plantaNombre = "",
   plantaId = "",
-  tipoExperimento = "",
+  tipoEstimulacion = "",
   materialElectrodosNombre = "",
-  tactoTipo = "",
   partePlanta = "",
   distancia = "",
+  plagaTipo = "",
 }) {
   
   return (
@@ -41,17 +41,22 @@ export function InfoPanel({
             Experimento
           </span>
         </div>
-        <Row label="Tipo de experimento" value={tipoExperimento || "—"} />
-        {tipoExperimento === "Tacto" && (
-          <>
-            <Row label="Tipo de tacto" value={tactoTipo || "—"} />
+        <Row label="Tipo de estimulación" value={tipoEstimulacion || "—"} />
+
+        {tipoEstimulacion !== "Plagas" && tipoEstimulacion !== "Proximidad" && (
             <Row label="Parte de la planta" value={partePlanta || "—"} />
-          </>
         )}
 
-        {tipoExperimento === "Proximidad" && (
+        
+          
+        {tipoEstimulacion === "Proximidad" && (
           <Row label="Distancia (m)" value={distancia !== "" ? String(distancia) : "—"} />
         )}
+
+        {tipoEstimulacion === "Plagas" && (
+          <Row label="Tipo de plaga" value={plagaTipo || "—"} />
+        )}
+      
         <Row label="Material de electrodos" value={materialElectrodosNombre || "—"} />
       </div>
     </div>

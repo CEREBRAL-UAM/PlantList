@@ -29,17 +29,31 @@ class Especie(ModeloGenerico):
 
 class Planta(ModeloGenerico):
     id_planta = models.AutoField(primary_key=True)
-    id_espacios = models.ForeignKey( 
-        'Espacio',  
-        on_delete=models.CASCADE,
-        db_column='id_espacios'
-    )
     foto = models.ImageField(upload_to='plantas/', blank=True, null=True)
     familia = models.CharField(max_length=45, blank=True)
 
     class Meta:
         db_table = 'plantas' 
-        unique_together = (('id_planta', 'id_espacios'),)
+
+
+class PlantasEspacios(models.Model):
+    id_Planta = models.ForeignKey(
+        'Planta',
+        on_delete=models.CASCADE,
+        db_column='id_Planta',
+        related_name='rel_espacios' 
+    )
+    id_espacio = models.ForeignKey(
+        'Espacio',
+        on_delete=models.CASCADE,
+        db_column='id_espacio',
+        related_name='rel_plantas'   
+    )
+    cantidad = models.IntegerField()
+
+    class Meta:
+        db_table = 'plantasespacios'
+        unique_together = (('id_Planta', 'id_espacio'),) 
 
 
 class PartePlanta(ModeloGenerico):

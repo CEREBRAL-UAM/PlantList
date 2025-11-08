@@ -2,8 +2,9 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializer import (PlantaSerializer, EspecieSerializer, PartePlantaSerializer,
-                          PlantaPartesSerializer, EspacioSerializer, CrearEspacioSerializer, EspaciosUsuariosSerializer)
-from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios
+                          PlantaPartesSerializer, EspacioSerializer, CrearEspacioSerializer, EspaciosUsuariosSerializer,
+                          PlantasEspaciosSerializer)
+from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios, PlantasEspacios
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -21,7 +22,7 @@ class PlantaView(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         id_espacios = self.request.query_params.get("id_espacios")
         if id_espacios:
-            queryset = queryset.filter(id_espacios=id_espacios)
+            queryset = queryset.filter(rel_espacios__id_espacio_id=id_espacios).distinct()
         return queryset
 
 class EspecieView(viewsets.ModelViewSet):
@@ -43,6 +44,10 @@ class EspaciosUsuariosViewSet(viewsets.ModelViewSet):
 class EspacioViewSet(viewsets.ModelViewSet):
     queryset = Espacio.objects.all()
     serializer_class = EspacioSerializer
+
+class PlantasEspaciosViewSet(viewsets.ModelViewSet):
+    queryset = PlantasEspacios.objects.all()
+    serializer_class = PlantasEspaciosSerializer
 
 class ColaboradoresEspacio(APIView):
     def get(self, request): 
