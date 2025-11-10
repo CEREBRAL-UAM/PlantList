@@ -68,11 +68,6 @@ def _parse_date_or_none(q: str):
     return None
 
 class GestionExperimentosView(RolAPIView):
-    """
-    GET /api/experimentos/apiv1/gestion/?q=&limit=&offset=
-    Restringe SIEMPRE a los experimentos del usuario autenticado.
-    Busca por: fecha (exacta si q es fecha), espacio (LIKE), tipo (LIKE), hora inicio/fin.
-    """
     def get(self, request):
         q = request.query_params.get("q", "") or ""
         limit = request.query_params.get("limit")
@@ -99,8 +94,8 @@ class GestionExperimentosView(RolAPIView):
             # fecha con formato
             ors.append("DATE_FORMAT(ex.Fecha_Sensado, '%%d/%%m/%%Y') LIKE %s"); params.append(like)
             # horas inicio/fin
-            ors.append("TIME_FORMAT(ex.Hora_inicio, '%%H:%%i:%%s') LIKE %s"); params.append(like)
-            ors.append("TIME_FORMAT(ex.Hora_fin, '%%H:%%i:%%s') LIKE %s"); params.append(like)
+            ors.append("TIME_FORMAT(ex.Hora_inicio, '%%H:%%i') LIKE %s"); params.append(like)
+            ors.append("TIME_FORMAT(ex.Hora_fin, '%%H:%%i') LIKE %s"); params.append(like)
 
         if date_q is not None:
             ors.append("ex.Fecha_Sensado = %s"); params.append(date_q)
@@ -142,13 +137,32 @@ class GestionExperimentosView(RolAPIView):
         sql += " LIMIT %s OFFSET %s"
         params.extend([lim, off])
 
-        # (Opcional) log para depurar en consola del server:
-        # print("SQL:", sql)
-        # print("PARAMS:", params)
-
         with connection.cursor() as cur:
             cur.execute(sql, params)
             cols = [c[0] for c in cur.description]
             rows = [dict(zip(cols, r)) for r in cur.fetchall()]
 
         return Response({"results": rows, "limit": lim, "offset": off, "count": len(rows)})
+
+class CircuitosPorEspacioView(RolAPIView):
+    def get(self, request):
+        espacio_id = request.query_params.get("espacioId")
+        if not espacio_id:
+            return Response({"results": []})
+
+        sql = """
+            SELECT 
+                c.id_Circuito   AS id_circuito,
+                c.bluetooth      AS bluetooth,
+                tc.descripcion   AS tipo
+            FROM bd_ipc.circuito c
+            LEFT JOIN bd_ipc.tipoCircuitos tc
+              ON tc.id_circuito = c.tipo_circuito
+            WHERE c.id_espacios = %s
+            ORDER BY c.id_Circuito ASC
+        """
+        with connection.cursor() as cur:
+            cur.execute(sql, [espacio_id])
+            cols = [c[0] for c in cur.description]
+            rows = [dict(zip(cols, r)) for r in cur.fetchall()]
+        return Response({"results": rows})

@@ -11,6 +11,8 @@ export function ExperimentoProceso() {
     plantaNombre = "",
     plantaId = "",
     tipoEstimulacion = "",
+    circuitoId = "",
+    circuitoLabel = "",
     materialElectrodosNombre = "",
     partePlanta = "",
     distancia = "",
@@ -30,6 +32,8 @@ export function ExperimentoProceso() {
               plantaNombre={plantaNombre}
               plantaId={plantaId}
               tipoEstimulacion={tipoEstimulacion}
+              circuitoId={circuitoId}
+              circuitoLabel={circuitoLabel} 
               materialElectrodosNombre={materialElectrodosNombre}
               partePlanta={partePlanta}
               distancia={distancia}

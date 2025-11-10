@@ -58,3 +58,9 @@ export const searchGestionExperimentos = ({ q, limit, offset } = {}) => {
 export const deleteExperimento = (id) => {
   return ExperimentosApi.delete(`/experimento/${id}/`);
 };
+
+export const getCircuitosPorEspacio = (espacioId) => {
+  const params = new URLSearchParams();
+  if (espacioId) params.append("espacioId", espacioId);
+  return ExperimentosApi.get(`/apiv1/circuitos_por_espacio/?${params.toString()}`);
+};

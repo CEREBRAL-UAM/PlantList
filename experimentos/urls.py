@@ -18,4 +18,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('apiv1/experimentos/', ExperimentosListadoView.as_view(), name='experimentos-listado'),
     path('apiv1/gestion/', GestionExperimentosView.as_view(), name='gestion-experimentos'),
+    path('apiv1/circuitos_por_espacio/', CircuitosPorEspacioView.as_view(), name='circuitos-por-espacio'),
 ]
