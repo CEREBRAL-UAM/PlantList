@@ -159,12 +159,12 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 -- Table `bd_ipc`.`circuito`
 -- -----------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuito` (
-  `id_Circuito` INT NOT NULL AUTO_INCREMENT,
-  `bluetooth` VARCHAR(45) NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,   
   `tipo_circuito` INT NOT NULL,
   `id_espacios` INT NOT NULL,
-  PRIMARY KEY (`id_Circuito`),
+  PRIMARY KEY (`bluetooth`),
   INDEX `fk_circuito_espacios1_idx` (`id_espacios` ASC),
   INDEX `fk_circuito_tipoCircuitos_idx` (`tipo_circuito` ASC),
   CONSTRAINT `fk_circuito_espacios1`
@@ -174,21 +174,19 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuito` (
     ON UPDATE CASCADE,
   CONSTRAINT `fk_circuito_tipoCircuitos`
     FOREIGN KEY (`tipo_circuito`)
-    REFERENCES `bd_ipc`.`tipoCircuitos` (`id_circuito`)
+    REFERENCES `bd_ipc`.`tipoCircuitos` (`bluetooth`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE
-)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
 -- Table `bd_ipc`.`tipoCircuitos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`tipoCircuitos` (
-  `id_circuito` INT NOT NULL AUTO_INCREMENT,
+  `bluetooth` VARCHAR(45) NOT NULL,
   `descripcion` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`id_circuito`)
+  PRIMARY KEY (`bluetooth`)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
@@ -199,17 +197,17 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuitoaplicacion` (
   `id_Aplicacion` INT NOT NULL,
-  `id_Circuito` INT NOT NULL,
-  UNIQUE INDEX `id_Aplicacion` (`id_Aplicacion` ASC, `id_Circuito` ASC), 
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  `bluetooth` VARCHAR(45) NOT NULL,  
+  UNIQUE INDEX `id_Aplicacion` (`id_Aplicacion` ASC, `bluetooth` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   CONSTRAINT `circuitoaplicacion_ibfk_1`
     FOREIGN KEY (`id_Aplicacion`)
     REFERENCES `bd_ipc`.`aplicaciones` (`id_Aplicacion`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `circuitoaplicacion_ibfk_2`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 )
@@ -221,13 +219,13 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `bd_ipc`.`circuitocomponentes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuitocomponentes` (
-  `id_Circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,  -- reemplazo de id_Circuito
   `id_Componente` INT NOT NULL,
-  UNIQUE INDEX `id_Circuito` (`id_Circuito` ASC, `id_Componente` ASC), 
+  UNIQUE INDEX `id_Circuito` (`bluetooth` ASC, `id_Componente` ASC), 
   INDEX `id_Componente` (`id_Componente` ASC), 
   CONSTRAINT `circuitocomponentes_ibfk_1`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `circuitocomponentes_ibfk_2`
@@ -487,14 +485,14 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`ctrlcomponentes` (
   `id_Identificador` INT NOT NULL AUTO_INCREMENT,
   `id_Proyecto` INT NOT NULL,
   `id_Componente` INT NOT NULL,
-  `id_Circuito` INT NULL DEFAULT NULL,
+  `bluetooth` VARCHAR(45) NULL DEFAULT NULL,  
   `id_Usuario` INT NOT NULL,
   `fechaIniResponsable` DATETIME NOT NULL,
   `fechaFinResponsable` DATETIME NOT NULL,
   PRIMARY KEY (`id_Identificador`),
   INDEX `id_Proyecto` (`id_Proyecto` ASC), 
   INDEX `id_Componente` (`id_Componente` ASC), 
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   INDEX `id_Usuario` (`id_Usuario` ASC), 
   CONSTRAINT `ctrlcomponentes_ibfk_1`
     FOREIGN KEY (`id_Proyecto`)
@@ -506,8 +504,8 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`ctrlcomponentes` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `ctrlcomponentes_ibfk_3`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE,
   CONSTRAINT `ctrlcomponentes_ibfk_4`
     FOREIGN KEY (`id_Usuario`)
@@ -558,7 +556,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoSuelo` (
   `id_EnergiaPlanta` INT NOT NULL AUTO_INCREMENT,
-  `id_Circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,  
   `fechaSensado` DATETIME NOT NULL,
   `Voltaje` FLOAT NOT NULL,
   `Amperaje` FLOAT NOT NULL,
@@ -568,13 +566,13 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoSuelo` (
   `HumedadSuelo` FLOAT NULL,
   `id_PlantaIndividuo` INT NULL, 
   PRIMARY KEY (`id_EnergiaPlanta`),
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   INDEX `id_Electrodos` (`id_Electrodos` ASC), 
   INDEX `id_Suelo` (`id_Suelo` ASC), 
   INDEX `fk_sensadoSuelo_plantaindividuo1_idx` (`id_PlantaIndividuo` ASC), 
   CONSTRAINT `energiaplanta_ibfk_1`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE,
   CONSTRAINT `energiaplanta_ibfk_2`
     FOREIGN KEY (`id_Electrodos`)
@@ -648,19 +646,20 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   `Fecha_Sensado` DATE NOT NULL,
   `Hora_inicio` DATETIME NOT NULL,
   `Hora_fin` DATETIME NOT NULL,
-  `Distancia` FLOAT NULL,  
+  `Distancia` FLOAT NULL,
   `id_PlantaIndividuo` INT NOT NULL,
   `id_Electrodos` INT NOT NULL,
-  `id_Circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,  
   `id_Video` INT NOT NULL,
   `id_Usuario` INT NOT NULL,
   `id_espacios` INT NOT NULL,
+  `ENVIAR` BOOLEAN DEFAULT FALSE,    
   PRIMARY KEY (`id_Experimento`),
   INDEX `id_Usuario` (`id_Usuario` ASC), 
   INDEX `id_PlantaIndividuo` (`id_PlantaIndividuo` ASC), 
   INDEX `id_Electrodos` (`id_Electrodos` ASC), 
   INDEX `id_Video` (`id_Video` ASC), 
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   INDEX `id_TipoEstimulacion` (`id_TipoEstimulacion` ASC), 
   INDEX `id_PartePlanta` (`id_PartePlanta` ASC), 
   INDEX `id_espacios` (`id_espacios` ASC), 
@@ -681,8 +680,8 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
     REFERENCES `bd_ipc`.`video` (`id_Video`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_5`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_6`
     FOREIGN KEY (`id_TipoEstimulacion`)
@@ -696,10 +695,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
     FOREIGN KEY (`id_espacios`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON UPDATE CASCADE
-)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4;
-
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -----------------------------------------------------
@@ -778,20 +774,20 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoambiental` (
   `Humedad` FLOAT NULL DEFAULT NULL,
   `Lux` FLOAT NULL DEFAULT NULL,
   `Radiacion` FLOAT NULL DEFAULT NULL,
-  `id_Circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,  
   `id_EnergiaPlanta` INT NULL DEFAULT NULL,
-  `Luz_Azul` FLOAT NULL,
-  `Luz_Blanca` FLOAT NULL,
-  `Luz_Roja` FLOAT NULL, 
+  `Luz_Azul` FLOAT,
+  `Luz_Blanca` FLOAT,
+  `Luz_Roja` FLOAT, 
   INDEX `id_EnergiaPlanta` (`id_EnergiaPlanta` ASC), 
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   CONSTRAINT `sensadoambiental_ibfk_1`
     FOREIGN KEY (`id_EnergiaPlanta`)
     REFERENCES `bd_ipc`.`sensadoSuelo` (`id_EnergiaPlanta`)
     ON UPDATE CASCADE,
   CONSTRAINT `sensadoambiental_ibfk_2`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE
 )
 ENGINE = InnoDB
@@ -802,17 +798,17 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `bd_ipc`.`sensadocontaminantes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadocontaminantes` (
-  `id_Circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,  
   `fechaSensado` DATETIME NOT NULL,
   `CO` DECIMAL(5,2) NOT NULL,
   `CO2` DECIMAL(5,2) NOT NULL,
   `O` DECIMAL(5,2) NOT NULL,
   `COVs` DECIMAL(5,2) NOT NULL, 
   PRIMARY KEY (`fechaSensado`),
-  INDEX `id_Circuito` (`id_Circuito` ASC), 
+  INDEX `bluetooth` (`bluetooth` ASC), 
   CONSTRAINT `sensadocontaminantes_ibfk_1`
-    FOREIGN KEY (`id_Circuito`)
-    REFERENCES `bd_ipc`.`circuito` (`id_Circuito`)
+    FOREIGN KEY (`bluetooth`)
+    REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE
 )
 ENGINE = InnoDB
