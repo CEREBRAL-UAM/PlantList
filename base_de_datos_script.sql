@@ -159,22 +159,21 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 -- Table `bd_ipc`.`circuito`
 -- -----------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuito` (
-  `bluetooth` VARCHAR(45) NOT NULL,   
-  `tipo_circuito` INT NOT NULL,
+  `bluetooth` VARCHAR(45) NOT NULL,        
+  `id_tipo_circuito` INT NOT NULL,         
   `id_espacios` INT NOT NULL,
   PRIMARY KEY (`bluetooth`),
   INDEX `fk_circuito_espacios1_idx` (`id_espacios` ASC),
-  INDEX `fk_circuito_tipoCircuitos_idx` (`tipo_circuito` ASC),
+  INDEX `fk_circuito_tipoCircuitos_idx` (`id_tipo_circuito` ASC),
   CONSTRAINT `fk_circuito_espacios1`
     FOREIGN KEY (`id_espacios`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_circuito_tipoCircuitos`
-    FOREIGN KEY (`tipo_circuito`)
-    REFERENCES `bd_ipc`.`tipoCircuitos` (`bluetooth`)
+    FOREIGN KEY (`id_tipo_circuito`)
+    REFERENCES `bd_ipc`.`tipoCircuitos` (`id_tipo_circuito`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
@@ -184,9 +183,9 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`circuito` (
 -- Table `bd_ipc`.`tipoCircuitos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`tipoCircuitos` (
-  `bluetooth` VARCHAR(45) NOT NULL,
+  `id_tipo_circuito` INT NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`bluetooth`)
+  PRIMARY KEY (`id_tipo_circuito`)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
