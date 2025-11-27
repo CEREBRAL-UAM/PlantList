@@ -775,6 +775,8 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoambiental` (
   `Radiacion` FLOAT NULL DEFAULT NULL,
   `bluetooth` VARCHAR(45) NOT NULL,  
   `id_EnergiaPlanta` INT NULL DEFAULT NULL,
+  `Voltaje` FLOAT NULL,
+  `Amperaje` FLOAT NULL,
   `Luz_Azul` FLOAT,
   `Luz_Blanca` FLOAT,
   `Luz_Roja` FLOAT, 
