@@ -551,31 +551,23 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `bd_ipc`.`sensadoSuelo`
+-- Table `bd_ipc`.`sensadoSuelo`  
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoSuelo` (
-  `id_EnergiaPlanta` INT NOT NULL AUTO_INCREMENT,
   `bluetooth` VARCHAR(45) NOT NULL,  
   `fechaSensado` DATETIME NOT NULL,
   `Voltaje` FLOAT NOT NULL,
   `Amperaje` FLOAT NOT NULL,
-  `id_Electrodos` INT NOT NULL,
   `id_Suelo` INT NULL DEFAULT NULL,
   `PhSuelo` VARCHAR(45) NULL,
   `HumedadSuelo` FLOAT NULL,
   `id_PlantaIndividuo` INT NULL, 
-  PRIMARY KEY (`id_EnergiaPlanta`),
-  INDEX `bluetooth` (`bluetooth` ASC), 
-  INDEX `id_Electrodos` (`id_Electrodos` ASC), 
+  PRIMARY KEY (`bluetooth`, `fechaSensado`),
   INDEX `id_Suelo` (`id_Suelo` ASC), 
   INDEX `fk_sensadoSuelo_plantaindividuo1_idx` (`id_PlantaIndividuo` ASC), 
   CONSTRAINT `energiaplanta_ibfk_1`
     FOREIGN KEY (`bluetooth`)
     REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
-    ON UPDATE CASCADE,
-  CONSTRAINT `energiaplanta_ibfk_2`
-    FOREIGN KEY (`id_Electrodos`)
-    REFERENCES `bd_ipc`.`electrodos` (`id_Electrodos`)
     ON UPDATE CASCADE,
   CONSTRAINT `energiaplanta_ibfk_3`
     FOREIGN KEY (`id_Suelo`)
@@ -774,18 +766,12 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoambiental` (
   `Lux` FLOAT NULL DEFAULT NULL,
   `Radiacion` FLOAT NULL DEFAULT NULL,
   `bluetooth` VARCHAR(45) NOT NULL,  
-  `id_EnergiaPlanta` INT NULL DEFAULT NULL,
   `Voltaje` FLOAT NULL,
   `Amperaje` FLOAT NULL,
   `Luz_Azul` FLOAT,
   `Luz_Blanca` FLOAT,
   `Luz_Roja` FLOAT, 
-  INDEX `id_EnergiaPlanta` (`id_EnergiaPlanta` ASC), 
   INDEX `bluetooth` (`bluetooth` ASC), 
-  CONSTRAINT `sensadoambiental_ibfk_1`
-    FOREIGN KEY (`id_EnergiaPlanta`)
-    REFERENCES `bd_ipc`.`sensadoSuelo` (`id_EnergiaPlanta`)
-    ON UPDATE CASCADE,
   CONSTRAINT `sensadoambiental_ibfk_2`
     FOREIGN KEY (`bluetooth`)
     REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
