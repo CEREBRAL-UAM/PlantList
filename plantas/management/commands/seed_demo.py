@@ -12,11 +12,12 @@ import uuid
 import os
 from django.db import connection, transaction
 
+
 class Command(BaseCommand):
     help = 'Llena la base de datos con datos de prueba incluyendo fotos'
 
     def handle(self, *args, **options):
-        base_dir = 'media/demo/'  
+        base_dir = 'media/demo/'
 
         # Intermedia plantas_espacios
         try:
@@ -237,11 +238,11 @@ class Command(BaseCommand):
         # Obtén referencias por nombre (no dependen ya de id_espacios en Planta)
         ficus_lindo = Planta.objects.get(nombre_cientifico="Ficus Lindo")
         lavanda_real = Planta.objects.get(nombre_cientifico="Lavanda Real")
-        aloe_vera   = Planta.objects.get(nombre_cientifico="Aloe Vera")
+        aloe_vera = Planta.objects.get(nombre_cientifico="Aloe Vera")
 
         # Espacios directos (ya no a través de planta.id_espacios)
-        patio    = espacios[0]
-        encinal  = espacios[1]
+        patio = espacios[0]
+        encinal = espacios[1]
         interior = espacios[2]
 
         # Especies
@@ -281,14 +282,13 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
 
-        # Dtos de monitoreo-
+        # Datos de monitoreo
         with transaction.atomic():
             first_space_id = espacios[0].pk
             first_plant_id = ficus_lindo.pk
 
             with connection.cursor() as cursor:
                 # Circuito
-
                 bluetooth = "BT001-MAIN"
 
                 cursor.execute(
@@ -299,23 +299,24 @@ class Command(BaseCommand):
 
                 cursor.execute(
                     "INSERT INTO bd_ipc.circuito (bluetooth, id_tipo_circuito, id_espacios) VALUES (%s, %s, %s)",
-                    [bluetooth, tipocircuito ,first_space_id]
+                    [bluetooth, tipocircuito, first_space_id]
                 )
                 circuito = cursor.lastrowid
 
                 cursor.execute(
                     """INSERT INTO sensadoambiental
                     (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     bluetooth, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
-                    VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
-                    [26.5, 45.2, 300.0, 520.0, bluetooth, 50.0, 100.0, 75.0]
+                     bluetooth, Voltaje, Amperaje, Luz_Azul, Luz_Blanca, Luz_Roja)
+                    VALUES (NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    [26.5, 45.2, 300.0, 520.0, bluetooth, 15.0, 2.3, 50.0, 100.0, 75.0]
                 )
+
                 cursor.execute(
                     """INSERT INTO sensadoambiental
                     (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     bluetooth, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
-                    VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
-                    [25.5, 60.2, 320.5, 0.75, bluetooth, 12.5, 18.7, 7.9]
+                     bluetooth, Voltaje, Amperaje, Luz_Azul, Luz_Blanca, Luz_Roja)
+                    VALUES (NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    [25.5, 60.2, 320.5, 0.75, bluetooth, 22.3, 3.2, 12.5, 18.7, 7.9]
                 )
 
                 # Ubicaciones
@@ -377,9 +378,9 @@ class Command(BaseCommand):
                 # Sensado Suelo
                 cursor.execute(
                     """INSERT INTO bd_ipc.sensadoSuelo
-                    (bluetooth, fechaSensado, Voltaje, Amperaje, id_Electrodos, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
-                    VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s, %s)""",
-                    [bluetooth, 3.15, 0.045, electrodos_id, suelo_id, '6.7', 38.5, 1]
+                    (bluetooth, fechaSensado, Voltaje, Amperaje, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
+                    VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s)""",
+                    [bluetooth, 3.15, 0.045, suelo_id, '6.7', 38.5, 1]
                 )
 
                 # Sensado contaminantes
@@ -392,9 +393,9 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
 
-        # Experimentos
+        # Experimentos (modelo Django)
         tipos_data = [
-            {"nombre": "Proximidad",  "descripcion": "La persona se acerca a la planta"},
+            {"nombre": "Proximidad", "descripcion": "La persona se acerca a la planta"},
             {"nombre": "Tocar con un dedo", "descripcion": "Tocar con un dedo"},
             {"nombre": "Tocar con dos dedos", "descripcion": "Tocar con dos dedos"},
             {"nombre": "Apachurrar", "descripcion": "Presionar con dos dedos"},
@@ -405,22 +406,22 @@ class Command(BaseCommand):
         mat_oro = Material.objects.create(nombre="Oro", descripcion="Oro")
         mat_cobre = Material.objects.create(nombre="Cobre", descripcion="Conductividad excelente, maleable")
 
-        Electrodos.objects.bulk_create([
+        electrodos_creados = Electrodos.objects.bulk_create([
             Electrodos(id_material=mat_oro, forma="Circilar", largo="20mm", ancho="10mm", calibre_cable="24 AWG"),
             Electrodos(id_material=mat_cobre, forma="Circular", largo="15mm", ancho="2mm", calibre_cable="26 AWG"),
         ])
 
-        ub1 = Ubicaciones.objects.create(cp="4000",  estado="CDMX",   municipio="Coyoacán", colonia="Del Carmen")
+        ub1 = Ubicaciones.objects.create(cp="4000", estado="CDMX", municipio="Coyoacán", colonia="Del Carmen")
         ub2 = Ubicaciones.objects.create(cp="52779", estado="Edomex", municipio="Naucalpan", colonia="Satélite")
 
         suelo_arcilloso = Suelo.objects.create(cp=ub1, nombre_cientifico="Suelo arcilloso", descripcion="Alto contenido de arcilla")
-        suelo_arenoso  = Suelo.objects.create(cp=ub2, nombre_cientifico="Suelo arenoso",  descripcion="Drenaje rápido, nutrientes bajos")
+        suelo_arenoso = Suelo.objects.create(cp=ub2, nombre_cientifico="Suelo arenoso", descripcion="Drenaje rápido, nutrientes bajos")
 
         et_semilla = EtapaDesarrollo.objects.create(nombre_cientifico="Germinación", alias="Semilla")
-        et_juvenil = EtapaDesarrollo.objects.create(nombre_cientifico="Juvenil",     alias="Plántula")
-        et_adulta  = EtapaDesarrollo.objects.create(nombre_cientifico="Adulta",      alias="Madura")
+        et_juvenil = EtapaDesarrollo.objects.create(nombre_cientifico="Juvenil", alias="Plántula")
+        et_adulta = EtapaDesarrollo.objects.create(nombre_cientifico="Adulta", alias="Madura")
 
-        origen_vivero = OrigenCrianza.objects.create(nombre="Vivero",        descripcion="Adquirida en vivero")
+        origen_vivero = OrigenCrianza.objects.create(nombre="Vivero", descripcion="Adquirida en vivero")
         origen_semilla = OrigenCrianza.objects.create(nombre="Semilla propia", descripcion="Germinada localmente")
 
         pl_cochinilla = Plagas.objects.create(
@@ -464,3 +465,147 @@ class Command(BaseCommand):
         ])
 
         self.stdout.write(self.style.SUCCESS("Datos de experimentos creados correctamente."))
+
+        tipos_por_nombre = {t.nombre: t.pk for t in TipoEstimulacion.objects.all()}
+        id_tipo_tacto = tipos_por_nombre.get("Tocar con un dedo")
+        id_tipo_plagas = tipos_por_nombre.get("Plagas")
+
+        # Usamos algunos PlantaIndividuo de los recién creados
+        planta_inds = list(PlantaIndividuo.objects.order_by('pk'))
+        if len(planta_inds) >= 2:
+            planta_ind_1 = planta_inds[0]
+            planta_ind_2 = planta_inds[1]
+        elif planta_inds:
+            planta_ind_1 = planta_inds[0]
+            planta_ind_2 = planta_inds[0]
+        else:
+            planta_ind_1 = planta_ind_2 = None
+
+        # Electrodos (modelo Django, no los de bd_ipc)
+        electrodos_list = list(Electrodos.objects.order_by('pk'))
+        if len(electrodos_list) >= 2:
+            electrodos_1 = electrodos_list[0]
+            electrodos_2 = electrodos_list[1]
+        elif electrodos_list:
+            electrodos_1 = electrodos_list[0]
+            electrodos_2 = electrodos_list[0]
+        else:
+            electrodos_1 = electrodos_2 = None
+
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                # Partes de planta
+                cursor.execute(
+                    """
+                    INSERT INTO partesdeplanta (Nombre_Cientifico)
+                    VALUES (%s), (%s), (%s)
+                    """,
+                    ["Tallo", "Hoja", "Flor"]
+                )
+
+                cursor.execute(
+                    """
+                    SELECT id_PartePlanta
+                    FROM partesdeplanta
+                    WHERE Nombre_Cientifico = %s
+                    ORDER BY id_PartePlanta ASC
+                    LIMIT 1
+                    """,
+                    ["Tallo"]
+                )
+                row = cursor.fetchone()
+                id_parte_tallo = row[0] if row else None
+
+                # Videos de prueba
+                cursor.execute(
+                    """
+                    INSERT INTO video (Direccion, Nombre)
+                    VALUES (%s, %s), (%s, %s)
+                    """,
+                    ["ABC123", "TestVideo", "DEF456", "TestVideo2"]
+                )
+
+                cursor.execute(
+                    """
+                    SELECT id_Video
+                    FROM video
+                    WHERE Direccion = %s
+                    ORDER BY id_Video ASC
+                    LIMIT 1
+                    """,
+                    ["ABC123"]
+                )
+                row = cursor.fetchone()
+                id_video_1 = row[0] if row else None
+
+                if (
+                    id_tipo_tacto and id_tipo_plagas and
+                    planta_ind_1 and planta_ind_2 and
+                    electrodos_1 and electrodos_2 and
+                    id_parte_tallo and id_video_1
+                ):
+                    # Exp Tacto
+                    cursor.execute(
+                        """
+                        INSERT INTO experimento
+                          (id_TipoEstimulacion, id_PartePlanta,
+                           Fecha_Sensado, Hora_inicio, Hora_fin,
+                           Distancia, id_PlantaIndividuo, id_Electrodos,
+                           bluetooth, id_Video, id_Usuario, id_espacios,
+                           ENVIAR)
+                        VALUES (
+                           %s, %s,
+                           CURDATE(),
+                           NOW(),
+                           DATE_ADD(NOW(), INTERVAL 30 MINUTE),
+                           %s, %s, %s,
+                           %s, %s, %s, %s,
+                           NULL
+                        )
+                        """,
+                        [
+                            id_tipo_tacto,
+                            id_parte_tallo,
+                            None,                  # Distancia
+                            planta_ind_2.pk,       # id_PlantaIndividuo
+                            electrodos_1.pk,       # id_Electrodos
+                            "BT001-MAIN",          # bluetooth
+                            id_video_1,            # id_Video
+                            usuario_demo.pk,       # id_Usuario
+                            patio.pk               # id_espacios
+                        ]
+                    )
+
+                    # Exp Plaga
+                    cursor.execute(
+                        """
+                        INSERT INTO experimento
+                          (id_TipoEstimulacion, id_PartePlanta,
+                           Fecha_Sensado, Hora_inicio, Hora_fin,
+                           Distancia, id_PlantaIndividuo, id_Electrodos,
+                           bluetooth, id_Video, id_Usuario, id_espacios,
+                           ENVIAR)
+                        VALUES (
+                           %s, %s,
+                           CURDATE(),
+                           NOW(),
+                           DATE_ADD(NOW(), INTERVAL 30 MINUTE),
+                           %s, %s, %s,
+                           %s, %s, %s, %s,
+                           NULL
+                        )
+                        """,
+                        [
+                            id_tipo_plagas,
+                            None,                 # id_PartePlanta = NULL
+                            None,                 # Distancia
+                            planta_ind_1.pk,
+                            electrodos_2.pk,
+                            "BT001-MAIN",
+                            id_video_1,
+                            usuario_demo.pk,
+                            encinal.pk
+                        ]
+                    )
+
+        self.stdout.write(self.style.SUCCESS("Partes de planta, videos y experimentos demo insertados correctamente."))
