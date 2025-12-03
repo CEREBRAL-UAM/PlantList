@@ -126,15 +126,15 @@ export function GestionExperimentos() {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-5 py-6 text-center font-nunito">
+                  <td colSpan={9} className="px-5 py-6 text-center font-nunito text-pl_green_b/80">
                     {loading ? "Buscando..." : "Sin resultados"}
                   </td>
                 </tr>
               ) : (
                 rows.map((row) => (
                   <tr
-                    key={row.id_experimento} // ✅ no dependemos de 'tipo'
-                    className="border-b-2 border-pl_green_input last:border-0 font-nunito"
+                    key={row.id_experimento} 
+                    className="border-b-2 border-pl_green_input last:border-0 font-nunito text-pl_green_b"
                   >
                     <td className="px-5 py-4">{String(row.id_experimento).padStart(4, "0")}</td>
                     <td className="px-5 py-4">{row.tipo_estimulacion || "—"}</td>

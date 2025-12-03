@@ -2,15 +2,14 @@ from rest_framework import serializers
 from .models import SensadoAmbiental, sensadoSuelo, SensadoContaminantes, Circuito
 
 class SensadoAmbientalSerializer(serializers.ModelSerializer):
-    id_bluetooth = serializers.SerializerMethodField()
+    bluetooth = serializers.SerializerMethodField()
     descripcion = serializers.SerializerMethodField()
 
     class Meta:
         model = SensadoAmbiental
         fields = [
             'FechaSensado',
-            'id_Circuito',
-            'id_bluetooth',
+            'bluetooth',
             'descripcion',
             'TempAmbiental',
             'Humedad',
@@ -22,16 +21,15 @@ class SensadoAmbientalSerializer(serializers.ModelSerializer):
         ]
 
     def get_id_bluetooth(self, obj):
-        circuito = Circuito.objects.filter(id_Circuito=obj.id_Circuito).first()
+        circuito = Circuito.objects.filter(bluetooth=obj.bluetooth).first()
         return circuito.id_bluetooth if circuito else None
 
     def get_descripcion(self, obj):
-        circuito = Circuito.objects.filter(id_Circuito=obj.id_Circuito).first()
+        circuito = Circuito.objects.filter(bluetooth=obj.bluetooth).first()
         return circuito.descripcion if circuito else None
 
 class SensadoSueloSerializer(serializers.ModelSerializer):
-    id_Circuito = serializers.IntegerField()
-    id_bluetooth = serializers.SerializerMethodField()
+    bluetooth = serializers.CharField()
     descripcion = serializers.SerializerMethodField()
     nombre_suelo = serializers.CharField(source='suelo.Nombre_Cientifico', default='Desconocido')
     descripcion_suelo = serializers.CharField(source='suelo.Descripcion', default='Sin descripción')
@@ -45,8 +43,7 @@ class SensadoSueloSerializer(serializers.ModelSerializer):
             'Amperaje',
             'PhSuelo',
             'HumedadSuelo',
-            'id_Circuito',
-            'id_bluetooth',
+            'bluetooth',
             'descripcion',
             'id_PlantaIndividuo',
             'nombre_suelo',
@@ -54,24 +51,22 @@ class SensadoSueloSerializer(serializers.ModelSerializer):
         ]
     
     def get_id_bluetooth(self, obj):
-        circuito = Circuito.objects.filter(id_Circuito=obj.id_Circuito).first()
+        circuito = Circuito.objects.filter(bluetooth=obj.bluetooth).first()
         return circuito.id_bluetooth if circuito else None
 
     def get_descripcion(self, obj):
-        circuito = Circuito.objects.filter(id_Circuito=obj.id_Circuito).first()
+        circuito = Circuito.objects.filter(bluetooth=obj.bluetooth).first()
         return circuito.descripcion if circuito else None
 
 class SensadoContaminantesSerializer(serializers.ModelSerializer):
-    id_Circuito = serializers.IntegerField(source="circuito.id_Circuito")
-    id_bluetooth = serializers.CharField(source="circuito.id_bluetooth")
+    bluetooth = serializers.IntegerField(source="circuito.bluetooth")
     descripcion = serializers.CharField(source="circuito.descripcion")
 
     class Meta:
         model = SensadoContaminantes
         fields = [
             'fechaSensado',
-            'id_Circuito',
-            'id_bluetooth',
+            'bluetooth',
             'descripcion',
             'CO',
             'CO2',

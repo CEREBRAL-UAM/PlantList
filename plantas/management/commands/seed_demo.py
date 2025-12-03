@@ -18,7 +18,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         base_dir = 'media/demo/'  
 
-        # --- BORRADO EN ORDEN SEGURO (primero intermedias que dependan de Planta/Espacio) ---
         # Intermedia plantas_espacios
         try:
             PlantasEspacios.objects.all().delete()
@@ -44,7 +43,7 @@ class Command(BaseCommand):
         Material.objects.all().delete()
         TipoEstimulacion.objects.all().delete()
 
-        # --- USUARIOS ---
+        # Usuarios
         usuario_demo = Usuario.objects.create(
             Nombre="Carlos",
             ApellidoPaterno="Pérez",
@@ -73,7 +72,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Usuarios (admin y participante) creados con exito !"))
 
-        # --- ESPACIOS ---
+        # Espacios
         espacios_data = [
             {"nombre_espacio": "Patio",    "foto": os.path.join(base_dir, "espacio1.jpg"), "clave_acceso": generar_clave_acceso_unica()},
             {"nombre_espacio": "Encinal",  "foto": os.path.join(base_dir, "espacio2.jpg"), "clave_acceso": generar_clave_acceso_unica()},
@@ -93,9 +92,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))
 
-        # --- PLANTAS + RELACIONES EN TABLA INTERMEDIA ---
-        # Nota: mantenemos 'id_espacios' dentro de cada dict SOLO para saber a qué espacio va,
-        # pero ya no lo pasamos al constructor de Planta.
+        # Plantas
         plantas_data = [
             # Espacio 0 - 4 plantas con foto
             {
@@ -247,7 +244,7 @@ class Command(BaseCommand):
         encinal  = espacios[1]
         interior = espacios[2]
 
-        # --- ESPECIES ---
+        # Especies
         especies_data = [
             {
                 "nombre_cientifico": "Ficus lyrata",
@@ -284,38 +281,41 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
 
-        # --- DATOS DE MONITOREO (RAW SQL) ---
+        # Dtos de monitoreo-
         with transaction.atomic():
             first_space_id = espacios[0].pk
             first_plant_id = ficus_lindo.pk
 
             with connection.cursor() as cursor:
                 # Circuito
+
+                bluetooth = "BT001-MAIN"
+
                 cursor.execute(
                     "INSERT INTO bd_ipc.tipoCircuitos (descripcion) VALuES (%s)",
                     ["Ambiental"]
                 )
-                tipocircuito_id = cursor.lastrowid
+                tipocircuito = cursor.lastrowid
 
                 cursor.execute(
-                    "INSERT INTO bd_ipc.circuito (bluetooth, tipo_circuito, id_espacios) VALUES (%s, %s, %s)",
-                    ["BT001-MAIN", tipocircuito_id ,first_space_id]
+                    "INSERT INTO bd_ipc.circuito (bluetooth, id_tipo_circuito, id_espacios) VALUES (%s, %s, %s)",
+                    [bluetooth, tipocircuito ,first_space_id]
                 )
-                circuito_id = cursor.lastrowid
+                circuito = cursor.lastrowid
 
                 cursor.execute(
                     """INSERT INTO sensadoambiental
                     (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     id_Circuito, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
+                     bluetooth, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
                     VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
-                    [26.5, 45.2, 300.0, 520.0, circuito_id, 50.0, 100.0, 75.0]
+                    [26.5, 45.2, 300.0, 520.0, bluetooth, 50.0, 100.0, 75.0]
                 )
                 cursor.execute(
                     """INSERT INTO sensadoambiental
                     (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     id_Circuito, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
+                     bluetooth, id_EnergiaPlanta, Luz_Azul, Luz_Blanca, Luz_Roja)
                     VALUES (NOW(), %s, %s, %s, %s, %s, NULL, %s, %s, %s)""",
-                    [25.5, 60.2, 320.5, 0.75, circuito_id, 12.5, 18.7, 7.9]
+                    [25.5, 60.2, 320.5, 0.75, bluetooth, 12.5, 18.7, 7.9]
                 )
 
                 # Ubicaciones
@@ -377,22 +377,22 @@ class Command(BaseCommand):
                 # Sensado Suelo
                 cursor.execute(
                     """INSERT INTO bd_ipc.sensadoSuelo
-                    (id_Circuito, fechaSensado, Voltaje, Amperaje, id_Electrodos, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
+                    (bluetooth, fechaSensado, Voltaje, Amperaje, id_Electrodos, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
                     VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s, %s)""",
-                    [circuito_id, 3.15, 0.045, electrodos_id, suelo_id, '6.7', 38.5, 1]
+                    [bluetooth, 3.15, 0.045, electrodos_id, suelo_id, '6.7', 38.5, 1]
                 )
 
                 # Sensado contaminantes
                 cursor.execute(
                     """INSERT INTO bd_ipc.sensadocontaminantes
-                    (id_Circuito, fechaSensado, CO, CO2, O, COVs)
+                    (bluetooth, fechaSensado, CO, CO2, O, COVs)
                     VALUES (%s, NOW(), %s, %s, %s, %s)""",
-                    [circuito_id, 1.25, 410.00, 20.50, 0.98]
+                    [bluetooth, 1.25, 410.00, 20.50, 0.98]
                 )
 
         self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
 
-        # --- EXPERIMENTOS (ORM) ---
+        # Experimentos
         tipos_data = [
             {"nombre": "Proximidad",  "descripcion": "La persona se acerca a la planta"},
             {"nombre": "Tocar con un dedo", "descripcion": "Tocar con un dedo"},

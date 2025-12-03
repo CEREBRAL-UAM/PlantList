@@ -25,7 +25,7 @@
 
     // Circuitos
     const [circuitos, setCircuitos] = useState([]);
-    const [circuitoId, setCircuitoId] = useState("");
+    const [circuitoBluetooth, setCircuitoBluetooth] = useState("");
     const [circuitoLabel, setCircuitoLabel] = useState("");
 
     // Catálogos
@@ -112,7 +112,7 @@
         setPlantaNombre("");
         setPlantaId("");
         setCircuitos([]);
-        setCircuitoId("");
+        setCircuitoBluetooth("");
         setCircuitoLabel("");
 
         if (!espacioId) {
@@ -193,7 +193,7 @@
       plantaNombre,
       plantaId,
       tipoEstimulacion: tipoSeleccionado,
-      circuitoId,
+      circuitoBluetooth,
       circuitoLabel,
       materialElectrodosNombre,
 
@@ -362,13 +362,13 @@
                       <select
                         className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
                                   font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
-                        value={circuitoId}
+                        value={circuitoBluetooth}
                         onChange={(e) => {
-                          const id = e.target.value;
-                          setCircuitoId(id);
+                          const bluetooth = e.target.value;
+                          setCircuitoBluetooth(bluetooth);
 
                           // Busca el circuito seleccionado
-                          const c = circuitos.find((x) => String(x.id_circuito) === String(id));
+                          const c = circuitos.find((x) => x.bluetooth === bluetooth);
                           // Crea el label legible igual que en el select
                           const label = c ? `${c.tipo || "Circuito"}${c.bluetooth ? " · " + c.bluetooth : ""}` : "";
                           setCircuitoLabel(label);
@@ -379,7 +379,7 @@
                           {espacioId ? "Seleccione el circuito" : "Seleccione un espacio primero"}
                         </option>
                         {circuitos.map((c) => (
-                          <option key={c.id_circuito} value={c.id_circuito}>
+                          <option key={c.bluetooth} value={c.bluetooth}>
                             {`${c.tipo || "Circuito"}${c.bluetooth ? " · " + c.bluetooth : ""}`}
                           </option>
                         ))}

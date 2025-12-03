@@ -156,10 +156,10 @@ class Experimento(models.Model):
         on_delete=models.CASCADE,
         db_column='id_electrodos'
     )
-    id_Circuito = models.ForeignKey(
+    bluetooth = models.ForeignKey(
         'monitoreo.Circuito',
         on_delete=models.CASCADE,
-        db_column='id_Circuito'
+        db_column='bluetooth'
     )
     id_Video = models.ForeignKey(
         'Video',

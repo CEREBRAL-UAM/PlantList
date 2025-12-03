@@ -152,14 +152,13 @@ class CircuitosPorEspacioView(RolAPIView):
 
         sql = """
             SELECT 
-                c.id_Circuito   AS id_circuito,
-                c.bluetooth      AS bluetooth,
-                tc.descripcion   AS tipo
+                c.bluetooth AS bluetooth,
+                tc.descripcion AS tipo
             FROM bd_ipc.circuito c
             LEFT JOIN bd_ipc.tipoCircuitos tc
-              ON tc.id_circuito = c.tipo_circuito
+              ON tc.id_tipo_circuito = c.id_tipo_circuito
             WHERE c.id_espacios = %s
-            ORDER BY c.id_Circuito ASC
+            ORDER BY c.bluetooth ASC
         """
         with connection.cursor() as cur:
             cur.execute(sql, [espacio_id])
