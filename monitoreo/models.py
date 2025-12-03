@@ -6,7 +6,7 @@ class SensadoAmbiental(models.Model):
     Humedad = models.FloatField(null=True)
     Lux = models.FloatField(null=True)
     Radiacion = models.FloatField(null=True)
-    id_Circuito = models.IntegerField()
+    bluetooth = models.IntegerField()
     id_EnergiaPlanta = models.IntegerField(null=True)
     Luz_Azul = models.FloatField(null=True)
     Luz_Blanca = models.FloatField(null=True)
@@ -34,7 +34,7 @@ class Suelo(models.Model):
 
 class sensadoSuelo(models.Model):
     id_EnergiaPlanta = models.AutoField(primary_key=True)
-    id_Circuito = models.IntegerField()
+    bluetooth = models.IntegerField()
     fechaSensado = models.DateTimeField()
     Voltaje = models.FloatField()
     Amperaje = models.FloatField()
@@ -52,7 +52,7 @@ class sensadoSuelo(models.Model):
         return f"Sensado Suelo {self.fechaSensado}"
 
 class SensadoContaminantes(models.Model):
-    circuito = models.ForeignKey('Circuito', db_column='id_Circuito', on_delete=models.DO_NOTHING)
+    circuito = models.ForeignKey('Circuito', db_column='bluetooth', on_delete=models.DO_NOTHING)
     fechaSensado = models.DateTimeField(primary_key=True)
     CO = models.DecimalField(max_digits=5, decimal_places=2)
     CO2 = models.DecimalField(max_digits=5, decimal_places=2)
@@ -67,9 +67,8 @@ class SensadoContaminantes(models.Model):
         return f"Contaminantes - {self.fechaSensado}"
 
 class Circuito(models.Model):
-    id_Circuito = models.AutoField(primary_key=True)
-    bluetooth = models.CharField(max_length=100)
-    tipo_circuito = models.IntegerField()
+    bluetooth = models.CharField(primary_key=True, max_length=45)
+    id_tipo_circuito = models.IntegerField()
     id_espacios = models.IntegerField()
 
     class Meta:
@@ -77,5 +76,5 @@ class Circuito(models.Model):
         managed = False
 
 class TipoCircuito(models.Model):
-    id_circuito = models.AutoField(primary_key=True)
+    id_tipo_circuito = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=50)
