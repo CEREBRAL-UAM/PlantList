@@ -40,7 +40,7 @@ export function IniciarSesion() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-no-repeat bg-center bg-cover bg-[url(/src/images/fondos/iniciarSesion.png)] lg:bg-[length:100%_100%] relative">
+    <div className="min-h-screen w-full bg-no-repeat bg-center bg-cover bg-[url(/images/fondos/iniciarSesion.png)] lg:bg-[length:100%_100%] relative">
       {/* Capa oscura */}
       <div className="absolute inset-0 bg-black/50 scale-z-100" />
 
@@ -49,7 +49,7 @@ export function IniciarSesion() {
         {/* Flecha */}
         <button className="absolute top-10 left-5 lg:top-15 lg:left-15 z-30">
           <img
-            src="/src/images/iconos/flecha.png"
+            src="/images/iconos/flecha.png"
             alt="flecha"
             className="w-[30px] lg:w-[45px] transition duration-300 hover:scale-120"
           />
@@ -58,7 +58,7 @@ export function IniciarSesion() {
         {/* Logo y título*/}
         <div className="lg:absolute lg:top-20 lg:left-40 static flex flex-col lg:flex-row items-center font-baloo">
           <img
-            src="/src/images/iconos/logo.png"
+            src="/images/iconos/logo.png"
             alt="logo"
             className="h-[15vw] lg:h-[90px] block"
           />
