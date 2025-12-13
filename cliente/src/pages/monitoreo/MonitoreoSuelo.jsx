@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getDatosSuelo } from "../../api/monitoreo.api";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
-import DateIcon from "../../images/iconos/Date.png";
-import IdIcon from "../../images/iconos/ID.png";
-import BluetoothIcon from "../../images/iconos/Bluetooth.png";
-import DescriptionIcon from "../../images/iconos/Description.png";
-import PlantIcon from "../../images/iconos/Plant.png";
-import FloorIcon from "../../images/iconos/Floor.png";
+import DateIcon from "/images/iconos/Date.png";
+import IdIcon from "/images/iconos/Id.png";
+import BluetoothIcon from "/images/iconos/Bluetooth.png";
+import DescriptionIcon from "/images/iconos/Description.png";
+import PlantIcon from "/images/iconos/Plant.png";
+import FloorIcon from "/images/iconos/Floor.png";
 
 export function MonitoreoSuelo() {
   const [datos, setDatos] = useState([]);
