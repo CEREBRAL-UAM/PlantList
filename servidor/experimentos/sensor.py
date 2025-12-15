@@ -1,5 +1,6 @@
 import threading
 import time
+import os 
 import serial
 from serial.tools import list_ports
 from fastapi import FastAPI

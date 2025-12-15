@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
 import { InfoPanel } from "../../components/panel/InfoPanel";
 import { sensorTiempoReal } from "../../api/sensorTiempoReal";
+import { Video } from "../../components/visuales/Video";
+import { GrabarPantalla } from "../../pages/experimentos/GrabarPantalla"
 
 // Ticks para el eje Y y la cuadrícula
 const TICKS_Y = [0, 20, 40, 60, 80, 100];
@@ -39,6 +41,14 @@ export function ExperimentoProceso() {
     { id: "ph", label: "PH" },
     { id: "humTierra", label: "Hum Tierra" },
   ];
+
+  const pantallaStream = GrabarPantalla.pantallaStream;
+  useEffect(() => {
+    if (pantallaStream && window.startScreenRecording) {
+      window.startScreenRecording(pantallaStream);
+    }
+  }, []);
+
 
   return (
     <div className="min-h-screen flex flex-col lg:pt-2">
@@ -125,31 +135,53 @@ export function ExperimentoProceso() {
               <div className="w-full md:w-40 flex md:flex-col gap-3 justify-start md:justify-center items-center">
                 <button
                   type="button"
-                  onClick={() => setModo("voltaje")}
-                  className={`px-8 py-2 rounded-full text-sm font-medium transition
+                  onClick={() => setModo("iluminacion")}
+                  className={`w-35 h-10 rounded-full text-sm font-nunito transition
                     ${
-                      modo === "voltaje"
-                        ? "bg-[#d1d5db] text-gray-900"
-                        : "bg-[#e5e5e5] text-gray-700 hover:bg-[#d1d5db]"
+                      modo === "iluminacion"
+                        ? "bg-pl_green_b text-pl_white_b"
+                        : "bg-[#93a189] text-[#243824] hover:bg-[#6f8a63]"
                     }`}
                 >
-                  Voltaje
+                  Iluminación
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setModo("amperaje")}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition
+                  onClick={() => setModo("solar")}
+                  className={`w-35 h-10 rounded-full text-sm font-nunito transition
                     ${
-                      modo === "amperaje"
-                        ? "bg-[#e11d48] text-white shadow-md"
-                        : "bg-[#fecaca] text-[#7f1d1d] hover:bg-[#fda4af]"
+                      modo === "solar"
+                        ? "bg-pl_green_a text-pl_white_b"
+                        : "bg-[#cfe5e2] text-[#3f6f6a] hover:bg-[#b9d8d3]"
                     }`}
                 >
-                  Amperaje
+                  Radiación solar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setModo("potencial")}
+                  className={`w-40 h-10 rounded-full text-sm font-nunito transition
+                    ${
+                      modo === "potencial"
+                        ? "bg-pl_green_c text-pl_white_b"
+                        : "bg-[#cfdcc9] text-[#4f644f] hover:bg-[#b8ccb0]"
+                    }`}
+                >
+                  Diferencia potencial
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* Panel de Video */}
+          <div className="md:col-span-2 md:col-start-2 w-full flex justify-center mt-10">
+              <Video 
+                width={600}
+                height={350}
+                pantallaStream={pantallaStream}
+               />
           </div>
         </div>
       </div>
