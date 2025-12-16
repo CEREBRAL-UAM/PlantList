@@ -6,14 +6,11 @@
     {
       "splitTerminals": [
         {
-          "name": "django_term",
-          "commands": [".\\venv\\Scripts\\activate"]
-        },
-        {
-          "name": "backend_server",
+          "name": "docker-compose",
           "commands": [
-            ".\\venv\\Scripts\\activate",
-            "python manage.py runserver"
+            "docker-compose down -v",
+            "docker-compose up -d",
+            "docker-compose up --build"
           ]
         }
       ]
@@ -21,15 +18,39 @@
     {
       "splitTerminals": [
         {
-          "name": "react_term",
-          "commands": [".\\venv\\Scripts\\activate", "cd cliente"]
-        },
-        {
-          "name": "frontend_server",
+          "name": "backend-terminal",
           "commands": [
-            ".\\venv\\Scripts\\activate",
-            "cd cliente",
-            "npm run dev"
+            "docker exec -it biolink-backend bash"
+          ]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "frontend-terminal",
+          "commands": [
+            "docker exec -it biolink-frontend bash"
+          ]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "mysql-terminal",
+          "commands": [
+            "docker exec -it biolink-db bash"
+          ]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "git-terminal",
+          "commands": [
+            "git status"
           ]
         }
       ]
