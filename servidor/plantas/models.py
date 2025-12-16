@@ -116,7 +116,7 @@ class EspaciosUsuarios(models.Model):
 
     isAdminEspacio = models.BooleanField(default=False)
     class Meta:
-        db_table = 'espaciosusuarios'
+        db_table = 'espaciosUsuarios'
         managed = False
         unique_together = (('id_espacios', 'id_usuario'),)
     

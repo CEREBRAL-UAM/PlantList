@@ -2,14 +2,28 @@ from rest_framework import serializers
 from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios, PlantasEspacios
 
 class PlantaSerializer(serializers.ModelSerializer):
-    class Meta: 
+    foto = serializers.SerializerMethodField()
+
+    class Meta:
         model = Planta
         fields = '__all__'
 
+    def get_foto(self, obj):
+        if obj.foto:
+            return obj.foto.url   
+        return None
+
 class EspecieSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = Especie 
+    foto = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Especie
         fields = '__all__'
+
+    def get_foto(self, obj):
+        if obj.foto:
+            return obj.foto.url   
+        return None
 
 class PartePlantaSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -32,14 +46,17 @@ class PlantasEspaciosSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EspacioSerializer(serializers.ModelSerializer):
-    def get_foto(self, obj):
-        request = self.context.get('request')
-        if obj.foto and request:
-            return request.build_absolute_uri(obj.foto.url)
-        return None
+    foto = serializers.SerializerMethodField()
+
     class Meta:
         model = Espacio
         fields = '__all__'
+
+    def get_foto(self, obj):
+        if obj.foto:
+            return obj.foto.url
+        return None
+
 
 class CrearEspacioSerializer(serializers.ModelSerializer): 
     class Meta: 
