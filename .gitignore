@@ -1,39 +1,52 @@
+# ====================
 # Entornos virtuales
+# ====================
 venv/
 env/
 ENV/
 .venv/
 .env
 
+# ====================
 # Node
+# ====================
 node_modules/
 
-# Carpeta media de Django (excepto archivos por defecto)
+# ====================
+# Carpeta media de Django
+# ====================
+# Ignora todo en media
 servidor/media/*
-!servidor/media/espacios/
+
+# Excepto archivos default.jpg que quieras conservar
 !servidor/media/espacios/default.jpg
-!servidor/media/plantas/
 !servidor/media/plantas/default.jpg
-!servidor/media/especies/
 !servidor/media/especies/default.jpg
-!servidor/media/fotos_perfil_usuarios/
 !servidor/media/fotos_perfil_usuarios/default.jpg
 
+# ====================
 # IDEs
+# ====================
 *.iml
 .idea/
 .vscode/
 
+# ====================
 # Pip logs
+# ====================
 pip-log.txt
 
+# ====================
 # Python cache
+# ====================
 __pycache__/
 *.py[cod]
 *.pyc
 *.pyo
 
+# ====================
 # Bases de datos locales
+# ====================
 *.sqlite3
 *.db
 *.bak
