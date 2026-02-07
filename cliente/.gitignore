@@ -8,6 +8,7 @@
 .vite/
 build/
 dist/
+node_modules/
 
 # Archivos de lock si no usas todos
 package-lock.json

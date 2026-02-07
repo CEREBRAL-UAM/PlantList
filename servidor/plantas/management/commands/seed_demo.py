@@ -1,16 +1,17 @@
-from django.core.management.base import BaseCommand
-from plantas.utils import generar_clave_acceso_unica
-from plantas.models import Espacio, Especie, Planta, EspaciosUsuarios, PlantasEspacios
-from usuarios.models import Usuario, TokenUsuario
-from experimentos.models import (
-    TipoEstimulacion, Material, Electrodos, Ubicaciones, Suelo,
-    EtapaDesarrollo, OrigenCrianza, Plagas, PlantaIndividuo
-)
+import os
+import uuid
+
 from django.contrib.auth.hashers import make_password
 from django.core.files import File
-import uuid
-import os
+from django.core.management.base import BaseCommand
 from django.db import connection, transaction
+from experimentos.models import (Electrodos, EtapaDesarrollo, Material,
+                                 OrigenCrianza, Plagas, PlantaIndividuo, Suelo,
+                                 TipoEstimulacion, Ubicaciones)
+from plantas.models import (Espacio, EspaciosUsuarios, Especie, Planta,
+                            PlantasEspacios)
+from plantas.utils import generar_clave_acceso_unica
+from usuarios.models import TokenUsuario, Usuario
 
 
 class Command(BaseCommand):
@@ -65,8 +66,12 @@ class Command(BaseCommand):
         )
 
         foto_usuario = os.path.join(base_dir, "usuario.jpg")
-        with open(foto_usuario, "rb") as img_file:
-            usuario_demo.Foto.save("usuario.jpg", File(img_file), save=True)
+
+        if os.path.exists(foto_usuario):
+            with open(foto_usuario, "rb") as img_file:
+                usuario_demo.Foto.save("usuario.jpg", File(img_file), save=True)
+        else:
+            self.stdout.write(self.style.WARNING("Usuario creado sin foto"))
 
         TokenUsuario.objects.create(usuario=usuario_demo, token=str(uuid.uuid4()))
         TokenUsuario.objects.create(usuario=usuario_admin_demo, token=str(uuid.uuid4()))
@@ -80,18 +85,44 @@ class Command(BaseCommand):
             {"nombre_espacio": "Interior", "foto": os.path.join(base_dir, "espacio3.jpg"), "clave_acceso": generar_clave_acceso_unica()},
         ]
         espacios = []
-        for data in espacios_data:
-            with open(data["foto"], "rb") as img_file:
-                espacio = Espacio(nombre_espacio=data["nombre_espacio"], clave_acceso=data["clave_acceso"])
-                espacio.foto.save(os.path.basename(data["foto"]), File(img_file), save=True)
-                espacios.append(espacio)
-                EspaciosUsuarios.objects.create(
-                    id_usuario=usuario_demo,
-                    id_espacios=espacio,
-                    isAdminEspacio=True
-                )
+        # for data in espacios_data:
+        #     with open(data["foto"], "rb") as img_file:
+        #         espacio = Espacio(nombre_espacio=data["nombre_espacio"], clave_acceso=data["clave_acceso"])
+        #         espacio.foto.save(os.path.basename(data["foto"]), File(img_file), save=True)
+        #         espacios.append(espacio)
+        #         EspaciosUsuarios.objects.create(
+        #             id_usuario=usuario_demo,
+        #             id_espacios=espacio,
+        #             isAdminEspacio=True
+        #         )
 
-        self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))
+        # self.stdout.write(self.style.SUCCESS("Espacios creados con imágenes."))
+        
+        for data in espacios_data:
+            espacio = Espacio(
+                nombre_espacio=data["nombre_espacio"],
+                clave_acceso=data["clave_acceso"]
+            )
+            espacio.save()
+
+            if data["foto"] and os.path.exists(data["foto"]):
+                with open(data["foto"], "rb") as img_file:
+                    espacio.foto.save(
+                        os.path.basename(data["foto"]),
+                        File(img_file),
+                        save=True
+                    )
+            else:
+                self.stdout.write(self.style.WARNING("Espacio creado sin foto"))
+
+            espacios.append(espacio)
+
+            EspaciosUsuarios.objects.create(
+                id_usuario=usuario_demo,
+                id_espacios=espacio,
+                isAdminEspacio=True
+            )
+
 
         # Plantas
         plantas_data = [
@@ -214,11 +245,22 @@ class Command(BaseCommand):
             # Construimos Planta sin el campo id_espacios
             planta = Planta(**data)
             # Guardamos y cargamos foto si aplica
-            if foto_path:
+            if foto_path and os.path.exists(foto_path):
                 with open(foto_path, "rb") as img_file:
-                    planta.foto.save(os.path.basename(foto_path), File(img_file), save=True)
+                    planta.foto.save(
+                        os.path.basename(foto_path),
+                        File(img_file),
+                        save=True
+                    )
             else:
                 planta.save()
+                if foto_path:
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"Planta '{data['nombre_cientifico']}' creada sin foto"
+                        )
+                    )
+
 
             # Creamos la relación en tabla intermedia (cantidad por defecto = 1)
             relaciones.append(
@@ -276,11 +318,24 @@ class Command(BaseCommand):
         for data in especies_data:
             foto_path = data.pop("foto")
             especie = Especie(**data)
-            with open(foto_path, "rb") as img_file:
-                especie.foto.save(os.path.basename(foto_path), File(img_file), save=True)
+
+            # with open(foto_path, "rb") as img_file:
+            #     especie.foto.save(os.path.basename(foto_path), File(img_file), save=True)
+
+            if foto_path and os.path.exists(foto_path):
+                with open(foto_path, "rb") as img_file:
+                    especie.foto.save(
+                        os.path.basename(foto_path),
+                        File(img_file),
+                        save=True
+                    )
+            else:
+                especie.save()
+                self.stdout.write(self.style.WARNING("Especie creada sin foto"))
+
             especies.append(especie)
 
-        self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
+        # self.stdout.write(self.style.SUCCESS("Especies creadas con imágenes."))
 
         # Datos de monitoreo
         with transaction.atomic():
