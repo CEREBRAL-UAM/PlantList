@@ -20,7 +20,7 @@ export function FormEspecie() {
     try {
       const res = await crearEspecie(formData);
       console.log("Especie creada:", res);
-      navigate("/plantlist/especies");
+      navigate("/plantlist/especies"); //aqui era plantlist, solo es test
     } catch (error) {
       console.error("Error al crear especie:", error.response?.data || error);
     }
