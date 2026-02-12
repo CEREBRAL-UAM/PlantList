@@ -17,7 +17,7 @@ export function HeaderMovil() {
           className="flex-1 flex justify-center items-center hover:bg-pl_green_e pt-4 pb-4"
         >
           <img
-            src="/src/images/iconos/logo_oscuro.png"
+            src="/images/iconos/logo_oscuro.png"
             alt="icono"
             className="h-15"
           />
@@ -26,14 +26,14 @@ export function HeaderMovil() {
           to="/biolink_ipc/ruta2"
           className="flex-1 flex justify-center items-center hover:bg-pl_green_e"
         >
-          <img src="/src/images/iconos/logo.png" alt="icono" className="h-15" />
+          <img src="/images/iconos/logo.png" alt="icono" className="h-15" />
         </Link>
         <Link
           to="/biolink_ipc/ruta3"
           className="flex-1 flex justify-center items-center hover:bg-pl_green_e"
         >
           <img
-            src="/src/images/iconos/icono_lapiz.png"
+            src="/images/iconos/icono_lapiz.png"
             alt="icono"
             className="h-15"
           />
@@ -43,7 +43,7 @@ export function HeaderMovil() {
           className="flex-1 flex justify-center items-center hover:bg-pl_green_e"
         >
           <img
-            src="/src/images/iconos/logo_oscuro.png"
+            src="/images/iconos/logo_oscuro.png"
             alt="icono"
             className="h-15"
           />

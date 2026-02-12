@@ -1,12 +1,28 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { GrabarPantalla } from "../../pages/experimentos/GrabarPantalla";
 
 export function ConfirmarGrabacion({ visible, onCancelar, navState }) {
   const navigate = useNavigate();
 
-  const handleComenzar = () => {
-    // Encadena el state hacia la ruta de cuenta regresiva
-    navigate("/biolink_ipc/cuentaRegresiva", { state: navState });
+  const handleComenzar = async () => {
+    try {
+      const pantallaStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true
+      });
+
+      GrabarPantalla.pantallaStream = pantallaStream;
+
+      onCancelar();
+
+      setTimeout(() => {
+        navigate("/biolink_ipc/cuentaRegresiva", { state: navState });
+      }, 350);
+
+    } catch (err) {
+      console.error("Error al obtener pantalla:", err);
+    }
   };
 
   if (!visible) return null;

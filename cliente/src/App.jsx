@@ -1,30 +1,31 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { RegistrarCuenta } from "./pages/usuario/RegistrarCuenta";
-import { IniciarSesion } from "./pages/usuario/IniciarSesion";
-import { Especies } from "./pages/plantas/Especies";
-import { Espacios } from "./pages/espacios/Espacios";
-import { VerEspacio } from "./pages/espacios/VerEspacio";
-import { FormPlanta } from "./pages/plantas/FormPlanta";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { HeaderEscritorio } from "./components/layout/HeaderEscritorio";
 import { HeaderMovil } from "./components/layout/HeaderMovil";
-import { VerPlanta } from "./pages/plantas/VerPlanta";
-import { FormEspecie } from "./pages/plantas/FormEspecie";
-import { FormEspacio } from "./pages/espacios/FormEspacio";
+import { CuentaRegresiva } from "./components/visuales/CuentaRegresiva";
+import { Home } from "./pages/common/Home";
 import { PantallaCarga } from "./pages/common/PantallaCarga";
-import { VerUsuario } from "./pages/usuario/VerUsuario";
+import { Colaboradores } from "./pages/espacios/Colaboradores";
+import { Espacios } from "./pages/espacios/Espacios";
+import { FormEspacio } from "./pages/espacios/FormEspacio";
+import { VerEspacio } from "./pages/espacios/VerEspacio";
+import { ExperimentoProceso } from "./pages/experimentos/ExperimentoProceso";
 import { Experimentos } from "./pages/experimentos/Experimentos";
+import { GestionExperimentos } from "./pages/experimentos/GestionExperimentos";
 import { MonitorearPlanta } from "./pages/experimentos/MonitorearPlanta";
 import { RealizarExperimento } from "./pages/experimentos/RealizarExperimento";
-import { GestionExperimentos } from "./pages/experimentos/GestionExperimentos";
-import { Home } from "./pages/common/Home";
-import { Colaboradores } from "./pages/espacios/Colaboradores";
+import { RutasProtegidas } from "./pages/experimentos/RutasProtegidas";
 import { Monitoreo } from "./pages/monitoreo/Monitoreo";
 import { MonitoreoAmbiental } from "./pages/monitoreo/MonitoreoAmbiental";
-import { MonitoreoSuelo } from "./pages/monitoreo/MonitoreoSuelo";
 import { MonitoreoContaminantes } from "./pages/monitoreo/MonitoreoContaminantes";
-import { CuentaRegresiva } from "./components/visuales/CuentaRegresiva";
-import { ExperimentoProceso } from "./pages/experimentos/ExperimentoProceso";
-import { RutasProtegidas } from "./pages/experimentos/RutasProtegidas"; 
+import { MonitoreoSuelo } from "./pages/monitoreo/MonitoreoSuelo";
+import { Especies } from "./pages/plantas/Especies";
+import { FormEspecie } from "./pages/plantas/FormEspecie";
+import { FormPlanta } from "./pages/plantas/FormPlanta";
+import { VerPlanta } from "./pages/plantas/VerPlanta";
+import { IniciarSesion } from "./pages/usuario/IniciarSesion";
+import { RegistrarCuenta } from "./pages/usuario/RegistrarCuenta";
+import { VerUsuario } from "./pages/usuario/VerUsuario";
+{/*por si se me olvida aguegué Navigate en from "react-router-dom" */}
 
 function AppRoutes() {
   const location = useLocation();
@@ -41,6 +42,7 @@ function AppRoutes() {
     <>
       {!shouldHideHeader && <HeaderEscritorio />}
       <Routes>
+        <Route path="/" element={<Navigate to="/biolink_ipc/login" />} />  {/*REDIRECT lo agregue para que me llevara al login */}
         <Route path="/biolink_ipc/registro" element={<RegistrarCuenta />} />
         <Route
           path="/biolink_ipc/colaboradores/:id_espacios"
@@ -50,7 +52,7 @@ function AppRoutes() {
         <Route path="/biolink_ipc/home" element={<Home />} />
         <Route path="/biolink_ipc/loading" element={<PantallaCarga />} />
         <Route
-          path="/biolink_ipc/plantas/AgregarPlanta/:id_espacios"
+          path="/biolink_ipc/plantas/AgregarPlanta/:id_espacios"//aqui se deberia cambiar?
           element={<FormPlanta />}
         />
         <Route path="/biolink_ipc/plantas/:id" element={<VerPlanta />} />

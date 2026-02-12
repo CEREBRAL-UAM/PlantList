@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const UsuarioApi = axios.create({
-  baseURL: "http://localhost:8000/usuarios/apiv1/",
+  baseURL: "http://localhost:8000/usuarios/apiv1/", // cambio a localhost
 });
 
 export const registrarUsuario = (nuevoUsuario) => {
