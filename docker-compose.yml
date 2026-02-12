@@ -1,0 +1,50 @@
+services:
+  db:
+    image: mysql:8.1
+    container_name: biolink-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} 
+      MYSQL_DATABASE: ${DB_NAME}           
+      MYSQL_USER: ${DB_USER}              
+      MYSQL_PASSWORD: ${DB_PASSWORD}   
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./servidor/init_db/base_de_datos_script.sql:/docker-entrypoint-initdb.d/base_de_datos_script.sql
+
+  backend:
+    build: ./servidor
+    container_name: biolink-backend
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./servidor:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./cliente
+    container_name: biolink-frontend
+    volumes:
+      - ./cliente:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

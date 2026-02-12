@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 //import { datosUsuarioActual } from "../api/usuarios.api";
-import { Menu, X } from "lucide-react";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function Monitoreo() {
@@ -66,7 +65,7 @@ export function Monitoreo() {
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/monitorear.png"
+              src="/images/iconos/monitorear.png"
               alt="Monitoreo Ambiental"
               className="mx-auto h-20 md:h-24 mb-4"
             />
@@ -84,7 +83,7 @@ export function Monitoreo() {
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/monitorear.png "
+              src="/images/iconos/monitorear.png "
               alt="Monitoreo de Suelo"
               className="mx-auto h-20 md:h-24 mb-4"
             />
@@ -102,7 +101,7 @@ export function Monitoreo() {
             className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/gestionar.png"
+              src="/images/iconos/gestionar.png"
               alt="Monitoreo de Contaminantes"
               className="mx-auto h-20 md:h-24 mb-4"
             />

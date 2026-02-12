@@ -1,6 +1,4 @@
-import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function Experimentos() {
@@ -32,7 +30,7 @@ export function Experimentos() {
             dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/monitorear.png"
+              src="/images/iconos/monitorear.png"
               alt="Monitorear planta"
               className="mx-auto h-20 md:h-24 mb-4"
             />
@@ -53,7 +51,7 @@ export function Experimentos() {
                        dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/monitorear.png "
+              src="/images/iconos/monitorear.png "
               alt="Realizar experimento"
               className="mx-auto h-20 md:h-24 mb-4"
             />
@@ -74,7 +72,7 @@ export function Experimentos() {
                        dark:hover:bg-[#6d8864] transition block"
           >
             <img
-              src="/src/images/iconos/gestionar.png"
+              src="/images/iconos/gestionar.png"
               alt="Gestionar experimentos"
               className="mx-auto h-20 md:h-24 mb-4"
             />

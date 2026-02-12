@@ -1,37 +1,52 @@
-# Carpeta de entorno virtual (cubre venv, env o cualquier nombre común)
+# ====================
+# Entornos virtuales
+# ====================
 venv/
 env/
 ENV/
 .venv/
+.env
 
-/media/espacios/*
-!media/espacios/default.jpg
+# ====================
+# Node
+# ====================
+node_modules/
 
+# ====================
+# Carpeta media de Django
+# ====================
+# Ignora todo en media
+servidor/media/*
 
-/media/plantas/*
-!media/plantas/default.jpg
+# Excepto archivos default.jpg que quieras conservar
+!servidor/media/espacios/default.jpg
+!servidor/media/plantas/default.jpg
+!servidor/media/especies/default.jpg
+!servidor/media/fotos_perfil_usuarios/default.jpg
 
-/media/especies/*
-!media/especies/default.jpg
-
-/media/fotos_perfil_usuarios/*
-!media/fotos_perfil_usuarios/default.jpg
-
-# Archivos de configuración de Workbench, IDEs y demás
+# ====================
+# IDEs
+# ====================
 *.iml
 .idea/
 .vscode/
 
-# Archivos generados por pip
+# ====================
+# Pip logs
+# ====================
 pip-log.txt
 
-# Archivos innecesarios del sistema
+# ====================
+# Python cache
+# ====================
 __pycache__/
 *.py[cod]
 *.pyc
 *.pyo
 
-# SQLite u otros archivos de bases de datos
+# ====================
+# Bases de datos locales
+# ====================
 *.sqlite3
 *.db
 *.bak

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getDatosContaminantes } from "../../api/monitoreo.api";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
-import DateIcon from "../../images/iconos/Date.png";
-import IdIcon from "../../images/iconos/ID.png";
-import BluetoothIcon from "../../images/iconos/Bluetooth.png";
-import DescriptionIcon from "../../images/iconos/Description.png";
+import DateIcon from "/images/iconos/Date.png";
+import IdIcon from "/images/iconos/Id.png";
+import BluetoothIcon from "/images/iconos/Bluetooth.png";
+import DescriptionIcon from "/images/iconos/Description.png";
 
 export function MonitoreoContaminantes() {
   const [datos, setDatos] = useState([]);
@@ -44,7 +44,7 @@ export function MonitoreoContaminantes() {
                 {new Date(datos[0].fechaSensado).toLocaleString()}
               </p>
             </div>
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <img
                 src={IdIcon}
                 alt="Icono de ID Circuito"
@@ -53,7 +53,7 @@ export function MonitoreoContaminantes() {
               <p className="text-gray-800 dark:text-white">
                 <strong>ID Circuito:</strong> {datos[0].id_Circuito}
               </p>
-            </div>
+            </div> */}
             <div className="flex items-center space-x-3">
               <img
                 src={BluetoothIcon}
@@ -61,7 +61,7 @@ export function MonitoreoContaminantes() {
                 className="w-6 h-6"
               />
               <p className="text-gray-800 dark:text-white">
-                <strong>Bluetooth:</strong> {datos[0].id_bluetooth}
+                <strong>Bluetooth:</strong> {datos[0].bluetooth}
               </p>
             </div>
             <div className="flex items-center space-x-3">
