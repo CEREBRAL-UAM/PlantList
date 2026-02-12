@@ -637,14 +637,13 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   `Fecha_Sensado` DATE NOT NULL,
   `Hora_inicio` DATETIME NOT NULL,
   `Hora_fin` DATETIME NOT NULL,
-  `Distancia` FLOAT NULL,
   `id_PlantaIndividuo` INT NOT NULL,
   `id_Electrodos` INT NOT NULL,
   `bluetooth` VARCHAR(45) NOT NULL,  
   `id_Video` INT NOT NULL,
   `id_Usuario` INT NOT NULL,
   `id_espacios` INT NOT NULL,
-  `ENVIAR` BOOLEAN DEFAULT FALSE,    
+  `id_plaga` INT NULL, 
   PRIMARY KEY (`id_Experimento`),
   INDEX `id_Usuario` (`id_Usuario` ASC), 
   INDEX `id_PlantaIndividuo` (`id_PlantaIndividuo` ASC), 
@@ -653,14 +652,15 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   INDEX `bluetooth` (`bluetooth` ASC), 
   INDEX `id_TipoEstimulacion` (`id_TipoEstimulacion` ASC), 
   INDEX `id_PartePlanta` (`id_PartePlanta` ASC), 
-  INDEX `id_espacios` (`id_espacios` ASC), 
+  INDEX `id_espacios` (`id_espacios` ASC),
+  INDEX `fk_experimento_plagas_idx` (`id_plaga` ASC), 
   CONSTRAINT `experimento_ibfk_1`
     FOREIGN KEY (`id_Usuario`)
     REFERENCES `bd_ipc`.`usuario` (`id_Usuario`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_2`
     FOREIGN KEY (`id_PlantaIndividuo`)
-    REFERENCES `bd_ipc`.`plantaindividuo` (`id_PlantaIndividuo`)
+    REFERENCES `bd_ipc`.`plantainindividuo` (`id_PlantaIndividuo`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_3`
     FOREIGN KEY (`id_Electrodos`)
@@ -685,6 +685,11 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   CONSTRAINT `experimento_ibfk_8`
     FOREIGN KEY (`id_espacios`)
     REFERENCES `bd_ipc`.`espacios` (`id_espacios`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_experimento_plagas` 
+    FOREIGN KEY (`id_plaga`)
+    REFERENCES `bd_ipc`.`plagas` (`id_Plaga`)
+    ON DELETE SET NULL
     ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -697,6 +702,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimentoDifPot` (
   `Fecha_sensado` DATETIME NOT NULL,
   `Hora` TIME NOT NULL,
   `DifPot` FLOAT NOT NULL,
+  `distancia` FLOAT NULL, 
   PRIMARY KEY (`id_Experimento`, `Fecha_sensado`, `Hora`),
   CONSTRAINT `fk_experimentoDifPot_experimento`
     FOREIGN KEY (`id_Experimento`)
