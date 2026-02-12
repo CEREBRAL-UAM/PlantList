@@ -112,13 +112,13 @@ export function HeaderEscritorio() {
       {/* Header */}
       <div className="justify-center flex items-center gap-2">
         <img
-          src="/src/images/iconos/logo.png"
+          src="/images/iconos/logo.png"
           alt="logo modo claro"
           className="h-14 ml-2 block dark:hidden pl-4"
         />
 
         <img
-          src="/src/images/iconos/logo_oscuro.png"
+          src="/images/iconos/logo_oscuro.png"
           alt="logo modo oscuro"
           className="h-14 ml-2 hidden dark:block pl-4"
         />

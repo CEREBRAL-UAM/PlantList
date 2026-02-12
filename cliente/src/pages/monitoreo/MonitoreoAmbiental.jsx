@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getDatosAmbientales } from "../../api/monitoreo.api";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
-import DateIcon from "../../images/iconos/Date.png";
-import IdIcon from "../../images/iconos/ID.png";
-import BluetoothIcon from "../../images/iconos/Bluetooth.png";
-import DescriptionIcon from "../../images/iconos/Description.png";
+import DateIcon from "/images/iconos/Date.png";
+import IdIcon from "/images/iconos/Id.png";
+import BluetoothIcon from "/images/iconos/Bluetooth.png";
+import DescriptionIcon from "/images/iconos/Description.png";
 
 export function MonitoreoAmbiental() {
   const [datos, setDatos] = useState([]);
@@ -46,17 +46,17 @@ export function MonitoreoAmbiental() {
               </p>
             </div>
 
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <img src={IdIcon} alt="ID Circuito" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
                 <strong>ID Circuito:</strong> {datos[0].id_Circuito}
               </p>
-            </div>
+            </div> */}
 
             <div className="flex items-center space-x-3">
               <img src={BluetoothIcon} alt="Bluetooth" className="w-6 h-6" />
               <p className="text-gray-800 dark:text-white">
-                <strong>Bluetooth:</strong> {datos[0].id_bluetooth}
+                <strong>Bluetooth:</strong> {datos[0].bluetooth}
               </p>
             </div>
 

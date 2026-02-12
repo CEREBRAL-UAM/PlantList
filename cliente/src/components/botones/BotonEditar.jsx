@@ -19,7 +19,7 @@ export function BotonEditar({ dir }) {
         aria-label="Eliminar espacio"
       >
         <img
-          src="/src/images/iconos/icono_lapiz.png"
+          src="/images/iconos/icono_lapiz.png"
           alt="edit"
           className="w-5 h-5 opacity-100"
         />
