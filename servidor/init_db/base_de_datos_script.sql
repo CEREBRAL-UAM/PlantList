@@ -660,7 +660,7 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_2`
     FOREIGN KEY (`id_PlantaIndividuo`)
-    REFERENCES `bd_ipc`.`plantainindividuo` (`id_PlantaIndividuo`)
+    REFERENCES `bd_ipc`.`plantaindividuo` (`id_PlantaIndividuo`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_3`
     FOREIGN KEY (`id_Electrodos`)
