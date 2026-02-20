@@ -588,10 +588,10 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`video` (
   `id_Video` INT NOT NULL AUTO_INCREMENT,
-  `Direccion` VARCHAR(150) NOT NULL,
-  `Nombre` VARCHAR(45) NOT NULL,
+  `codigo_unico` VARCHAR(150) NOT NULL,
+  `archivo` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_Video`),
-  UNIQUE INDEX `Nombre` (`Nombre` ASC) 
+  UNIQUE INDEX `codigo_unico_UNIQUE` (`codigo_unico` ASC) 
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
@@ -632,6 +632,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   `id_Experimento` INT NOT NULL AUTO_INCREMENT,
+  `id_Sensado` INT NULL,                          -- movi el campo aqui
   `id_TipoEstimulacion` INT NOT NULL,
   `id_PartePlanta` INT NULL,
   `Fecha_Sensado` DATE NOT NULL,
@@ -650,10 +651,16 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   INDEX `id_Electrodos` (`id_Electrodos` ASC), 
   INDEX `id_Video` (`id_Video` ASC), 
   INDEX `bluetooth` (`bluetooth` ASC), 
+  INDEX `idx_sensado` (`id_Sensado` ASC),
   INDEX `id_TipoEstimulacion` (`id_TipoEstimulacion` ASC), 
   INDEX `id_PartePlanta` (`id_PartePlanta` ASC), 
   INDEX `id_espacios` (`id_espacios` ASC),
   INDEX `fk_experimento_plagas_idx` (`id_plaga` ASC), 
+  CONSTRAINT `fk_experimento_sensado`
+    FOREIGN KEY (`id_Sensado`)
+    REFERENCES `bd_ipc`.`sensadoambiental` (`id_Sensado`)
+    ON DELETE CASCADE                      -- si borras experimento, se borra el sensado
+    ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_1`
     FOREIGN KEY (`id_Usuario`)
     REFERENCES `bd_ipc`.`usuario` (`id_Usuario`)
@@ -766,6 +773,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `bd_ipc`.`sensadoambiental`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoambiental` (
+  `id_Sensado` INT NOT NULL AUTO_INCREMENT, -- una nueva llave primaria
   `FechaSensado` DATETIME NOT NULL,
   `TempAmbiental` FLOAT NULL DEFAULT NULL,
   `Humedad` FLOAT NULL DEFAULT NULL,
@@ -777,15 +785,15 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`sensadoambiental` (
   `Luz_Azul` FLOAT,
   `Luz_Blanca` FLOAT,
   `Luz_Roja` FLOAT, 
+  PRIMARY KEY (`id_Sensado`), -- para definir la pk
   INDEX `bluetooth` (`bluetooth` ASC), 
   CONSTRAINT `sensadoambiental_ibfk_2`
     FOREIGN KEY (`bluetooth`)
     REFERENCES `bd_ipc`.`circuito` (`bluetooth`)
     ON UPDATE CASCADE
-)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4;
-
+) 
+ENGINE = InnoDB 
+DEFAULT CHARSET = utf8mb4;
 
 -- -----------------------------------------------------
 -- Table `bd_ipc`.`sensadocontaminantes`
