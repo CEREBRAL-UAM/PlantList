@@ -13,6 +13,7 @@ router.register(r'origencrianza', OrigenCrianzaView)
 router.register(r'plagas', PlagasView)
 router.register(r'plantaindividuo', PlantaIndividuoView)
 router.register(r'experimento', ExperimentoView, basename='experimento')
+router.register(r'video', VideoView)
 
 urlpatterns = [
     path('', include(router.urls)),

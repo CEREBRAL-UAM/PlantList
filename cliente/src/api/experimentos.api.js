@@ -46,13 +46,18 @@ export const getPlantaIndividuo = () => {
     return ExperimentosApi.get("/plantaindividuo/")
 };
 
-export const searchGestionExperimentos = ({ q, limit, offset } = {}) => {
+export const searchGestionExperimentos = ({
+  espacio_id,
+  tipo_id,
+  fecha,
+} = {}) => {
   const params = new URLSearchParams();
-  if (q) params.append("q", q);
-  if (limit) params.append("limit", limit);
-  if (offset) params.append("offset", offset);
-  const qs = params.toString();
-  return ExperimentosApi.get(`/apiv1/gestion/${qs ? `?${qs}` : ""}`);
+
+  if (espacio_id) params.append("espacio_id", espacio_id);
+  if (tipo_id) params.append("tipo_id", tipo_id);
+  if (fecha) params.append("fecha", fecha);
+
+  return ExperimentosApi.get(`/apiv1/gestion/?${params.toString()}`);
 };
 
 export const deleteExperimento = (id) => {
@@ -63,4 +68,16 @@ export const getCircuitosPorEspacio = (espacioId) => {
   const params = new URLSearchParams();
   if (espacioId) params.append("espacioId", espacioId);
   return ExperimentosApi.get(`/apiv1/circuitos_por_espacio/?${params.toString()}`);
+};
+
+export const createVideo = (formData) => {
+  return ExperimentosApi.post("/video/", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const createExperimento = (data) => {
+  return ExperimentosApi.post("/experimento/", data);
 };
