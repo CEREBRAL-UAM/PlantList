@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export function Video({ width = 380, height = 220, pantallaStream }) {
+export function Video({ width = 380, height = 220, pantallaStream, onTerminar, onAceptar }) {
+
   const videoRef = useRef(null);
   const previewRef = useRef(null);
-
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const camaraStream = useRef(null);
@@ -11,11 +11,11 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
   const [grabando, setGrabando] = useState(false);
   const [mostrarPreview, setMostrarPreview] = useState(false);
   const [previewURL, setPreviewURL] = useState(null);
+  const [blobVideo, setBlobVideo] = useState(null);
 
   const [tiempo, setTiempo] = useState(0);
   const timerRef = useRef(null);
 
-  // Vista previa de cámara
   useEffect(() => {
     const iniciarCamara = async () => {
       try {
@@ -25,10 +25,8 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
         });
 
         camaraStream.current = stream;
+        if (videoRef.current) videoRef.current.srcObject = stream;
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
       } catch (err) {
         console.error("Error cámara:", err);
       }
@@ -36,21 +34,15 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
 
     iniciarCamara();
   }, []);
-  useEffect(() => {
-    if (mostrarPreview && camaraStream.current) {
-      camaraStream.current.getTracks().forEach(t => t.stop());
-    }
-  }, [mostrarPreview]);
 
-  // Cronómetro
   const iniciarTimer = () => {
     timerRef.current = setInterval(() => {
       setTiempo(t => t + 1);
     }, 1000);
   };
+
   const detenerTimer = () => clearInterval(timerRef.current);
 
-  // Iniciar grabación
   window.startScreenRecording = (stream) => {
     if (!stream) return;
 
@@ -65,9 +57,11 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
 
     recorder.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: "video/webm" });
+      setBlobVideo(blob);
       setPreviewURL(URL.createObjectURL(blob));
       setMostrarPreview(true);
       detenerTimer();
+      if (onTerminar) onTerminar();
     };
 
     recorder.start();
@@ -75,12 +69,9 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
     setGrabando(true);
   };
 
-  // Terminar grabación
   const terminarGrabacion = () => {
     mediaRecorderRef.current.stop();
-    // Detener pantalla
     pantallaStream.getTracks().forEach(t => t.stop());
-    // Detener cámara
     if (camaraStream.current) {
       camaraStream.current.getTracks().forEach(t => t.stop());
     }
@@ -90,7 +81,6 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
   return (
     <div className="flex flex-col items-center gap-4">
 
-      {/* Vista previa */}
       {mostrarPreview ? (
         <div className="flex flex-col items-center gap-4">
           <video
@@ -100,15 +90,15 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
             className="rounded-lg shadow"
             style={{ width, height }}
           />
-          <div className="flex gap-4">
-            <button className="px-4 py-2 bg-pl_green_c text-pl_white_b hover:bg-[#57804A] rounded-2xl font-nunito text-sm">
-              Aceptar
-            </button>
-          </div>
+          <button
+            className="px-4 py-2 bg-pl_green_c text-pl_white_b rounded-2xl"
+            onClick={() => onAceptar?.(blobVideo)}
+          >
+            Aceptar
+          </button>
         </div>
       ) : (
         <>
-          {/* Cámara en vivo */}
           <video
             ref={videoRef}
             autoPlay
@@ -118,16 +108,9 @@ export function Video({ width = 380, height = 220, pantallaStream }) {
           />
 
           {grabando && (
-            <div className="text-red-500 font-nunito text-xl">
-              {new Date(tiempo * 1000).toISOString().substr(11, 8)}
-            </div>
-          )}
-
-          {/* Botón Terminar */}
-          {grabando && (
             <button
               onClick={terminarGrabacion}
-              className="px-4 py-2 bg-pl_red_a text-pl_white_b hover:bg-[#734C30] rounded-2xl font-nunito text-sm"
+              className="px-4 py-2 bg-pl_red_a text-pl_white_b rounded-2xl"
             >
               Terminar
             </button>
