@@ -43,7 +43,6 @@
     const [materialElectrodosNombre, setMaterialElectrodosNombre] = useState("");
     const [plagaTipo, setPlagaTipo] = useState("");
     const [partePlanta, setPartePlanta] = useState(""); 
-    const [distancia, setDistancia] = useState("");
 
     // Modal
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -56,7 +55,6 @@
     useEffect(() => {
       setPlagaTipo("");
       setPartePlanta("");
-      setDistancia("");
     }, [tipoSeleccionado]);
 
     // Cargar catálogos base 
@@ -187,24 +185,28 @@
     const isProx  = tipoSeleccionado === "Proximidad";
     const isPlaga = tipoSeleccionado === "Plagas";
 
+    const tipoObj = tipoEsti.find(t => t.nombre === tipoSeleccionado);
+
+    const plagaObj = plagas.find(p => String(p.id_plaga) === String(plagaTipo));
+
     const navState = {
-      // Siempre
+      // IDs reales
+      id_espacios: espacioId,
+      id_PlantaIndividuo: plantaId,
+      id_TipoEstimulacion: tipoObj?.id_TipoEstimulacion,
+      id_Electrodos: materialElectrodosId,
+      bluetooth: circuitoBluetooth,
+      id_PartePlanta: partePlanta || null,
+      id_plaga: plagaTipo || null,
+
+      // VISUALES
       espacioNombre,
       plantaNombre,
-      plantaId,
       tipoEstimulacion: tipoSeleccionado,
-      circuitoBluetooth,
       circuitoLabel,
       materialElectrodosNombre,
-
-      // Solo si es Proximidad
-      ...(isProx ? { distancia } : {}),
-
-      // Solo si no es Proximidad (cubre Tacto, Plagas, etc.)
-      ...(!isProx ? { partePlanta: partePlantaNombre, partePlantaId: partePlanta } : {}),
-
-      // Solo si es Plagas
-      ...(isPlaga ? { plagaTipo } : {}),
+      partePlanta: partePlantaNombre,
+      plagaTipo: plagaObj?.alias || "",
     };
 
     return (
@@ -212,9 +214,9 @@
         <BannerUsuario />
 
         <div className="w-full max-w-4xl px-4 mx-auto mt-10">
-          <h2 className="text-2xl font-baloo text-center mb-6 text-pl_green_b dark:text-pl_white_a">
-            Experimento nuevo
-          </h2>
+          <h1 className="text-center text-2xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
+            EXPERIMENTO NUEVO
+          </h1>
 
           <form className="flex flex-col space-y-8 items-center w-full" onSubmit={(e) => e.preventDefault()}>
             {/* Contenedor espacios */}
@@ -373,7 +375,7 @@
                           const label = c ? `${c.tipo || "Circuito"}${c.bluetooth ? " · " + c.bluetooth : ""}` : "";
                           setCircuitoLabel(label);
                         }}
-                        disabled={!espacioId || !circuitos.length}
+                        disabled={!espacioId}
                       >
                         <option value="" disabled>
                           {espacioId ? "Seleccione el circuito" : "Seleccione un espacio primero"}
@@ -385,25 +387,6 @@
                         ))}
                       </select>
                     </div>
-
-                    {/* Distancia (solo si es proximidad) */}
-                    {isProx && (
-                      <div className="w-full max-w-md">
-                        <label className="block mb-2 font-nunito text-pl_green_b dark:text-pl_white_a">
-                          Distancia (m)
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="Ingrese distancia"
-                          className="bg-pl_green_input dark:bg-[#A3AE9A] text-pl_green_b/80
-                                    font-nunito rounded-2xl py-3 px-5 w-full drop-shadow-xl appearance-none"
-                          value={distancia}
-                          onChange={(e) => setDistancia(e.target.value)}
-                        />
-                      </div>
-                    )}
 
                     {/* Tipo de plaga (solo si es plagas) */}
                     {isPlaga && (
@@ -419,7 +402,7 @@
                         >
                           <option value="" disabled>Seleccione tipo de plaga</option>
                           {plagas.map((p) => (
-                            <option key={p.id_plaga} value={p.alias}>
+                            <option key={p.id_plaga} value={p.id_plaga}>
                               {p.alias}
                             </option>
                           ))}

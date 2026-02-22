@@ -7,7 +7,7 @@ export function InfoPanel({
   circuitoLabel = "",
   materialElectrodosNombre = "",
   partePlanta = "",
-  distancia = "",
+  distancia,
   plagaTipo = "",
 }) {
   return (
@@ -65,7 +65,7 @@ export function InfoPanel({
           {tipoEstimulacion === "Proximidad" && (
             <Row
               label="Distancia (m)"
-              value={distancia !== "" ? String(distancia) : "—"}
+              value={distancia ? String(distancia) : "0.50"}  
             />
           )}
 

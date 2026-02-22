@@ -78,3 +78,7 @@ class Circuito(models.Model):
 class TipoCircuito(models.Model):
     id_tipo_circuito = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "tipoCircuitos"
+        managed = False

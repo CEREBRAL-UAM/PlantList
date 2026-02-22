@@ -2,13 +2,7 @@ import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 
 export function BuscadorGestionExp({ onChange, value }) {
-  // Frases animadas del placeholder
-  const frases = [
-    "20/10/2025",
-    "Patio",
-    "Plagas/Tocar",
-    "00:00"
-  ];
+  const frases = ["20/10/2025", "Patio", "Plagas/Tocar", "00:00"];
 
   const [pIndex, setPIndex] = useState(0);
   const [cIndex, setCIndex] = useState(0);
@@ -45,42 +39,41 @@ export function BuscadorGestionExp({ onChange, value }) {
         }, PAUSA_VACIO);
       }
     }
-
     return () => clearTimeout(t);
   }, [escribiendo, cIndex, pIndex]);
 
   const manejadorCambios = (e) => {
-    onChange(e.target.value);
+    const texto = e.target.value;
+
+    let fecha = "";
+    let hora = "";
+
+    // fecha completa
+    let m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(texto);
+    if (m) {
+      const [, d, mo, y] = m;
+      fecha = `${y}-${mo}-${d}`;
+    }
+
+    // hora completa
+    m = /^(\d{2}):(\d{2})$/.exec(texto);
+    if (m) {
+      hora = texto;
+    }
+
+    onChange(texto, fecha, hora);
   };
 
   return (
-    <div
-      className="
-        flex w-full justify-end 
-        items-center mt-6
-      "
-    >
-      <div
-        className="
-          bg-pl_gray_input 
-          rounded-2xl shadow-lg 
-          w-[20%] flex pl-3 p-1.5 
-          items-center
-          dark:bg-pl_gray_dark_input
-          dark:text-pl_white_a
-        "
-      >
-        <Search className="ml-1 mr-3 text-pl_green_b w-6 h-6 dark:text-pl_gray_input" />
+    <div className="flex w-full justify-end items-center mt-6">
+      <div className="bg-pl_gray_input rounded-2xl shadow-lg w-[20%] flex pl-3 p-1.5 items-center dark:bg-pl_gray_dark_input">
+        <Search className="ml-1 mr-3 w-6 h-6" />
         <input
           type="text"
           value={value}
           onChange={manejadorCambios}
           placeholder={placeholder}
-          className="
-            w-full focus:outline-none bg-transparent
-            text-pl_green_b/80 text-base
-            dark:text-pl_white_a
-          "
+          className="w-full focus:outline-none bg-transparent"
         />
       </div>
     </div>

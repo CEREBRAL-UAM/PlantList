@@ -80,11 +80,6 @@ class Plagas(models.Model):
 
     class Meta:
         db_table = 'plagas'
-
-class Tacto(models.Model):
-    id_tipotacto = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=15, blank=True)
-    descripcion = models.CharField(max_length=50, blank=True)
     
 class PlantaIndividuo(models.Model):
     id_PlantaIndividuo = models.AutoField(primary_key=True)
@@ -124,11 +119,12 @@ class PlantaIndividuo(models.Model):
 
 class Video(models.Model):
     id_Video = models.AutoField(primary_key=True)
-    Direccion = models.CharField(max_length=150, blank=True)
+    codigo_unico = models.CharField(max_length=80, unique=True)
+    archivo = models.FileField(upload_to="videos/")
     Nombre = models.CharField(max_length=45, blank=True)
 
     class Meta:
-        db_table = 'video'
+        db_table = "video"
 
 class Experimento(models.Model):
     id_Experimento = models.AutoField(primary_key=True)
@@ -140,12 +136,13 @@ class Experimento(models.Model):
     id_PartePlanta = models.ForeignKey(
         'plantas.PartePlanta',
         on_delete=models.CASCADE,
-        db_column='id_PartePlanta'
+        db_column='id_PartePlanta',
+        null=True,
+        blank=True
     )
     Fecha_Sensado = models.DateField()
     Hora_inicio = models.DateTimeField()
     Hora_fin = models.DateTimeField()
-    Distancia = models.FloatField()
     id_PlantaIndividuo = models.ForeignKey(
         'PlantaIndividuo',
         on_delete=models.CASCADE,
@@ -175,6 +172,13 @@ class Experimento(models.Model):
         'plantas.Espacio',
         on_delete=models.CASCADE,
         db_column='id_espacios'
+    )
+    id_plaga = models.ForeignKey(
+        'Plagas',
+        on_delete=models.CASCADE,
+        db_column="id_plaga",
+        null=True,
+        blank=True
     )
 
     class Meta:

@@ -25,12 +25,4 @@ export const eliminarPlanta = (id) => {
 export const getPlantasPorEspacio = (id_espacios) =>
   axios.get(`/plantas/apiv1/plantas/?id_espacios=${id_espacios}`);
 
-// export const getPartePlanta = () => {
-//   return plantaApi.get("../parte_planta/");
-// };
-
-// export const getPartePlanta = async () =>
-//    axios.get("/partesPlanta/");
-
 export const getPartePlanta = () => axios.get("http://localhost:8000/plantas/apiv1/parte_planta/");
-
