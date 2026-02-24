@@ -4,13 +4,19 @@ import { BotonEliminarEspacio } from "../botones/BotonEliminarEspacio";
 
 export function EspacioCard({ espacio, onDelete }) {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // URL base del backend de Django
   const BASE_URL = "http://localhost:8000";
 
   const imagenUrl = espacio.foto
+<<<<<<< HEAD
     ? `${BASE_URL}${espacio.foto}`
     : `${BASE_URL}/media/espacios/default.jpg`;
+=======
+    ? `${API_URL}/${espacio.foto}`
+    : `${API_URL}/media/espacios/default.jpg`;
+>>>>>>> master
 
   return (
 
@@ -20,21 +26,21 @@ export function EspacioCard({ espacio, onDelete }) {
           navigate(`/biolink_ipc/verEspacio/${espacio.id_espacios}`);
         }}
         className="
-            relative cursor-pointer 
-            overflow-hidden rounded-2xl 
-            shadow-lg group
-          "
+          relative cursor-pointer 
+          overflow-hidden rounded-2xl 
+          shadow-lg group
+        "
       >
         <img
           src={imagenUrl}
           alt="No imagen disponible"
           className="
-              w-full h-48 
-              sm:h-56 md:h-64 lg:h-72 
-              object-cover rounded-2xl 
-              transition-transform duration-300 
-              ease-in-out group-hover:scale-105
-            "
+            w-full h-48 
+            sm:h-56 md:h-64 lg:h-72 
+            object-cover rounded-2xl 
+            transition-transform duration-300 
+            ease-in-out group-hover:scale-105
+          "
         />
 
         <div
@@ -53,11 +59,12 @@ export function EspacioCard({ espacio, onDelete }) {
             text-base sm:text-lg 
             md:text-xl font-nunito 
             z-20
-            "
+          "
         >
           {espacio.nombre_espacio}
         </h2>
       </div>
+
       <div className="flex justify-center gap-6 mt-3">
         <BotonEliminarEspacio
           id_espacios={espacio.id_espacios}

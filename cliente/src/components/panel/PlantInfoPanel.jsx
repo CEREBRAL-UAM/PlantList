@@ -3,45 +3,23 @@ import { getEspaciosUsuario } from "../../api/espacios.api";
 import { getPlantasPorEspacio } from "../../api/plantas.api";
 import { getPlantaIndividuo } from "../../api/experimentos.api";
 
-export function PlantInfoPanel() {
-  const [plantas, setPlantas] = useState([]);
-  const [plantaInd, setPlantaInd] = useState([]);
+export function PlantInfoPanel({
+  espacios,
+  espacioId,
+  setEspacioId,
+  plantas,
+  plantaInd,
+  plantaSeleccionadaId,
+  setPlantaSeleccionadaId,
+  plantaId,
+  setPlantaId,
+  plantaSeleccionada
+}) {
 
-  const [plantaNombre, setPlantaNombre] = useState("");
-  const [plantaId, setPlantaId] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      try {
-        // Traer espacios del usuario activo
-        const { data: espaciosUsuario } = await getEspaciosUsuario(); 
-
-        // Si el usuario no tiene espacios, no habrá plantas que mostrar
-        let plantasUsuario = [];
-        if (Array.isArray(espaciosUsuario) && espaciosUsuario.length > 0) {
-          // Traer plantas por cada espacio
-          const respuestasPlantas = await Promise.all(
-            espaciosUsuario.map((e) => getPlantasPorEspacio(e.id_espacios))
-          );
-          plantasUsuario = respuestasPlantas.flatMap((r) => r.data || []);
-        }
-        setPlantas(plantasUsuario);
-
-        
-        const resPlantaInd = await getPlantaIndividuo();
-        // Filtra individuos por espacios del usuario
-        const idsEspaciosUsuario = new Set((espaciosUsuario || []).map((e) => e.id_espacios));
-        const individuos = Array.isArray(resPlantaInd.data) ? resPlantaInd.data : [];
-        const individuosFiltrados = individuos.filter((pi) =>
-          // Si el backend incluye pi.id_espacios, filtramos, si no, se deja tal cual
-          pi?.id_espacios ? idsEspaciosUsuario.has(pi.id_espacios) : true
-        );
-        setPlantaInd(individuosFiltrados);
-      } catch (error) {
-        console.error("Error al cargar datos:", error);
-      }
-    })();
-  }, []);
+  const suelo = plantaSeleccionada?.id_suelo;
+  const etapa = plantaSeleccionada?.id_etapa;
+  const origen = plantaSeleccionada?.id_OrigenCrianza;
+  const plaga = plantaSeleccionada?.plagas_id_Plaga;
 
   return (
     <div
@@ -54,6 +32,38 @@ export function PlantInfoPanel() {
         <span className="text-xl font-baloo text-pl_green_b dark:text-pl_white_a">
           Información
         </span>
+      </div>
+
+      {/* Sección de espacio */}
+      <div className="relative mt-6 rounded-2xl border border-pl_green_b p-4 mb-5">
+        <div className="absolute -top-3 left-4 bg-pl_white_b px-2">
+          <span className="font-nunito text-pl_green_b dark:text-pl_white_a">
+            Espacio
+          </span>
+        </div>
+        
+        {/* Fila espacio */}
+        <Row
+          label="Espacio"
+          value={
+            <select
+              className="bg-pl_green_input dark:bg-[#A3AE9A]
+                         text-pl_green_b/80 font-nunito rounded-xl
+                         py-1 px-2 ml-2"
+              value={espacioId}
+              onChange={(e) => setEspacioId(e.target.value)}
+            >
+              <option value="" disabled>
+                Espacio
+              </option>
+              {espacios.map((e) => (
+                <option key={e.id_espacios} value={e.id_espacios}>
+                  {e.nombre || e.nombre_espacio}
+                </option>
+              ))}
+            </select>
+          }
+        />
       </div>
 
       {/* Sección Planta */}
@@ -72,14 +82,14 @@ export function PlantInfoPanel() {
               className="bg-pl_green_input dark:bg-[#A3AE9A] 
                          text-pl_green_b/80 font-nunito rounded-xl 
                          py-1 px-2 ml-2"
-              value={plantaNombre}
-              onChange={(e) => setPlantaNombre(e.target.value)}
+              value={plantaSeleccionadaId}
+              onChange={(e) => setPlantaSeleccionadaId(e.target.value)}
             >
               <option value="" disabled>
                 Planta
               </option>
               {plantas.map((p) => (
-                <option key={p.id_planta} value={p.nombre_cientifico}>
+                <option key={p.id_planta} value={p.id_planta}>
                   {p.nombre_cientifico}
                 </option>
               ))}
@@ -89,7 +99,7 @@ export function PlantInfoPanel() {
 
         {/* Fila ID Planta */}
         <Row
-          label="Id Planta"
+          label="ID Planta"
           value={
             <select
               className="bg-pl_green_input dark:bg-[#A3AE9A] 
@@ -109,6 +119,34 @@ export function PlantInfoPanel() {
             </select>
           }
         />
+
+        {plantaId && plantaSeleccionada && (
+          <>
+            {/* Suelo */}
+            <Row
+              label="Suelo"
+              value={suelo?.nombre_cientifico || "—"}
+            />
+
+            {/* Etapa */}
+            <Row
+              label="Etapa"
+              value={etapa?.nombre_cientifico || "—"}
+            />
+
+            {/* Origen */}
+            <Row
+              label="Origen"
+              value={origen?.nombre || "—"}
+            />
+
+            {/* Plaga */}
+            <Row
+              label="Plaga"
+              value={plaga?.alias || plaga?.nombre_cientifico || "—"}
+            />
+          </>
+        )}
       </div>
     </div>
   );
@@ -116,9 +154,13 @@ export function PlantInfoPanel() {
 
 function Row({ label, value }) {
   return (
-    <div className="flex items-center justify-between py-1 text-sm text-pl_green_b dark:text-pl_white_a">
-      <span className="font-nunito">{label}:</span>
-      <div className="flex-1">{value}</div>
+    <div className="flex items-center gap-2 py-1 text-sm text-pl_green_b dark:text-pl_white_a">
+      <span className="font-nunito font-semibold">
+        {label}:
+      </span>
+      <span className="font-nunito">
+        {value}
+      </span>
     </div>
   );
 }
