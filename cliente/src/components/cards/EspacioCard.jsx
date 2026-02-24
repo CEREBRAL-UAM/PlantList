@@ -5,11 +5,15 @@ import { BotonEliminarEspacio } from "../botones/BotonEliminarEspacio";
 export function EspacioCard({ espacio, onDelete }) {
   const navigate = useNavigate();
 
+  // URL base del backend de Django
+  const BASE_URL = "http://localhost:8000";
+
   const imagenUrl = espacio.foto
-    ? `${espacio.foto}`
-    : "http://localhost:8000/media/espacios/default.jpg";
+    ? `${BASE_URL}${espacio.foto}`
+    : `${BASE_URL}/media/espacios/default.jpg`;
 
   return (
+
     <div className="text-center">
       <div
         onClick={() => {

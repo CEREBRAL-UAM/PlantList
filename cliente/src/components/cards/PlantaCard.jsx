@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 export function PlantaCard({ planta }) {
   const navigate = useNavigate();
 
+  const BASE_URL = "http://localhost:8000";
+
+  // Concatenamos la URL base para que el navegador sepa ir al puerto 8000
   const imagenUrl = planta.foto
-    ? `${planta.foto}`
-    : "http://localhost:8000/media/plantas/default.jpg";
+  ? `${BASE_URL}${planta.foto}`
+  : `${BASE_URL}/media/plantas/default.jpg`;
 
   return (
     <div

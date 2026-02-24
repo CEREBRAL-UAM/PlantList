@@ -1,11 +1,16 @@
-import { eliminarPlanta } from "../../api/plantas.api";
 import { useNavigate } from "react-router-dom";
+import { eliminarPlanta } from "../../api/plantas.api";
 
 export function Planta({ planta }) {
   const navigate = useNavigate();
+  
+  // Definimos la URL base del backend
+  const BASE_URL = "http://localhost:8000";
+
+  // Concatenamos la URL base para que el navegador encuentre el archivo real
   const imagenUrl = planta.foto
-    ? `${planta.foto}`
-    : "http://localhost:8000/media/plantas/default.jpg";
+    ? `${BASE_URL}${planta.foto}`
+    : `${BASE_URL}/media/plantas/default.jpg`;
 
   return (
     <div className="max-w-lg mx-auto  p-6 rounded-lg ">
@@ -16,7 +21,7 @@ export function Planta({ planta }) {
 
       <img
         src={imagenUrl}
-        alt="imagen no dispobible"
+        alt="imagen no disponible"
         className="mt-4 rounded-lg w-full"
       />
 

@@ -10,6 +10,7 @@ node_modules/
 
 # Carpeta media de Django (excepto archivos por defecto)
 servidor/media/*
+!servidor/media/**/
 !servidor/media/espacios/
 !servidor/media/espacios/default.jpg
 !servidor/media/plantas/
