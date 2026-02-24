@@ -4,15 +4,26 @@ export function EspecieCard({ especie }) {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
+<<<<<<< HEAD
+  const BASE_URL = "http://localhost:8000";
+
+  const imagenUrl = especie.foto
+    ? `${BASE_URL}${especie.foto}`
+    : `${BASE_URL}/media/especies/default.jpg`;
+=======
   const imagenUrl = especie.foto
     ? `${API_URL}/${especie.foto}`
     : `${API_URL}/media/especies/default.jpg`;
+>>>>>>> master
 
   return (
     <div
       onClick={() => {
+<<<<<<< HEAD
+=======
         // IGNORAR, NO HACE NADA
         // navigate(`/plantlist/plantas/${especie.id_especie}`);
+>>>>>>> master
       }}
       className="
         relative cursor-pointer 
@@ -23,6 +34,9 @@ export function EspecieCard({ especie }) {
       <img
         src={imagenUrl}
         alt="No imagen disponible"
+<<<<<<< HEAD
+        className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-2xl transition-transform duration-300 ease-in-out group-hover:scale-105"
+=======
         className="
           w-full h-48 
           sm:h-56 md:h-64 lg:h-72 
@@ -30,6 +44,7 @@ export function EspecieCard({ especie }) {
           transition-transform duration-300 
           ease-in-out group-hover:scale-105
         "
+>>>>>>> master
       />
 
       <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/70 to-transparent z-10 rounded-2xl"></div>

@@ -1,16 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { BotonEliminarEspacio } from "../botones/BotonEliminarEspacio";
 import { BotonEditar } from "../botones/BotonEditar";
+import { BotonEliminarEspacio } from "../botones/BotonEliminarEspacio";
 
 export function EspacioCard({ espacio, onDelete }) {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
+  // URL base del backend de Django
+  const BASE_URL = "http://localhost:8000";
+
   const imagenUrl = espacio.foto
+<<<<<<< HEAD
+    ? `${BASE_URL}${espacio.foto}`
+    : `${BASE_URL}/media/espacios/default.jpg`;
+=======
     ? `${API_URL}/${espacio.foto}`
     : `${API_URL}/media/espacios/default.jpg`;
+>>>>>>> master
 
   return (
+
     <div className="text-center">
       <div
         onClick={() => {

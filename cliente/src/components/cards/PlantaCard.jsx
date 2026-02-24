@@ -4,9 +4,17 @@ export function PlantaCard({ planta }) {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
+  const BASE_URL = "http://localhost:8000";
+
+  // Concatenamos la URL base para que el navegador sepa ir al puerto 8000
   const imagenUrl = planta.foto
+<<<<<<< HEAD
+  ? `${BASE_URL}${planta.foto}`
+  : `${BASE_URL}/media/plantas/default.jpg`;
+=======
     ? `${API_URL}/${planta.foto}`
     : `${API_URL}/media/plantas/default.jpg`;
+>>>>>>> master
 
   return (
     <div

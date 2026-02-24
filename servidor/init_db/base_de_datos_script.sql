@@ -656,18 +656,21 @@ CREATE TABLE IF NOT EXISTS `bd_ipc`.`experimento` (
   INDEX `id_PartePlanta` (`id_PartePlanta` ASC), 
   INDEX `id_espacios` (`id_espacios` ASC),
   INDEX `fk_experimento_plagas_idx` (`id_plaga` ASC), 
+<<<<<<< HEAD
+=======
   CONSTRAINT `fk_experimento_sensado`
     FOREIGN KEY (`id_Sensado`)
     REFERENCES `bd_ipc`.`sensadoambiental` (`id_Sensado`)
     ON DELETE CASCADE                      -- si borras experimento, se borra el sensado
     ON UPDATE CASCADE,
+>>>>>>> master
   CONSTRAINT `experimento_ibfk_1`
     FOREIGN KEY (`id_Usuario`)
     REFERENCES `bd_ipc`.`usuario` (`id_Usuario`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_2`
     FOREIGN KEY (`id_PlantaIndividuo`)
-    REFERENCES `bd_ipc`.`plantaindividuo` (`id_PlantaIndividuo`)
+    REFERENCES `bd_ipc`.`plantainindividuo` (`id_PlantaIndividuo`)
     ON UPDATE CASCADE,
   CONSTRAINT `experimento_ibfk_3`
     FOREIGN KEY (`id_Electrodos`)

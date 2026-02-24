@@ -240,8 +240,8 @@ class Command(BaseCommand):
 
         relaciones = []  # acumulará PlantasEspacios
         for data in plantas_data:
-            foto_path = data.pop("foto")              # quitamos foto del dict
-            espacio_rel = data.pop("id_espacios")     # quitamos el espacio (para la intermedia)
+            foto_path = data.pop("foto")             
+            espacio_rel = data.pop("id_espacios")     
 
             # Construimos Planta sin el campo id_espacios
             planta = Planta(**data)

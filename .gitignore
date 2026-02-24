@@ -17,8 +17,13 @@ node_modules/
 # ====================
 # Ignora todo en media
 servidor/media/*
+<<<<<<< HEAD
+!servidor/media/**/
+!servidor/media/espacios/
+=======
 
 # Excepto archivos default.jpg que quieras conservar
+>>>>>>> master
 !servidor/media/espacios/default.jpg
 !servidor/media/plantas/default.jpg
 !servidor/media/especies/default.jpg
