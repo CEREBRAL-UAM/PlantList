@@ -32,7 +32,6 @@ export const eliminarPlanta = (id) => {
   return plantaApi.delete(`/${id}`);
 };
 
-<<<<<<< HEAD
 export const getPlantasPorEspacio = (id_espacios) => {
   // USAMOS apiBase para que use el puerto 8000
   // Y quitamos el "/" inicial para que se pegue correctamente a la baseURL
@@ -43,9 +42,3 @@ export const getPartePlanta = () => {
   // USAMOS apiBase aquí también
   return apiBase.get("parte_planta/");
 };
-=======
-export const getPlantasPorEspacio = (id_espacios) =>
-  axios.get(`/plantas/apiv1/plantas/?id_espacios=${id_espacios}`);
-
-export const getPartePlanta = () => axios.get("http://localhost:8000/plantas/apiv1/parte_planta/");
->>>>>>> master
