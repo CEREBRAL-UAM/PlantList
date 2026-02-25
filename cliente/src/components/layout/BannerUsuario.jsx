@@ -1,15 +1,17 @@
-import { BotonAtras } from "../botones/BotonAtras";
 import { Link } from "react-router";
+import { BotonAtras } from "../botones/BotonAtras";
 
 export function BannerUsuario({ dir }) {
-  const API_URL = import.meta.env.VITE_API_URL;
+  // Cambiamos API_URL por la dirección raíz del servidor
+  const BASE_URL = "http://localhost:8000"; 
 
   const fotoPerfil = localStorage.getItem("foto");
 
+  // Construimos la URL usando BASE_URL para que la ruta sea /media/...
   const imagenUrl =
     fotoPerfil && fotoPerfil !== "null"
-      ? `${API_URL}${fotoPerfil}`
-      : `${API_URL}/media/fotos_perfil_usuarios/default.jpg`;
+      ? `${BASE_URL}${fotoPerfil}`
+      : `${BASE_URL}/media/fotos_perfil_usuarios/default.jpg`;
 
   return (
     <div className="w-1/2">
@@ -18,7 +20,7 @@ export function BannerUsuario({ dir }) {
         <img
           src={imagenUrl}
           alt="Imagen no disponible"
-          className="rounded-full w-9 h-9"
+          className="rounded-full w-9 h-9 object-cover" // Añadí object-cover para que no se deforme
         />
         <Link to="/biolink_ipc/perfil">
           <h2 className="dark:text-pl_white_a font-baloo">
