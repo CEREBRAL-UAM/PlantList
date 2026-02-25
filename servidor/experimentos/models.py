@@ -121,7 +121,6 @@ class Video(models.Model):
     id_Video = models.AutoField(primary_key=True)
     codigo_unico = models.CharField(max_length=80, unique=True)
     archivo = models.FileField(upload_to="videos/")
-    Nombre = models.CharField(max_length=45, blank=True)
 
     class Meta:
         db_table = "video"

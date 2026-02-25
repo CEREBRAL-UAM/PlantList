@@ -6,6 +6,7 @@ import { sensorTiempoReal } from "../../api/sensorTiempoReal";
 import { Video } from "../../components/visuales/Video";
 import { GrabarPantalla } from "../../pages/experimentos/GrabarPantalla";
 import { createVideo, createExperimento } from "../../api/experimentos.api";
+import { ExperimentoGuardado } from "../../components/modal/ExperimentoGuardado";
 
 // Ticks para el eje Y y la cuadrícula
 const TICKS_Y = [0, 20, 40, 60, 80, 100];
@@ -63,6 +64,8 @@ export function ExperimentoProceso() {
 
   const onTerminar = () => setHoraFin(new Date().toISOString());
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   const onAceptar = async (blob) => {
     try {
       // 1) Subir video
@@ -91,7 +94,7 @@ export function ExperimentoProceso() {
 
       await createExperimento(payload);
 
-      alert("Experimento guardado");
+      setModalVisible(true);
     } catch (e) {
       console.error("ERROR COMPLETO:", e.response?.data);
       alert(JSON.stringify(e.response?.data));
@@ -188,7 +191,7 @@ export function ExperimentoProceso() {
             <div className="flex flex-col lg:flex-row gap-8 items-stretch">
 
               {/* Gráfica */}
-              <div className="flex-1 flex flex-col min-h-\[320px]\ p-4">
+              <div className="flex-1 flex flex-col min-h-[320px] p-4">
                 <div className="relative flex-1 pt-4 pb-6">
                   <div className="absolute inset-0 flex flex-col-reverse justify-between">
                     {TICKS_Y.map((v, idx) => (
@@ -215,7 +218,7 @@ export function ExperimentoProceso() {
               </div>
 
               {/* Video */}
-              <div className="flex-1 flex justify-center items-center min-h-\[320px]\">
+              <div className="flex-1 flex justify-center items-center min-h-[320px]">
                 <Video
                   width={400}
                   height={250}
@@ -228,6 +231,13 @@ export function ExperimentoProceso() {
           </div>
         </div>
       </div>
+      <ExperimentoGuardado
+        visible={modalVisible}
+        onClose={() => {
+          setModalVisible(false);
+          navigate("/biolink_ipc/GestionExperimentos");
+        }}
+        />
     </div>
   );
 }

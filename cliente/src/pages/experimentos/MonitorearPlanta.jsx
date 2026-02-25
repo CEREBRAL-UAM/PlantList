@@ -171,10 +171,10 @@ export function MonitorearPlanta() {
               </div>
 
               {/* Gráfica y botones */}
-              <div className="min-h-\[320px]\ flex flex-col md:flex-row gap-8 mt-2">
+              <div className="min-h-[320px] flex flex-col md:flex-row gap-8 mt-2">
 
                 {/* Gráfica */}
-                <div className="flex-1 flex flex-col min-h-\[320px]\ p-4">
+                <div className="flex-1 flex flex-col min-h-[320px] p-4">
                   <div className="relative flex-1 pt-8 pb-6">
                     <div className="absolute inset-0 flex flex-col-reverse justify-between">
                       {TICKS_Y.map((v, idx) => (
