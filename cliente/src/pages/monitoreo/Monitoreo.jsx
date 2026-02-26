@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 //import { datosUsuarioActual } from "../api/usuarios.api";
+import { Menu, X } from "lucide-react";
 import { BannerUsuario } from "../../components/layout/BannerUsuario";
 
 export function Monitoreo() {
@@ -62,55 +63,48 @@ export function Monitoreo() {
           {/* Monitoreo Ambiental */}
           <Link
             to="/biolink_ipc/monitoreoAmbiental"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+            style={{ backgroundColor: "rgb(133, 162, 100)" }} 
+            className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
-              src="/images/iconos/monitorear.png"
+              src="/public/images/iconos/ambiental.png"
               alt="Monitoreo Ambiental"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-[#ffffff] dark:text-[#F3EEEA] font-baloo">
               Monitoreo Ambiental
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
-              Aquí se visualizarán los datos ambientales.
-            </p>
           </Link>
 
           {/* Monitoteo de Suelo */}
           <Link
             to="/biolink_ipc/monitoreoSuelo"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+            style={{ backgroundColor: "rgb(133, 162, 100)" }} 
+            className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
-              src="/images/iconos/monitorear.png "
+              src="/public/images/iconos/suelo.png "
               alt="Monitoreo de Suelo"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-[#ffffff] dark:text-[#F3EEEA] font-baloo">
               Monitoreo de Suelo
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
-              Aquí se visualizarán los datos de suelo.
-            </p>
           </Link>
 
           {/* Monitoreo de Contaminantes */}
-          <Link
-            to="/biolink_ipc/monitoreoContaminantes"
-            className="bg-white dark:bg-[#76916D] rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl dark:hover:bg-[#6d8864] transition block"
+          <Link to="/biolink_ipc/monitoreoContaminantes" 
+          style={{ backgroundColor: "rgb(133, 162, 100)" }} 
+          className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
-              src="/images/iconos/gestionar.png"
+              src="/public/images/iconos/contaminantes.png"
               alt="Monitoreo de Contaminantes"
               className="mx-auto h-20 md:h-24 mb-4"
             />
-            <h3 className="text-xl text-[#264313] dark:text-[#F3EEEA] font-baloo">
+            <h3 className="text-xl text-[#ffffff] dark:text-[#F3EEEA] font-baloo">
               Monitoreo de Contaminantes
             </h3>
-            <p className="text-sm font-nunito text-[#446957] dark:text-[#F3EEEA] mt-2">
-              Aquí se visualizarán los datos de contaminantes.
-            </p>
           </Link>
         </div>
       </section>
