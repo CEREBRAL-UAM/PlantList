@@ -1,5 +1,5 @@
 from .models import *
-from monitoreo.models import Circuito, TipoCircuito
+from monitoreo.models import Circuito, TipoCircuitos
 from .serializers import *
 from .base import RolModelViewSet, RolAPIView
 from rest_framework.response import Response
@@ -102,24 +102,17 @@ class GestionExperimentosView(RolAPIView):
 class CircuitosPorEspacioView(RolAPIView):
     def get(self, request):
         espacio_id = request.query_params.get("espacioId")
-
         if not espacio_id:
             return Response({"results": []})
 
         circuitos = Circuito.objects.filter(
-            id_espacios=espacio_id 
-        ).order_by("bluetooth")
-
-        # precargar tipos de circuito
-        tipos = {
-            tc.id_tipo_circuito: tc.descripcion
-            for tc in TipoCircuito.objects.all()
-        }
+            espacio_id=espacio_id
+        ).select_related("tipo").order_by("bluetooth")
 
         data = [
             {
                 "bluetooth": c.bluetooth,
-                "tipo": tipos.get(c.id_tipo_circuito, "Circuito")
+                "tipo": c.tipo.descripcion if c.tipo else "Circuito"
             }
             for c in circuitos
         ]

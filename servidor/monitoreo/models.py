@@ -74,11 +74,10 @@ class TipoCircuitos(models.Model):
     id_tipo_circuito = models.AutoField(
         db_column='id_tipo_circuito', primary_key=True
     )
-    nombre = models.CharField(
-        db_column='tipo',
-        max_length=45,
+    descripcion = models.CharField(
+        db_column='descripcion',
+        max_length=50,
         blank=True,
-        null=True,
     )
 
     class Meta:
