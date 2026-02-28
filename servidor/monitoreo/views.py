@@ -17,11 +17,12 @@ from .models import (
     sensadoSuelo,
     SensadoContaminantes,
     Circuito,
-    Espacios,
-    EspaciosUsuarios,
-    #Usuario,
-    #Suelo,
 )
+
+from plantas.models import EspaciosUsuarios
+from plantas.models import Espacio
+from usuarios.models import Usuario
+
 
 from .serializers import (
     SensadoAmbientalSerializer,
@@ -77,11 +78,11 @@ def _user_ctx(request):
     ctx["user_id"] = uid
 
     ctx["allowed_spaces"] = list(
-        EspaciosUsuarios.objects
-        .filter(usuario_id=uid)
-        .values_list("espacio_id", flat=True)
-        .order_by("espacio_id")
+        EspaciosUsuarios.objects.filter(id_usuario=uid)
+        .values_list("id_espacios", flat=True)   
+        .order_by("id_espacios")
     )
+
 
     return ctx
 
@@ -433,12 +434,12 @@ class HistoricosSueloFacets(APIView):
                     "horas": [],
                 })
 
-            espacios_qs = Espacios.objects.filter(
+            espacios_qs = Espacio.objects.filter(
                 id_espacios__in=ctx["allowed_spaces"]
             ).order_by("id_espacios")
 
         else:
-            espacios_qs = Espacios.objects.all().order_by("id_espacios")
+            espacios_qs = Espacio.objects.all().order_by("id_espacios")
 
         espacios_ids = list(
             espacios_qs.values_list("id_espacios", flat=True)
@@ -603,12 +604,12 @@ class ContaminantesFacetsView(APIView):
                     "horas": [],
                 })
 
-            espacios_qs = Espacios.objects.filter(
+            espacios_qs = Espacio.objects.filter(
                 id_espacios__in=ctx["allowed_spaces"]
             ).order_by("id_espacios")
 
         else:
-            espacios_qs = Espacios.objects.all().order_by("id_espacios")
+            espacios_qs = Espacio.objects.all().order_by("id_espacios")
 
         espacios_ids = list(
             espacios_qs.values_list("id_espacios", flat=True)
@@ -895,12 +896,12 @@ class HistoricosAmbientalesFacets(APIView):
                     "horas": [],
                 })
 
-            espacios_qs = Espacios.objects.filter(
+            espacios_qs = Espacio.objects.filter(
                 id_espacios__in=ctx["allowed_spaces"]
             ).order_by("id_espacios")
 
         else:
-            espacios_qs = Espacios.objects.all().order_by("id_espacios")
+            espacios_qs = Espacio.objects.all().order_by("id_espacios")
 
         espacios_ids = list(
             espacios_qs.values_list("id_espacios", flat=True)

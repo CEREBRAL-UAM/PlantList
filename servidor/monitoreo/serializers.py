@@ -5,9 +5,12 @@ from .models import (
     sensadoSuelo,
     SensadoContaminantes,
     Circuito,
-    Espacios,
     Suelo,
 )
+
+from plantas.models import Espacio   # 
+from usuarios.models import Usuario  # 
+
 
 TIPO_MAP = {
     1: "AMBIENTAL",
@@ -146,5 +149,6 @@ class SensadoContaminantesSerializer(serializers.ModelSerializer):
 
 class EspacioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Espacios
+        model = Espacio 
         fields = ["id_espacios", "nombre_espacio"]
+

@@ -20,7 +20,6 @@ from monitoreo.views import (
 
 router = DefaultRouter()
 
-# ================= VIEWSETS =================
 router.register(
     r'sensadoambiental',
     SensadoAmbientalViewSet,
@@ -42,15 +41,12 @@ router.register(
 urlpatterns = [
     path('', include(router.urls)),
 
-    # ================= AMBIENTAL =================
     path('historicos/', HistoricosAmbientalesView.as_view(), name='historicos-ambientales'),
     path('historicos/facets/', HistoricosAmbientalesFacets.as_view(), name='historicos-ambientales-facets'),
     path('ambiental/', DatosAmbientalesView.as_view(), name='ambiental-list'),
 
-    # ================= SUELO =================
     path('suelo/facets/', HistoricosSueloFacets.as_view(), name='historicos-suelo-facets'),
     path("suelo/", DatosSueloView.as_view(), name="suelo-list"),
 
-    # ================= CONTAMINANTES =================
     path('contaminantes/facets/', ContaminantesFacetsView.as_view(), name='contaminantes-facets'),
 ]

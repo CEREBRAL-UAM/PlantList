@@ -1,9 +1,6 @@
 from rest_framework.permissions import BasePermission
 
 class IsProjectMemberOrAdmin(BasePermission):
-    """
-    Permite acceso si request.user existe (token válido de tu auth).
-    """
     def has_permission(self, request, view):
         user = getattr(request, "user", None)
         if not user:
