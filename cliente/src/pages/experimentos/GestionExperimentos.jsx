@@ -131,7 +131,7 @@ export function GestionExperimentos() {
       <BannerUsuario />
 
       <div className="w-full max-w-5xl px-4 mx-auto mt-10">
-        <h1 className="text-center text-2xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
+        <h1 className="text-center text-xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
           GESTIÓN DE EXPERIMENTOS
         </h1>
 

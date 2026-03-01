@@ -214,7 +214,7 @@
         <BannerUsuario />
 
         <div className="w-full max-w-4xl px-4 mx-auto mt-10">
-          <h1 className="text-center text-2xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
+          <h1 className="text-center text-xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
             EXPERIMENTO NUEVO
           </h1>
 

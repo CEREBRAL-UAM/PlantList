@@ -38,10 +38,30 @@ export function ExperimentoProceso() {
 
   // Sensores
   const sensores = [
-    { id: "tempAmb", label: "Temp Amb" },
-    { id: "tempHum", label: "Temp Hum" },
-    { id: "ph", label: "PH" },
-    { id: "humTierra", label: "Hum Tierra" },
+    {
+      id: "tempAmb",
+      label: "Temp Amb",
+      color: "rgb(175, 170, 190)",
+      icon: "/images/iconos/Temp.png",
+    },
+    {
+      id: "tempHum",
+      label: "Temp Hum",
+      color: "rgb(140, 180, 200)",
+      icon: "/images/iconos/temHumedad.png"
+    },
+    {
+      id: "ph",
+      label: "PH",
+      color: "rgb(189, 156, 137)",
+      icon: "/images/iconos/pH.png",
+    },
+    {
+      id: "humTierra",
+      label: "Hum Tierra",
+      color: "rgb(220, 175, 185)",
+      icon: "/images/iconos/Humedad.png",
+    },
   ];
   
   const valoresSensores = {
@@ -105,7 +125,7 @@ export function ExperimentoProceso() {
     <div className="min-h-screen flex flex-col lg:pt-2">
       <BannerUsuario />
 
-      <h1 className="text-center text-2xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6 mt-10">
+      <h1 className="text-center text-xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6 mt-10">
         EXPERIMENTO EN PROCESO
       </h1>
 
@@ -136,13 +156,20 @@ export function ExperimentoProceso() {
               {sensores.map((s) => (
                 <div
                   key={s.id}
-                  className="px-5 py-2 rounded-xl bg-[#cccccc] text-gray-800 text-sm font-nunito shadow-sm
-                   flex flex-col items-center"
+                  className="w-42 h-10 flex items-center justify-between rounded-full px-4 shadow"
+                  style={{ backgroundColor: s.color }}
                 >
-                  <span>{s.label}</span>
+                  <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <img
+                      src={s.icon}
+                      alt={s.label}
+                      className="w-6 h-6"
+                    />
+                    {s.label}
+                  </span>
 
-                  <span className="text-xs text-gray-600 mt-1">
-                    {valoresSensores[s.id] ?? "—"}
+                  <span className="text-sm font-bold text-white">
+                    {valoresSensores[s.id] ?? "—"} {s.unidad}
                   </span>
                 </div>
               ))}
