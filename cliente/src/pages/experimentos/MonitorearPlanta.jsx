@@ -36,17 +36,37 @@ export function MonitorearPlanta() {
 
   // Sensores
   const sensores = [
-    { id: "tempAmb", label: "Temp Amb" },
-    { id: "tempHum", label: "Temp Hum" },
-    { id: "ph", label: "PH" },
-    { id: "humTierra", label: "Hum Tierra" },
+    {
+      id: "tempAmb",
+      label: "Temp Amb",
+      color: "rgb(175, 170, 190)",
+      icon: "/images/iconos/Temp.png",
+    },
+    {
+      id: "tempHum",
+      label: "Temp Hum",
+      color: "rgb(140, 180, 200)",
+      icon: "/images/iconos/temHumedad.png"
+    },
+    {
+      id: "ph",
+      label: "PH",
+      color: "rgb(189, 156, 137)",
+      icon: "/images/iconos/pH.png",
+    },
+    {
+      id: "humTierra",
+      label: "Hum Tierra",
+      color: "rgb(220, 175, 185)",
+      icon: "/images/iconos/Humedad.png",
+    },
   ];
 
   const valoresSensores = {
-    humTierra: humedadActual !== null ? humedadActual : "—",
     tempAmb: "0",
     tempHum: "0",
     ph: "0",
+    humTierra: humedadActual !== null ? humedadActual : "—",
   };
 
   useEffect(() => {
@@ -127,7 +147,7 @@ export function MonitorearPlanta() {
       <BannerUsuario />
 
       <div className="w-full px-4 mx-auto mt-10">
-        <h1 className="text-center text-2xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
+        <h1 className="text-center text-xl font-bold font-nunito text-pl_green_b dark:text-pl_white_a mb-6">
         MONITOREO DE PLANTA
         </h1>
 
@@ -155,16 +175,24 @@ export function MonitorearPlanta() {
             <div className="md:col-span-2 w-full flex flex-col md:ml-5">
 
               {/* Chips de sensores */}
-              <div className="flex flex-wrap justify-center gap-4 mb-10">
+              <div className="flex flex-wrap justify-center gap-4 mb-5">
                 {sensores.map((s) => (
                   <div
                     key={s.id}
-                    className="px-5 py-2 rounded-xl bg-[#cccccc] text-gray-800 text-sm font-nunito shadow-sm
-                      flex flex-col items-center min-w-[110px]"
+                    className="w-42 h-10 flex items-center justify-between rounded-full px-4 shadow"
+                    style={{ backgroundColor: s.color }}
                   >
-                    <span>{s.label}</span>
-                    <span className="text-xs text-gray-600 mt-1">
-                      {valoresSensores[s.id] ?? "—"}
+                    <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                      <img
+                        src={s.icon}
+                        alt={s.label}
+                        className="w-6 h-6"
+                      />
+                      {s.label}
+                    </span>
+
+                    <span className="text-sm font-bold text-white">
+                      {valoresSensores[s.id] ?? "—"} {s.unidad}
                     </span>
                   </div>
                 ))}
@@ -241,7 +269,7 @@ export function MonitorearPlanta() {
               </div>
             </div>
             {/* Botón de realiar experimento */}
-            <div className="absolute right-15 mt-100">
+            <div className="absolute right-15 mt-95">
               <button
                 onClick={() => navigate("/biolink_ipc/RealizarExperimento")}
                 className="bg-[#446957] hover:bg-[#3e5b4d]
