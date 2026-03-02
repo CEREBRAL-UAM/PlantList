@@ -27,7 +27,20 @@ export function ExperimentoProceso() {
     plagaTipo = "",
   } = state || {};
 
-  const [modo, setModo] = useState("amperaje");
+  // Mostrar seleccionados
+  const [seleccionados, setSeleccionados] = useState({
+    iluminacion: true,
+    solar: true,
+    potencial: true,
+  });
+
+  // Alternación de selección
+  const alternarSeleccion = (key) => {
+    setSeleccionados((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   // Datos en tiempo real
   const datosHumedad = sensorTiempoReal();
@@ -63,6 +76,28 @@ export function ExperimentoProceso() {
       icon: "/images/iconos/Humedad.png",
     },
   ];
+
+  // Botones de gráfica
+  const botonesGrafica = [
+    {
+      id: "iluminacion",
+      label: "Iluminación",
+      icon: "/images/iconos/Lux.png",
+      color: "rgb(147, 161, 137)",
+    },
+    {
+      id: "solar",
+      label: "Radiación solar",
+      icon: "/images/iconos/Radiacion.png",
+      color: "rgb(207, 229, 226)",
+    },
+    {
+      id: "potencial",
+      label: "Diferencia potencial",
+      icon: "/images/iconos/difPotencial.png",
+      color: "rgb(177, 203, 168)", 
+    },
+  ];
   
   const valoresSensores = {
     humTierra: humedadActual !== null ? `${humedadActual}` : "—",
@@ -88,7 +123,7 @@ export function ExperimentoProceso() {
 
   const onAceptar = async (blob) => {
     try {
-      // 1) Subir video
+      // Subir video
       const fd = new FormData();
       fd.append("archivo", blob, "exp.webm");
       fd.append("Nombre", "Experimento");
@@ -96,7 +131,7 @@ export function ExperimentoProceso() {
       const resVideo = await createVideo(fd); // debe ser multipart
       const idVideo = resVideo.data.id_Video;
 
-      // 2) Guardar experimento
+      // Guardar experimento
       const payload = {
         id_TipoEstimulacion: state.id_TipoEstimulacion,
         id_PartePlanta: state.id_PartePlanta,
@@ -177,41 +212,28 @@ export function ExperimentoProceso() {
 
             {/* Botones */}
             <div className="mt-8 flex flex-wrap justify-center gap-4 mb-5">
-              <button
-                onClick={() => setModo("iluminacion")}
-                className={`w-40 h-10 rounded-full text-sm font-nunito transition
-                  ${
-                    modo === "iluminacion"
-                      ? "bg-pl_green_b text-pl_white_b"
-                      : "bg-[#93a189] text-[#243824]"
-                  }`}
-              >
-                Iluminación
-              </button>
+              {botonesGrafica.map((b) => {
+                const activo = seleccionados[b.id];
 
-              <button
-                onClick={() => setModo("solar")}
-                className={`w-40 h-10 rounded-full text-sm font-nunito transition
-                  ${
-                    modo === "solar"
-                      ? "bg-pl_green_a text-pl_white_b"
-                      : "bg-[#cfe5e2] text-[#3f6f6a]"
-                  }`}
-              >
-                Radiación solar
-              </button>
-
-              <button
-                onClick={() => setModo("potencial")}
-                className={`w-40 h-10 rounded-full text-sm font-nunito transition
-                  ${
-                    modo === "potencial"
-                      ? "bg-pl_green_c text-pl_white_b"
-                      : "bg-[#cfdcc9] text-[#4f644f]"
-                  }`}
-              >
-                Diferencia potencial
-              </button>
+                return (
+                  <div
+                    key={b.id}
+                    onClick={() => alternarSeleccion(b.id)}
+                    className="w-42 h-10 flex items-center justify-between rounded-full px-4 shadow cursor-pointer transition"
+                    style={{
+                      backgroundColor: activo ? b.color : "#d4d4d4",
+                    }}
+                  >
+                    <span
+                      className="flex items-center gap-2 text-sm font-semibold"
+                      style={{ color: activo ? "#ffffff" : "#243824" }}
+                    >
+                      <img src={b.icon} alt={b.label} className="w-6 h-6" />
+                        {b.label}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Gráfica y video */}
@@ -239,7 +261,7 @@ export function ExperimentoProceso() {
 
                   {/* Línea en la gráfica */}
                   <div className="absolute inset-y-0 right-0 left-12">
-                    <LineaHumedad data={datosHumedad} />
+                    {seleccionados.potencial && <LineaHumedad data={datosHumedad} />}
                   </div>
                 </div>
               </div>
