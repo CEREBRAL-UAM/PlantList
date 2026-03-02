@@ -83,13 +83,13 @@ export function ExperimentoProceso() {
       id: "iluminacion",
       label: "Iluminación",
       icon: "/images/iconos/Lux.png",
-      color: "rgb(147, 161, 137)",
+      color: "rgb(225, 210, 175)",
     },
     {
       id: "solar",
       label: "Radiación solar",
       icon: "/images/iconos/Radiacion.png",
-      color: "rgb(207, 229, 226)",
+      color: "rgb(189, 156, 137)",
     },
     {
       id: "potencial",
