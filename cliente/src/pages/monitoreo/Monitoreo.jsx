@@ -63,8 +63,7 @@ export function Monitoreo() {
           {/* Monitoreo Ambiental */}
           <Link
             to="/biolink_ipc/monitoreoAmbiental"
-            style={{ backgroundColor: "rgb(133, 162, 100)" }} 
-            className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
+            className="bg-pl_green_c rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
               src="/public/images/iconos/ambiental.png"
@@ -79,8 +78,7 @@ export function Monitoreo() {
           {/* Monitoteo de Suelo */}
           <Link
             to="/biolink_ipc/monitoreoSuelo"
-            style={{ backgroundColor: "rgb(133, 162, 100)" }} 
-            className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
+            className="bg-pl_green_c rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
               src="/public/images/iconos/suelo.png "
@@ -94,8 +92,7 @@ export function Monitoreo() {
 
           {/* Monitoreo de Contaminantes */}
           <Link to="/biolink_ipc/monitoreoContaminantes" 
-          style={{ backgroundColor: "rgb(133, 162, 100)" }} 
-          className="rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
+          className="bg-pl_green_c rounded-3xl p-4 md:p-6 shadow-md hover:shadow-xl transition block" 
           >
             <img
               src="/public/images/iconos/contaminantes.png"
