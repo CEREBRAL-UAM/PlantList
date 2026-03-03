@@ -118,7 +118,7 @@ class GestionExperimentoSerializer(serializers.ModelSerializer):
 
 class CircuitosPorEspacioSerializer(serializers.ModelSerializer):
     tipo = serializers.CharField(
-        source="id_tipo_circuito.descripcion",
+        source="tipo.descripcion",
         read_only=True
     )
 
