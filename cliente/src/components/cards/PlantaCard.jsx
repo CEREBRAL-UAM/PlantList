@@ -5,10 +5,10 @@ export function PlantaCard({ planta }) {
 
   const BASE_URL = "http://localhost:8000";
 
-  // Concatenamos la URL base para que el navegador sepa ir al puerto 8000
+  // URL base para que el navegador sepa ir al puerto 8000
   const imagenUrl = planta.foto
-  ? `${BASE_URL}${planta.foto}`
-  : `${BASE_URL}/media/plantas/default.jpg`;
+    ? `${BASE_URL}${planta.foto}`
+    : `${BASE_URL}/media/plantas/default.jpg`;
 
   return (
     <div
@@ -50,21 +50,31 @@ export function PlantaCard({ planta }) {
       ></div>
 
       <div className="absolute bottom-2 left-3 z-20">
-        <h2
-          className="
-        text-white 
-          text-base sm:text-lg 
-          font-semibold font-nunito"
-        >
-          {planta.nombre_cientifico}
-        </h2>
+        <div className="flex items-baseline gap-2">
+          <h2
+            className="
+            text-white 
+            text-base sm:text-lg 
+            font-semibold font-nunito"
+          >
+            {planta.nombre_cientifico}
+          </h2>
+
+          {/* Renderizado condicional de la cantidad de individuos */}
+          {planta.cantidad && (
+            <span className="text-white text-[10px] sm:text-xs font-light font-nunito opacity-90">
+              ({planta.cantidad} individuos)
+            </span>
+          )}
+        </div>
+
         <p
           className="
-        text-white text-xs
-         sm:text-sm
-         font-light 
-         font-nunito 
-         hidden sm:block"
+          text-white text-xs
+          sm:text-sm
+          font-light 
+          font-nunito 
+          hidden sm:block"
         >
           {planta.alias}
         </p>

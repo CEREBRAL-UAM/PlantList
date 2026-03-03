@@ -1,17 +1,19 @@
-from rest_framework import viewsets
-from rest_framework import status
-from rest_framework.views import APIView
-from .serializer import (PlantaSerializer, EspecieSerializer, PartePlantaSerializer,
-                          PlantaPartesSerializer, EspacioSerializer, CrearEspacioSerializer, EspaciosUsuariosSerializer,
-                          PlantasEspaciosSerializer)
-from .models import Planta, Especie, PartePlanta, PlantaPartes, Espacio, EspaciosUsuarios, PlantasEspacios
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from usuarios.models import Usuario
-from usuarios.serializers import UsuarioDatosSerializer 
-from usuarios.models import TokenUsuario
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from usuarios.models import TokenUsuario, Usuario
+from usuarios.serializers import UsuarioDatosSerializer
+
+from .models import (Espacio, EspaciosUsuarios, Especie, PartePlanta, Planta,
+                     PlantaPartes, PlantasEspacios)
+from .serializer import (CrearEspacioSerializer, EspacioSerializer,
+                         EspaciosUsuariosSerializer, EspecieSerializer,
+                         PartePlantaSerializer, PlantaPartesSerializer,
+                         PlantaSerializer, PlantasEspaciosSerializer)
 from .utils import generar_clave_acceso_unica
+
 
 # Create your views here.
 class PlantaView(viewsets.ModelViewSet):
@@ -22,7 +24,7 @@ class PlantaView(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         id_espacios = self.request.query_params.get("id_espacios")
         if id_espacios:
-            queryset = queryset.filter(rel_espacios__id_espacio_id=id_espacios).distinct()
+            queryset = queryset.filter(rel_espacios__id_espacio=id_espacios).distinct()
         return queryset
 
 class EspecieView(viewsets.ModelViewSet):

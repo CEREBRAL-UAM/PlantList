@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEspacio } from "../../api/espacios.api";
-// IMPORTANTE: Traer la función de vinculación
 import { asignarPlantaAEspacio, crearPlanta } from "../../api/plantas.api";
 
 export function FormPlanta() {
   const { id_espacios } = useParams();
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm({
+    defaultValues: { cantidad: 1 } // Valor por defecto para el nuevo campo
+  });
   const [espacio, setEspacio] = useState([]);
 
   const onSubmit = handleSubmit(async (data) => {
@@ -17,33 +18,30 @@ export function FormPlanta() {
     formData.append("alias", data.alias);
     formData.append("descripcion", data.descripcion);
     formData.append("familia", data.familia);
-    // Nota: Si tu modelo Planta no tiene id_espacios, Django ignorará esto en el primer POST
     
     if (data.foto[0]) {
       formData.append("foto", data.foto[0]);
     }
 
     try {
-  // 1. Crear la planta
-  const res = await crearPlanta(formData);
-  const nuevaPlantaId = res.data.id_planta; 
+      // 1. Crear la planta
+      const res = await crearPlanta(formData);
+      const nuevaPlantaId = res.data.id_planta; 
 
-  // 2. VINCULACIÓN (Ajustado según el error 400)
-  await asignarPlantaAEspacio({
-    id_Planta: nuevaPlantaId,      // Con 'P' mayúscula como pidió el error
-    id_espacio: parseInt(id_espacios), // En singular como pidió el error
-    cantidad: 1,                   // Agregamos este campo que falta
-    // id_usuario: 1               // Si el error no lo mencionó, puedes quitarlo o dejarlo
+      // 2. VINCULACIÓN CON CANTIDAD DINÁMICA
+      await asignarPlantaAEspacio({
+        id_Planta: nuevaPlantaId,
+        id_espacio: parseInt(id_espacios),
+        cantidad: parseInt(data.cantidad), // <--- Valor capturado del formulario
+      });
+
+      console.log("¡Vinculación exitosa!");
+      navigate(`/biolink_ipc/verEspacio/${id_espacios}`);
+      
+    } catch (error) {
+      console.error("Error en el proceso:", error.response?.data || error);
+    }
   });
-
-  console.log("¡Vinculación exitosa!");
-  navigate(`/biolink_ipc/verEspacio/${id_espacios}`);
-  
-} catch (error) {
-  console.error("Error en el proceso:", error.response?.data || error);
-}
-  });
-
 
   useEffect(() => {
     async function cargarEspacio() {
@@ -53,7 +51,7 @@ export function FormPlanta() {
       }
     }
     cargarEspacio();
-  }, []);
+  }, [id_espacios]);
 
   return (
     <div className=" lg:pt-2">
@@ -79,6 +77,13 @@ export function FormPlanta() {
           placeholder="Descripción"
           {...register("descripcion", { required: true })}
         ></textarea>
+
+        <input
+          type="number"
+          min="1"
+          placeholder="Cantidad de individuos"
+          {...register("cantidad", { required: true, min: 1 })}
+        />
 
         <input
           type="file"
