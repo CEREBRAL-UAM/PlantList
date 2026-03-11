@@ -57,8 +57,8 @@ export function MonitorearPlanta() {
       icon: "/images/iconos/Temp.png",
     },
     {
-      id: "tempHum",
-      label: "Temp Hum",
+      id: "humAmb",
+      label: "Hum Amb",
       color: "rgb(140, 180, 200)",
       icon: "/images/iconos/temHumedad.png"
     },
@@ -100,7 +100,7 @@ export function MonitorearPlanta() {
 
   const valoresSensores = {
     tempAmb: "0",
-    tempHum: "0",
+    humAmb: "0",
     ph: "0",
     humTierra: humedadActual !== null ? humedadActual : "—",
   };
