@@ -1305,34 +1305,45 @@ export function MonitoreoAmbiental() {
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-3 mt-2">
+              {/* Contenedor de Chips */}
+              <div className="flex flex-wrap gap-3">
                 {metricKeys
-                  .filter((k) => !["Voltaje", "Amperaje"].includes(k))
-                  .map((k) => {
-                    const active = activeKeys.has(k);
-                    return (
-                      <button
-                        key={k}
-                        type="button"
-                        onClick={() => toggleKey(k)}
-                        className={`px-4 py-2 rounded-full font-semibold shadow-sm border ${
-                          active
-                            ? "text-white"
-                            : "bg-[#d4d4d4] text-[#374151]"
-                        }`}
-                        style={{
-                          backgroundColor: active
-                            ? palette[k].color
-                            : undefined,
-                          borderColor: active
-                            ? palette[k].color
-                            : "#D1D5DB",
-                        }}
-                      >
-                        {palette[k].chip}
-                      </button>
-                    );
-                  })}
+                .filter((k) => 
+                  ["TempAmbiental", "Humedad", "Lux", "Radiacion", "Luz_Azul", "Luz_Blanca", "Luz_Roja"].includes(k))
+                .map((k) => {
+                  const active = activeKeys.has(k);
+                  const iconoMap = {
+                    TempAmbiental: "Temp",
+                    Humedad: "Humedad",
+                    Lux: "Lux",
+                    Radiacion: "Radiacion",
+                    Luz_Azul: "LuzAzul",
+                    Luz_Blanca: "luzBlanca",
+                    Luz_Roja: "LuzRoja"
+                };
+                
+                return (
+                <button key={k} type="button" onClick={() => toggleKey(k)} 
+                className={`flex items-center gap-3 rounded-full px-4 py-2 shadow-md transition-all border-2 ${
+                  active ? "scale-100 opacity-100" 
+                  : "scale-95 opacity-50 grayscale bg-[#f3f4f6] border-[#d1d5db]"
+                }`}
+                style={{
+                  backgroundColor: active ? palette[k].color : undefined,
+                  borderColor: active ? "rgba(255,255,255,0.4)" : "transparent",
+                }}
+                >
+                  <img 
+                  src={`/images/iconos/${iconoMap[k] || k}.png`} 
+                  alt={k} 
+                  className="w-6 h-6 object-contain"
+                  />
+                  <span className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"}`}>
+                    {palette[k].chip}
+                  </span>
+                </button>
+                );
+                })}
               </div>
 
               {/* GRÁFICA + BOTONES VOLTAJE/AMPERAJE + PANEL DERECHA */}
@@ -1356,45 +1367,41 @@ export function MonitoreoAmbiental() {
                   </div>
                 </div>
 
-                {/* botones Voltaje / Amperaje */}
-                <div className="flex flex-col items-center gap-4 mt-10">
-                  {["Voltaje", "Amperaje"].map((k) => {
+                <div className="flex flex-wrap gap-3 mt-6 pt-4 border-t border-gray-100">
+                  {metricKeys
+                  .filter((k) => ["Voltaje", "Amperaje"].includes(k))
+                  .map((k) => {
                     const active = activeKeys.has(k);
                     return (
-                      <button
-                        key={k}
-                        type="button"
-                        onClick={() => toggleKey(k)}
-                        className={`px-4 py-2 rounded-full font-semibold shadow-sm border text-sm ${
-                          active ? "text-white" : "bg-[#d4d4d4] text-[#374151]"
-                        }`}
-                        style={{
-                          backgroundColor: active ? palette[k].color : undefined,
-                          borderColor: active ? palette[k].color : "#D1D5DB",
-                        }}
-                      >
+                    <button
+                    key={k}
+                    type="button"
+                    onClick={() => toggleKey(k)}
+                    className={`flex items-center gap-3 rounded-full px-4 py-2 min-w-[130px] shadow-md transition-all border-2 ${
+                      active ? "scale-100 opacity-100" : "scale-95 opacity-50 grayscale bg-[#f3f4f6] border-[#d1d5db]"
+                    }`}
+                    style={{
+                      backgroundColor: active ? palette[k].color : undefined,
+                      borderColor: active ? "rgba(255,255,255,0.4)" : "transparent",
+                    }}
+                    >
+                      <img 
+                      src={`/images/iconos/${k}.png`} 
+                      alt={k} 
+                      className="w-6 h-6 object-contain" 
+                      />
+                      <span className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"}`}>
                         {palette[k].chip}
-                      </button>
+                      </span>
+                    </button>
                     );
-                  })}
-                </div>
+                    })}
+                  </div>
 
                 {/* tarjeta de datos */}
                 <aside className="bg-[#f4efe9] border border-[#e3dbd3] rounded-xl shadow p-5">
                   <div className="space-y-3 text-sm">
-                    {/* Fecha */}
-                    <div className="flex justify-between gap-4">
-                      <div className="flex gap-3 items-center">
-                        <img src="/images/iconos/Date.png" alt="Fecha" className="w-6 h-6" />
-                        <span className="font-semibold text-[#2e5d32]">
-                          Fecha
-                        </span>
-                      </div>
-                      <span className="text-gray-800 text-right">
-                        {resumen ? displayInTZ(resumen.fecha) : "—"}
-                      </span>
-                    </div>
-
+        
                     {/* Espacio */}
                     <div className="flex justify-between gap-4">
                       <div className="flex gap-3 items-center">
@@ -1405,6 +1412,19 @@ export function MonitoreoAmbiental() {
                       </div>
                       <span className="text-gray-800 text-right">
                         {resumenEspacioNombre}
+                      </span>
+                    </div>
+
+                    {/* Fecha */}
+                    <div className="flex justify-between gap-4">
+                      <div className="flex gap-3 items-center">
+                        <img src="/images/iconos/Date.png" alt="Fecha" className="w-6 h-6" />
+                        <span className="font-semibold text-[#2e5d32]">
+                          Fecha
+                        </span>
+                      </div>
+                      <span className="text-gray-800 text-right">
+                        {resumen ? displayInTZ(resumen.fecha) : "—"}
                       </span>
                     </div>
 

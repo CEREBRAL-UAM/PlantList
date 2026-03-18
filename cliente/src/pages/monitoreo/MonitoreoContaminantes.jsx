@@ -1020,7 +1020,6 @@ export function MonitoreoContaminantes() {
                     ))}
                   </select>
 
-                  {/* BOTONES (azul para Consultar, gris para Limpiar) */}
                   <div className="flex gap-2 ml-auto">
                     <button
                       type="button"
@@ -1057,26 +1056,34 @@ export function MonitoreoContaminantes() {
                 )}
               </div>
 
-              {/* Chips de variables */}
-              <div className="flex flex-wrap gap-3 mt-2">
-                {metricKeys.map((k) => {
+              {/* Contenedor de Chips */}
+              <div className="flex flex-wrap gap-3 mt-4">
+                 {metricKeys
+                 .filter((k) => ["CO", "CO2", "O", "COVs"].includes(k)) 
+                 .map((k) => {
                   const active = activeKeys.has(k);
-                  return (
-                    <button
-                      key={k}
-                      type="button"
-                      onClick={() => toggleKey(k)}
-                      className={`px-4 py-2 rounded-full font-semibold shadow-sm border text-sm ${
-                        active ? "text-white" : "bg-[#d4d4d4] text-[#374151]"
-                      }`}
-                      style={{
-                        backgroundColor: active ? palette[k].color : undefined,
-                        borderColor: active ? palette[k].color : "#D1D5DB",
-                      }}
-                    >
-                      {palette[k].chip}
-                    </button>
-                  );
+                  const iconoNombre = k === "O" ? "O2" : k;
+              
+                return (
+                <button key={k} type="button" onClick={() => toggleKey(k)} 
+                className={`flex items-center gap-3 rounded-full px-4 py-2 shadow-md transition-all border-2 ${
+                  active ? "scale-100 opacity-100" : "scale-95 opacity-50 grayscale bg-[#f3f4f6] border-[#d1d5db]"
+                }`}
+                style={{
+                  backgroundColor: active ? palette[k].color : undefined,
+                  borderColor: active ? "rgba(255,255,255,0.4)" : "transparent",
+                }}
+                >
+                  <img 
+                  src={`/images/iconos/${iconoNombre}.png`} 
+                  alt={k} 
+                  className="w-6 h-6 object-contain" 
+                  />
+                  <span className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"}`}>
+                    {palette[k].chip}
+                  </span>
+                </button>
+                );
                 })}
               </div>
 
