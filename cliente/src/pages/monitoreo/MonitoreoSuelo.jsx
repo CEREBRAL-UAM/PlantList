@@ -819,7 +819,6 @@ export function MonitoreoSuelo() {
     const t = setInterval(() => tickLive(false), POLL_MS);
     return () => clearInterval(t);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasAccess, rangeMode, idCircuito, noSpaces]);
 
   /* =================== ACTIVAR/DESACTIVAR SERIES =================== */
@@ -924,10 +923,7 @@ export function MonitoreoSuelo() {
                     {ultimoPublic.descripcion_suelo ?? "Sin descripción"}
                   </span>
                 </div>
-
               </div>
-
-              
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-10">
                 {/* Voltaje */}
@@ -1032,7 +1028,7 @@ export function MonitoreoSuelo() {
             </div>
           </div>
         ) : (
-            
+
             <div className="max-w-6xl mx-auto mt-6 space-y-4">
               
               {/* ================= FILTROS ================= */}
@@ -1163,30 +1159,37 @@ export function MonitoreoSuelo() {
                   </div>
                 )}
               </div>
-
-              {/* ================= CHIPS (solo pH y humedad) ================= */}
-              <div className="flex flex-wrap gap-3 mt-2">
+              
+              {/* Contenedor de Chips */}
+              <div className="flex flex-wrap gap-3 mt-4">
                 {metricKeys
-                  .filter((k) => !["Voltaje", "Amperaje"].includes(k))
-                  .map((k) => {
-                    const active = activeKeys.has(k);
-                    return (
-                      <button
-                        key={k}
-                        onClick={() => toggleKey(k)}
-                        className={`px-4 py-2 rounded-full font-semibold shadow-sm border text-sm ${
-                          active ? "text-white" : "bg-[#d4d4d4] text-[#374151]"
-                        }`}
-                        style={{
-                          backgroundColor: active ? palette[k].color : undefined,
-                          borderColor: active ? palette[k].color : "#D1D5DB",
-                        }}
-                      >
-                        {palette[k].chip}
-                      </button>
-                    );
-                  })}
-              </div>
+                .filter((k) => ["PhSuelo", "HumedadSuelo"].includes(k))
+                .map((k) => {
+                  const active = activeKeys.has(k);
+                  const iconoNombre = k === "PhSuelo" ? "pH" : "Humedad";
+                
+              return (
+              <button key={k} type="button" onClick={() => toggleKey(k)}
+              className={`flex items-center gap-3 rounded-full px-4 py-2 shadow-md transition-all border-2 ${
+                active ? "scale-100 opacity-100" : "scale-95 opacity-50 grayscale bg-[#f3f4f6] border-[#d1d5db]"
+              }`}
+              style={{
+                backgroundColor: active ? palette[k].color : undefined,
+                borderColor: active ? "rgba(255,255,255,0.4)" : "transparent",
+              }}
+              >
+                <img 
+                src={`/images/iconos/${iconoNombre}.png`} 
+                alt={k} 
+                className="w-6 h-6 object-contain" 
+                />
+                <span className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"}`}>
+                  {palette[k].chip}
+                </span>
+              </button>
+              );
+              })}
+            </div>
 
               {/* ================= GRÁFICA + BOTONES + TARJETA ================= */}
               <div className="mt-4 grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_120px_340px] gap-6 items-start">
@@ -1209,27 +1212,36 @@ export function MonitoreoSuelo() {
                   </div>
                 </div>
 
-                {/* BOTONES Voltaje/Amperaje */}
-                <div className="flex flex-col items-center gap-4 mt-10">
-                  {["Voltaje", "Amperaje"].map((k) => {
+                <div className="flex flex-wrap gap-3 mt-3">
+                  {metricKeys
+                  .filter((k) => ["Voltaje", "Amperaje"].includes(k))
+                  .map((k) => {
                     const active = activeKeys.has(k);
                     return (
-                      <button
-                        key={k}
-                        onClick={() => toggleKey(k)}
-                        className={`px-4 py-2 rounded-full font-semibold shadow-sm border text-sm ${
-                          active ? "text-white" : "bg-[#d4d4d4] text-[#374151]"
-                        }`}
-                        style={{
-                          backgroundColor: active ? palette[k].color : undefined,
-                          borderColor: active ? palette[k].color : "#D1D5DB",
-                        }}
-                      >
+                    <button
+                    key={k}
+                    type="button"
+                    onClick={() => toggleKey(k)}
+                    className={`flex items-center gap-3 rounded-full px-4 py-2 min-w-[130px] shadow-md transition-all border-2 ${
+                      active ? "scale-100 opacity-100" : "scale-95 opacity-50 grayscale bg-[#f3f4f6] border-[#d1d5db]"
+                    }`}
+                    style={{
+                      backgroundColor: active ? palette[k].color : undefined,
+                      borderColor: active ? "rgba(255,255,255,0.4)" : "transparent",
+                    }}
+                    >
+                      <img 
+                      src={`/images/iconos/${k}.png`} 
+                      alt={k} 
+                      className="w-6 h-6 object-contain" 
+                      />
+                      <span className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"}`}>
                         {palette[k].chip}
-                      </button>
+                      </span>
+                    </button>
                     );
-                  })}
-                </div>
+                    })}
+                  </div>
 
                 {/* ================= TARJETA LATERAL ================= */}
                 <aside className="bg-[#f4efe9] border border-[#e3dbd3] rounded-xl shadow p-5">
