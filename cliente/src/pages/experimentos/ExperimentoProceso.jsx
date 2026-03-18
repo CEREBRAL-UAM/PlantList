@@ -135,7 +135,7 @@ export function ExperimentoProceso() {
       const payload = {
         id_TipoEstimulacion: state.id_TipoEstimulacion,
         id_PartePlanta: state.id_PartePlanta,
-        Fecha_Sensado: new Date().toISOString().slice(0, 10),
+        Fecha_Sensado: new Date().toLocaleDateString("en-CA"),
         Hora_inicio: horaInicio,
         Hora_fin: horaFin || new Date().toISOString(),
         id_PlantaIndividuo: state.id_PlantaIndividuo,
