@@ -28,16 +28,15 @@ from .serializers import (
     SensadoAmbientalSerializer,
     SensadoSueloSerializer,
     SensadoContaminantesSerializer,
-    #EspacioSerializer,
 )
 
 from usuarios.authentication import TokenAuthentication
 from monitoreo.permissions import IsProjectMemberOrAdmin
 
 
-TIPO_AMBIENTAL = 1
-TIPO_SUELO = 2
-TIPO_CONTAMINANTES = 3
+TIPO_AMBIENTAL = "Ambiental"
+TIPO_SUELO = "Suelo"
+TIPO_CONTAMINANTES = "Contaminantes"
 
 SERVER_TZ = ZoneInfo("America/Mexico_City")
 
@@ -49,7 +48,6 @@ def _to_int(v):
 
 
 def _resolve_uid_from_usuario_table(user):
-    # Caso normal: modelo Usuario propio
     uid = getattr(user, "id_Usuario", None)
     if uid:
         return uid
@@ -102,6 +100,162 @@ def parse_server_local(dt_str: str):
     dt_naive = datetime.strptime(dt_str, "%Y-%m-%dT%H:%M:%S")
     return dt_naive.replace(tzinfo=SERVER_TZ).astimezone(dj_timezone.utc)
 
+class DatosAmbientalesView(APIView):
+    """
+    GET /api/monitoreo/ambiental/
+
+    - Público: último registro global
+    - Autenticado sin espacios: []
+    - Autenticado con espacios: últimos N del usuario
+    """
+
+    def get(self, request):
+        ctx = _user_ctx(request)
+        qs = SensadoAmbiental.objects.select_related("circuito", "circuito__espacio")
+
+        if not ctx["is_auth"]:
+            data = SensadoAmbientalSerializer(
+                qs.order_by("-FechaSensado")[:1], many=True
+            ).data
+            return Response(data)
+
+        if not ctx["allowed_spaces"]:
+            return Response([], status=200)
+
+        limit, since_dt = _role_limits(True)
+
+        qs = qs.filter(
+            FechaSensado__gte=since_dt,
+            circuito__espacio__id_espacios__in=ctx["allowed_spaces"],
+            circuito__tipo__descripcion=TIPO_AMBIENTAL,
+        )
+
+        data = SensadoAmbientalSerializer(
+            qs.order_by("-FechaSensado")[:limit], many=True
+        ).data
+
+        return Response(data)
+
+class HistoricosAmbientalesFacets(APIView):
+    """
+    GET /api/monitoreo/historicos/facets/?id_espacios=&bluetooth=&fecha=
+
+    Reglas:
+    - Público REAL (sin token) → todos los espacios
+    - Usuario con token → SOLO sus espacios
+    - Usuario con token sin espacios → TODO vacío
+    """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsProjectMemberOrAdmin]
+
+    def get(self, request, *args, **kwargs):
+        ctx = _user_ctx(request)
+
+        id_esp = _to_int(request.query_params.get("id_espacios"))
+        circuito_bt = (
+            request.query_params.get("bluetooth")
+            or request.query_params.get("id_Circuito")
+            or request.query_params.get("id_circuito")
+        )
+        fecha = request.query_params.get("fecha")
+
+        base = SensadoAmbiental.objects.select_related(
+            "circuito", "circuito__espacio"
+        )
+
+        if ctx["is_auth"]:
+            # Usuario autenticado
+            if not ctx["allowed_spaces"]:
+                return Response({
+                    "espacios": [],
+                    "circuitos": [],
+                    "fechas": [],
+                    "horas": [],
+                })
+
+            espacios_qs = Espacio.objects.filter(
+                id_espacios__in=ctx["allowed_spaces"]
+            ).order_by("id_espacios")
+
+        else:
+            espacios_qs = Espacio.objects.all().order_by("id_espacios")
+
+        espacios_ids = list(
+            espacios_qs.values_list("id_espacios", flat=True)
+        )
+
+        espacios = [
+            {
+                "id": e.id_espacios,
+                "nombre": e.nombre_espacio or f"Espacio #{e.id_espacios}",
+            }
+            for e in espacios_qs
+        ]
+
+        # =========================
+        # CIRCUITOS AMBIENTALES
+        # =========================
+        if id_esp is not None:
+            circuits_qs = Circuito.objects.filter(
+                espacio__id_espacios=id_esp,
+                tipo__descripcion=TIPO_AMBIENTAL,
+            )
+        else:
+            circuits_qs = Circuito.objects.filter(
+                espacio__id_espacios__in=espacios_ids,
+                tipo__descripcion=TIPO_AMBIENTAL,
+            )
+
+        circuitos = list(
+            circuits_qs.values_list("bluetooth", flat=True)
+            .distinct()
+            .order_by("bluetooth")
+        )
+
+        # =========================
+        # FECHAS
+        # =========================
+        if circuito_bt:
+            qs_fechas = base.filter(circuito__bluetooth=circuito_bt)
+        else:
+            qs_fechas = base.filter(circuito__bluetooth__in=circuitos)
+
+        fechas_qs = (
+            qs_fechas
+            .annotate(d=TruncDate("FechaSensado"))
+            .values_list("d", flat=True)
+            .distinct()
+            .order_by("-d")
+        )
+
+        fechas = [d.isoformat() for d in fechas_qs]
+
+        # =========================
+        # HORAS
+        # =========================
+        qs_horas = qs_fechas
+        if fecha:
+            qs_horas = qs_horas.filter(FechaSensado__date=fecha)
+
+        horas_times = (
+            qs_horas
+            .annotate(h=TruncTime("FechaSensado"))
+            .values_list("h", flat=True)
+            .distinct()
+            .order_by("h")
+        )
+
+        horas = [
+            t.strftime("%H:%M") if hasattr(t, "strftime") else str(t)[:5]
+            for t in horas_times
+        ]
+
+        return Response({
+            "espacios": espacios,
+            "circuitos": circuitos,
+            "fechas": fechas,
+            "horas": horas,
+        })
 
 class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SensadoAmbientalSerializer
@@ -120,7 +274,7 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
 
         circuit_bts = Circuito.objects.filter(
             espacio__id_espacios__in=ctx["allowed_spaces"],
-            tipo__id_tipo_circuito=TIPO_AMBIENTAL
+            tipo__descripcion=TIPO_AMBIENTAL
         ).values_list("bluetooth", flat=True)
 
         qs = SensadoAmbiental.objects.filter(
@@ -143,7 +297,7 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"detail": "No autenticado."},
                             status=status.HTTP_401_UNAUTHORIZED)
 
-        qs = Espacios.objects.filter(
+        qs = Espacio.objects.filter(
             id_espacios__in=ctx["allowed_spaces"]
         ).order_by("id_espacios")
 
@@ -171,7 +325,7 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
 
         qs = Circuito.objects.filter(
             espacio__id_espacios__in=ctx["allowed_spaces"],
-            tipo__id_tipo_circuito=TIPO_AMBIENTAL,
+            tipo__descripcion=TIPO_AMBIENTAL,
         ).select_related("espacio").order_by("bluetooth")
 
         items = [
@@ -217,7 +371,7 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
 
         if c.espacio.id_espacios not in ctx["allowed_spaces"]:
             raise PermissionDenied("No tienes acceso a este circuito.")
-        if c.tipo_id != TIPO_AMBIENTAL:
+        if c.tipo.descripcion != TIPO_AMBIENTAL:
             raise PermissionDenied("Este circuito no es AMBIENTAL.")
 
         qs = SensadoAmbiental.objects.filter(circuito__bluetooth=bluetooth)
@@ -247,16 +401,7 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
 class DatosSueloView(APIView):
-    """
-    GET /api/monitoreo/suelo/
-
-    Reglas:
-    - Público REAL (sin token) → 1 último global
-    - Autenticado sin espacios → []
-    - Autenticado con espacios → últimos N del usuario
-    """
     
-
     def get(self, request):
         ctx = _user_ctx(request)
 
@@ -274,7 +419,7 @@ class DatosSueloView(APIView):
             qs = qs.filter(circuito__bluetooth=bluetooth)
 
         # =====================
-        # MODO PÚBLICO REAL
+        # MODO PÚBLICO 
         # =====================
         if not ctx["is_auth"]:
             data = SensadoSueloSerializer(
@@ -297,7 +442,7 @@ class DatosSueloView(APIView):
         qs = qs.filter(
             fechaSensado__gte=since_dt,
             circuito__espacio__id_espacios__in=ctx["allowed_spaces"],
-            circuito__tipo__id_tipo_circuito=TIPO_SUELO,
+            circuito__tipo__descripcion=TIPO_SUELO,
         )
 
         data = SensadoSueloSerializer(
@@ -318,7 +463,7 @@ class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
         limit, since_dt = _role_limits(True)
 
         return sensadoSuelo.objects.filter(
-            circuito__tipo__id_tipo_circuito=TIPO_SUELO,
+            circuito__tipo__descripcion=TIPO_SUELO,
             circuito__espacio__id_espacios__in=ctx["allowed_spaces"],
             fechaSensado__gte=since_dt,
         ).order_by("-fechaSensado")
@@ -358,7 +503,7 @@ class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
         if c.espacio.id_espacios not in ctx["allowed_spaces"]:
             raise PermissionDenied("No tienes acceso a este circuito.")
         
-        if c.tipo_id != TIPO_SUELO:
+        if c.tipo.descripcion != TIPO_SUELO:
             raise PermissionDenied("Este circuito no es SUELO.")
         
         start = request.query_params.get("start")
@@ -396,14 +541,6 @@ class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
         )
     
 class HistoricosSueloFacets(APIView):
-    """
-    GET /api/monitoreo/suelo/facets/?id_espacios=&bluetooth=&fecha=
-
-    Reglas:
-    - Público REAL (sin token) → todos los espacios
-    - Usuario con token → SOLO sus espacios
-    - Usuario con token sin espacios → TODO vacío
-    """
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsProjectMemberOrAdmin]
 
@@ -459,12 +596,12 @@ class HistoricosSueloFacets(APIView):
         if id_esp is not None:
             circuits_qs = Circuito.objects.filter(
                 espacio__id_espacios=id_esp,
-                tipo__id_tipo_circuito=TIPO_SUELO
+                tipo__descripcion=TIPO_SUELO
             )
         else:
             circuits_qs = Circuito.objects.filter(
                 espacio__id_espacios__in=espacios_ids,
-                tipo__id_tipo_circuito=TIPO_SUELO,
+                tipo__descripcion=TIPO_SUELO,
             )
 
         circuitos = list(
@@ -554,7 +691,7 @@ class DatosContaminantesView(APIView):
         qs = qs.filter(
             fechaSensado__gte=since_dt,
             circuito__espacio__id_espacios__in=ctx["allowed_spaces"],
-            circuito__tipo__id_tipo_circuito=TIPO_CONTAMINANTES,
+            circuito__tipo__descripcion=TIPO_CONTAMINANTES,
         )
 
         data = SensadoContaminantesSerializer(
@@ -629,12 +766,12 @@ class ContaminantesFacetsView(APIView):
         if id_esp is not None:
             circuits_qs = Circuito.objects.filter(
                 espacio__id_espacios=id_esp,
-                tipo__id_tipo_circuito=TIPO_CONTAMINANTES,
+                tipo__descripcion=TIPO_CONTAMINANTES,
             )
         else:
             circuits_qs = Circuito.objects.filter(
                 espacio__id_espacios__in=espacios_ids,
-                tipo__id_tipo_circuito=TIPO_CONTAMINANTES,
+                tipo__descripcion=TIPO_CONTAMINANTES,
             )
 
         circuitos = list(
@@ -705,7 +842,7 @@ class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
 
         circuit_bts = Circuito.objects.filter(
             espacio__id_espacios__in=ctx["allowed_spaces"],
-            tipo__id_tipo_circuito=TIPO_CONTAMINANTES,
+            tipo__descripcion=TIPO_CONTAMINANTES,
         ).values_list("bluetooth", flat=True)
 
         qs = SensadoContaminantes.objects.filter(
@@ -744,7 +881,7 @@ class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
         if c.espacio.id_espacios not in ctx["allowed_spaces"]:
             raise PermissionDenied("No tienes acceso a este circuito.")
 
-        if c.tipo_id != TIPO_CONTAMINANTES:
+        if c.tipo.descripcion != TIPO_CONTAMINANTES:
             raise PermissionDenied("Este circuito no es CONTAMINANTES.")
 
         start = request.query_params.get("start")
@@ -814,7 +951,7 @@ class HistoricosAmbientalesView(generics.ListAPIView):
             # circuitos ambientales del usuario
             circuit_bts_allowed = Circuito.objects.filter(
                 espacio__id_espacios__in=ctx["allowed_spaces"],
-                tipo__id_tipo_circuito=TIPO_AMBIENTAL,
+                tipo__descripcion=TIPO_AMBIENTAL,
             ).values_list("bluetooth", flat=True)
 
             qs = qs.filter(circuito__bluetooth__in=circuit_bts_allowed)
@@ -823,15 +960,15 @@ class HistoricosAmbientalesView(generics.ListAPIView):
             if id_esp is not None:
                 cids = Circuito.objects.filter(
                     espacio__id_espacios=id_esp,
-                    tipo__id_tipo_circuito=TIPO_AMBIENTAL,
+                    tipo__descripcion=TIPO_AMBIENTAL,
                 ).values_list("bluetooth", flat=True)
                 qs = qs.filter(circuito__bluetooth__in=cids)
 
             # Filtrar por circuito
             if circuito_bt:
                 try:
-                    c = Circuito.objects.only("espacio", "tipo_id").get(bluetooth=circuito_bt)
-                    if c.espacio.id_espacios not in allowed or c.tipo_id != TIPO_AMBIENTAL:
+                    c = Circuito.objects.select_related("espacio", "tipo").get(bluetooth=circuito_bt)
+                    if c.espacio.id_espacios not in allowed or c.tipo.descripcion != TIPO_AMBIENTAL:
                         raise PermissionDenied("No tienes acceso a este circuito.")
                 except Circuito.DoesNotExist:
                     raise PermissionDenied("Circuito inválido.")
@@ -839,7 +976,7 @@ class HistoricosAmbientalesView(generics.ListAPIView):
                 qs = qs.filter(circuito__bluetooth=circuito_bt)
 
         else:
-            qs = qs.filter(circuito__tipo__id_tipo_circuito=TIPO_AMBIENTAL)
+            qs = qs.filter(circuito__tipo__descripcion=TIPO_AMBIENTAL)
 
             if id_esp is not None:
                 qs = qs.filter(circuito__espacio__id_espacios=id_esp)
@@ -858,161 +995,3 @@ class HistoricosAmbientalesView(generics.ListAPIView):
                 qs = qs.filter(FechaSensado__time=hora)
 
         return qs.order_by("-FechaSensado")
-
-class HistoricosAmbientalesFacets(APIView):
-    """
-    GET /api/monitoreo/historicos/facets/?id_espacios=&bluetooth=&fecha=
-
-    Reglas:
-    - Público REAL (sin token) → todos los espacios
-    - Usuario con token → SOLO sus espacios
-    - Usuario con token sin espacios → TODO vacío
-    """
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsProjectMemberOrAdmin]
-
-    def get(self, request, *args, **kwargs):
-        ctx = _user_ctx(request)
-
-        id_esp = _to_int(request.query_params.get("id_espacios"))
-        circuito_bt = (
-            request.query_params.get("bluetooth")
-            or request.query_params.get("id_Circuito")
-            or request.query_params.get("id_circuito")
-        )
-        fecha = request.query_params.get("fecha")
-
-        base = SensadoAmbiental.objects.select_related(
-            "circuito", "circuito__espacio"
-        )
-
-        if ctx["is_auth"]:
-            # Usuario autenticado
-            if not ctx["allowed_spaces"]:
-                return Response({
-                    "espacios": [],
-                    "circuitos": [],
-                    "fechas": [],
-                    "horas": [],
-                })
-
-            espacios_qs = Espacio.objects.filter(
-                id_espacios__in=ctx["allowed_spaces"]
-            ).order_by("id_espacios")
-
-        else:
-            espacios_qs = Espacio.objects.all().order_by("id_espacios")
-
-        espacios_ids = list(
-            espacios_qs.values_list("id_espacios", flat=True)
-        )
-
-        espacios = [
-            {
-                "id": e.id_espacios,
-                "nombre": e.nombre_espacio or f"Espacio #{e.id_espacios}",
-            }
-            for e in espacios_qs
-        ]
-
-        # =========================
-        # CIRCUITOS AMBIENTALES
-        # =========================
-        if id_esp is not None:
-            circuits_qs = Circuito.objects.filter(
-                espacio__id_espacios=id_esp,
-                tipo__id_tipo_circuito=TIPO_AMBIENTAL,
-            )
-        else:
-            circuits_qs = Circuito.objects.filter(
-                espacio__id_espacios__in=espacios_ids,
-                tipo__id_tipo_circuito=TIPO_AMBIENTAL,
-            )
-
-        circuitos = list(
-            circuits_qs.values_list("bluetooth", flat=True)
-            .distinct()
-            .order_by("bluetooth")
-        )
-
-        # =========================
-        # FECHAS
-        # =========================
-        if circuito_bt:
-            qs_fechas = base.filter(circuito__bluetooth=circuito_bt)
-        else:
-            qs_fechas = base.filter(circuito__bluetooth__in=circuitos)
-
-        fechas_qs = (
-            qs_fechas
-            .annotate(d=TruncDate("FechaSensado"))
-            .values_list("d", flat=True)
-            .distinct()
-            .order_by("-d")
-        )
-
-        fechas = [d.isoformat() for d in fechas_qs]
-
-        # =========================
-        # HORAS
-        # =========================
-        qs_horas = qs_fechas
-        if fecha:
-            qs_horas = qs_horas.filter(FechaSensado__date=fecha)
-
-        horas_times = (
-            qs_horas
-            .annotate(h=TruncTime("FechaSensado"))
-            .values_list("h", flat=True)
-            .distinct()
-            .order_by("h")
-        )
-
-        horas = [
-            t.strftime("%H:%M") if hasattr(t, "strftime") else str(t)[:5]
-            for t in horas_times
-        ]
-
-        return Response({
-            "espacios": espacios,
-            "circuitos": circuitos,
-            "fechas": fechas,
-            "horas": horas,
-        })
-
-class DatosAmbientalesView(APIView):
-    """
-    GET /api/monitoreo/ambiental/
-
-    - Público: último registro global
-    - Autenticado sin espacios: []
-    - Autenticado con espacios: últimos N del usuario
-    """
-
-    def get(self, request):
-        ctx = _user_ctx(request)
-        qs = SensadoAmbiental.objects.select_related("circuito", "circuito__espacio")
-
-        if not ctx["is_auth"]:
-            data = SensadoAmbientalSerializer(
-                qs.order_by("-FechaSensado")[:1], many=True
-            ).data
-            return Response(data)
-
-        if not ctx["allowed_spaces"]:
-            return Response([], status=200)
-
-        limit, since_dt = _role_limits(True)
-
-        qs = qs.filter(
-            FechaSensado__gte=since_dt,
-            circuito__espacio__id_espacios__in=ctx["allowed_spaces"],
-            circuito__tipo__id_tipo_circuito=TIPO_AMBIENTAL,
-        )
-
-        data = SensadoAmbientalSerializer(
-            qs.order_by("-FechaSensado")[:limit], many=True
-        ).data
-
-        return Response(data)
-

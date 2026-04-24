@@ -11,34 +11,38 @@ from .models import (
 from plantas.models import Espacio   # 
 from usuarios.models import Usuario  # 
 
-
-TIPO_MAP = {
-    1: "AMBIENTAL",
-    2: "SUELO",
-    3: "CONTAMINANTES",
-}
-
-
-def tipo_to_str(tipo_id):
-    if tipo_id is None:
-        return "DESCONOCIDO"
-    return TIPO_MAP.get(tipo_id, f"TIPO_{tipo_id}")
-
-
 class SensadoAmbientalSerializer(serializers.ModelSerializer):
-    bluetooth = serializers.CharField(source="circuito.bluetooth")
-    id_espacios = serializers.IntegerField(source="circuito.espacio.id_espacios")
-    nombre_espacio = serializers.CharField(
-        source="circuito.espacio.nombre_espacio",
-        default=None,
-    )
+    bluetooth = serializers.SerializerMethodField()
+    id_espacios = serializers.SerializerMethodField()
+    nombre_espacio = serializers.SerializerMethodField()
 
     tipo_circuito = serializers.SerializerMethodField()
     Voltaje = serializers.SerializerMethodField()
     Amperaje = serializers.SerializerMethodField()
-
+    
+    def get_bluetooth(self, obj):
+        try:
+            return obj.circuito.bluetooth
+        except Exception:
+            return None
+ 
+    def get_nombre_espacio(self, obj):
+        try:
+            return obj.circuito.espacio.nombre_espacio
+        except Exception:
+            return None
+    
+    def get_id_espacios(self, obj):
+        try:
+            return obj.circuito.espacio.id_espacios
+        except Exception:
+            return None
+       
     def get_tipo_circuito(self, obj):
-        return tipo_to_str(getattr(obj.circuito, "tipo_id", None))
+        try:
+            return obj.circuito.tipo.descripcion.upper()
+        except Exception:
+            return "DESCONOCIDO"
 
     def get_Voltaje(self, obj):
         for attr in ("Voltaje", "voltaje"):
@@ -73,16 +77,30 @@ class SensadoAmbientalSerializer(serializers.ModelSerializer):
 
 
 class SensadoSueloSerializer(serializers.ModelSerializer):
-    bluetooth = serializers.CharField(source="circuito.bluetooth")
-    id_espacios = serializers.IntegerField(source="circuito.espacio.id_espacios")
-
-    nombre_espacio = serializers.CharField(
-        source="circuito.espacio.nombre_espacio",
-        default=None,
-    )
-
+    bluetooth = serializers.SerializerMethodField()
+    id_espacios = serializers.SerializerMethodField()
+    nombre_espacio = serializers.SerializerMethodField()
+    
     tipo_circuito = serializers.SerializerMethodField()
-
+    
+    def get_bluetooth(self, obj):
+        try:
+            return obj.circuito.bluetooth
+        except Exception:
+            return None
+ 
+    def get_nombre_espacio(self, obj):
+        try:
+            return obj.circuito.espacio.nombre_espacio
+        except Exception:
+            return None
+    
+    def get_id_espacios(self, obj):
+        try:
+            return obj.circuito.espacio.id_espacios
+        except Exception:
+            return None
+    
     nombre_suelo = serializers.CharField(
         source="suelo.Nombre_Cientifico",
         default="Desconocido",
@@ -93,7 +111,10 @@ class SensadoSueloSerializer(serializers.ModelSerializer):
     )
 
     def get_tipo_circuito(self, obj):
-        return tipo_to_str(getattr(obj.circuito, "tipo_id", None))
+        try:
+            return obj.circuito.tipo.descripcion.upper()
+        except Exception:
+            return "DESCONOCIDO"
 
     class Meta:
         model = sensadoSuelo
@@ -114,18 +135,36 @@ class SensadoSueloSerializer(serializers.ModelSerializer):
 
 
 class SensadoContaminantesSerializer(serializers.ModelSerializer):
-    bluetooth = serializers.CharField(source="circuito.bluetooth")
-    id_espacios = serializers.IntegerField(source="circuito.espacio.id_espacios")
-    nombre_espacio = serializers.CharField(
-        source="circuito.espacio.nombre_espacio",
-        default=None,
-    )
+    bluetooth = serializers.SerializerMethodField()
+    id_espacios = serializers.SerializerMethodField()
+    nombre_espacio = serializers.SerializerMethodField()
 
     tipo_circuito = serializers.SerializerMethodField()
-
+    
+    def get_bluetooth(self, obj):
+        try:
+            return obj.circuito.bluetooth
+        except Exception:
+            return None
+ 
+    def get_nombre_espacio(self, obj):
+        try:
+            return obj.circuito.espacio.nombre_espacio
+        except Exception:
+            return None
+    
+    def get_id_espacios(self, obj):
+        try:
+            return obj.circuito.espacio.id_espacios
+        except Exception:
+            return None
+    
     def get_tipo_circuito(self, obj):
-        return tipo_to_str(getattr(obj.circuito, "tipo_id", None))
-
+        try:
+            return obj.circuito.tipo.descripcion.upper()
+        except Exception:
+            return "DESCONOCIDO"
+    
     class Meta:
         model = SensadoContaminantes
         fields = [
@@ -151,4 +190,3 @@ class EspacioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Espacio 
         fields = ["id_espacios", "nombre_espacio"]
-

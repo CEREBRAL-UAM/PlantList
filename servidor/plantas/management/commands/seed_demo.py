@@ -19,6 +19,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         base_dir = 'media/demo/'
+        
+        with connection.cursor() as cursor:
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
+            cursor.execute("DELETE FROM bd_ipc.sensadocontaminantes")
+            cursor.execute("DELETE FROM bd_ipc.sensadoSuelo")
+            cursor.execute("DELETE FROM bd_ipc.sensadoambiental")
+            cursor.execute("DELETE FROM bd_ipc.circuito")
+            cursor.execute("DELETE FROM bd_ipc.tipoCircuitos")
+            cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
 
         # Intermedia plantas_espacios
         try:
@@ -343,111 +352,139 @@ class Command(BaseCommand):
         with transaction.atomic():
             first_space_id = espacios[0].pk
             first_plant_id = ficus_lindo.pk
-
+            
             with connection.cursor() as cursor:
-                # Circuito
-                bluetooth = "BT001-MAIN"
+                def get_or_create_tipo(nombre):
+                    cursor.execute("""
+                                   SELECT id_tipo_circuito 
+                                   FROM bd_ipc.tipoCircuitos
+                                   WHERE descripcion = %s
+                                   """, [nombre])
+                    
+                    row = cursor.fetchone()
+                    if row:
+                        return row[0]
 
-                cursor.execute(
-                    "INSERT INTO bd_ipc.tipoCircuitos (descripcion) VALuES (%s)",
-                    ["Ambiental"]
+                    cursor.execute("""
+                                   INSERT INTO bd_ipc.tipoCircuitos (descripcion)
+                                   VALUES (%s)
+                                   """, [nombre])
+                    return cursor.lastrowid
+
+                tipos = {
+                    "Ambiental": get_or_create_tipo("Ambiental"),
+                    "Suelo": get_or_create_tipo("Suelo"),
+                    "Contaminantes": get_or_create_tipo("Contaminantes"),
+                    }
+                
+                circuitos_config = {
+                    "Ambiental": ["BT001-MAIN", "BT002-MAIN", "BT003-MAIN"],
+                    "Suelo": ["BT001-SUELO", "BT002-SUELO"],
+                    "Contaminantes": ["BT001-CONT", "BT002-CONT"],
+                }
+                
+                for tipo_nombre, bts in circuitos_config.items():
+                    tipo_id = tipos[tipo_nombre]
+                    for bt in bts:
+                        cursor.execute("""
+                                       SELECT bluetooth FROM bd_ipc.circuito WHERE bluetooth = %s
+                                       """, [bt])
+                        
+                        if not cursor.fetchone():
+                            cursor.execute("""
+                                           INSERT INTO bd_ipc.circuito (bluetooth, id_tipo_circuito, id_espacios)
+                                           VALUES (%s, %s, %s)
+                                           """, [bt, tipo_id, first_space_id])
+                            
+                cursor.execute("""
+                               INSERT IGNORE INTO bd_ipc.ubicaciones (CP, Estado, Municipio, Colonia)
+                                VALUES (%s, %s, %s, %s)
+                                """, [12345, "EstadoTest", "MunicipioTest", "ColoniaTest"])
+                            
+                cursor.execute("""
+                               SELECT CP FROM bd_ipc.ubicaciones WHERE CP = %s
+                                """, [12345])
+                cp = cursor.fetchone()[0]
+                            
+                cursor.execute("""
+                               INSERT IGNORE INTO bd_ipc.suelo (CP, Nombre_Cientifico, Descripcion)
+                                VALUES (%s, %s, %s)
+                                """, [cp, "Suelo test", "Suelo para pruebas"])
+                        
+                cursor.execute("""
+                                SELECT id_Suelo FROM bd_ipc.suelo WHERE Nombre_Cientifico = %s
+                                """, ["Suelo test"])
+                suelo_id = cursor.fetchone()[0]
+                                
+                def insertar_datos(query_insert, generator):
+                    for values in generator:
+                        cursor.execute(query_insert, values)
+                     
+                for idx, bt in enumerate(circuitos_config["Ambiental"]):
+                    insertar_datos(
+                        """
+                        INSERT INTO bd_ipc.sensadoambiental
+                        (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
+                        bluetooth, Voltaje, Amperaje, Luz_Azul, Luz_Blanca, Luz_Roja)
+                        VALUES (NOW() + INTERVAL %s MINUTE + INTERVAL %s SECOND + INTERVAL FLOOR(RAND()*1000) MICROSECOND, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        [(
+                            i*15,
+                            idx*5,
+                            24 + i,
+                            45 + i,
+                            280 + i,
+                            480 + i,
+                            bt,
+                            15.0,
+                            2.3,
+                            50.0,
+                            100.0,
+                            75.0,
+                        )
+                        for i in range(5)
+                    ],
                 )
-                tipocircuito = cursor.lastrowid
-
-                cursor.execute(
-                    "INSERT INTO bd_ipc.circuito (bluetooth, id_tipo_circuito, id_espacios) VALUES (%s, %s, %s)",
-                    [bluetooth, tipocircuito, first_space_id]
+                                    
+                for idx, bt in enumerate(circuitos_config["Suelo"]):
+                    insertar_datos(
+                        """INSERT INTO bd_ipc.sensadoSuelo
+                        (bluetooth, fechaSensado, Voltaje, Amperaje, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
+                        VALUES (%s, NOW() + INTERVAL %s MINUTE + INTERVAL %s SECOND + INTERVAL FLOOR(RAND()*1000) MICROSECOND, %s, %s, %s, %s, %s, NULL)""",
+                        [(
+                            bt,
+                            i*15,
+                            idx*5,
+                            3.1 + i,
+                            0.04 + i,
+                            suelo_id,
+                            "6.5",
+                            35 + i,
+                        )
+                        for i in range(3)
+                    ],
                 )
-                circuito = cursor.lastrowid
-
-                cursor.execute(
-                    """INSERT INTO sensadoambiental
-                    (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     bluetooth, Voltaje, Amperaje, Luz_Azul, Luz_Blanca, Luz_Roja)
-                    VALUES (NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                    [26.5, 45.2, 300.0, 520.0, bluetooth, 15.0, 2.3, 50.0, 100.0, 75.0]
+                                    
+                for idx, bt in enumerate(circuitos_config["Contaminantes"]):
+                    insertar_datos(
+                        """
+                        INSERT INTO bd_ipc.sensadocontaminantes
+                        (bluetooth, fechaSensado, CO, CO2, O, COVs)
+                        VALUES (%s, NOW() + INTERVAL %s MINUTE + INTERVAL %s SECOND + INTERVAL FLOOR(RAND()*1000) MICROSECOND, %s, %s, %s, %s)
+                        """,
+                        [(
+                            bt,
+                            i*15,
+                            idx*5,
+                            1.2 + i,
+                            400 + i,
+                            20.5,
+                            0.9,
+                        )
+                        for i in range(3)
+                    ],
                 )
-
-                cursor.execute(
-                    """INSERT INTO sensadoambiental
-                    (FechaSensado, TempAmbiental, Humedad, Lux, Radiacion,
-                     bluetooth, Voltaje, Amperaje, Luz_Azul, Luz_Blanca, Luz_Roja)
-                    VALUES (NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                    [25.5, 60.2, 320.5, 0.75, bluetooth, 22.3, 3.2, 12.5, 18.7, 7.9]
-                )
-
-                # Ubicaciones
-                cursor.execute(
-                    "INSERT INTO bd_ipc.ubicaciones (CP, Estado, Municipio, Colonia) VALUES (%s, %s, %s, %s)",
-                    [12345, 'EstadoTest', 'MunicipioTest', 'ColoniaTest']
-                )
-
-                # Suelo
-                cursor.execute(
-                    "INSERT INTO bd_ipc.suelo (CP, Nombre_Cientifico, Descripcion) VALUES (%s, %s, %s)",
-                    [12345, 'Suelo test', 'Suelo para pruebas']
-                )
-                suelo_id = cursor.lastrowid
-
-                # Etapa de desarrollo
-                cursor.execute(
-                    "INSERT INTO bd_ipc.etapadesarrollo (Nombre_Cientifico, Alias) VALUES (%s, %s)",
-                    ['Etapa Inicial', 'Inicio']
-                )
-                etapa_id = cursor.lastrowid
-
-                # Origen crianza
-                cursor.execute(
-                    "INSERT INTO bd_ipc.origencrianzaplanta (Nombre, Descripcion) VALUES (%s, %s)",
-                    ['Cultivo local', 'Criada en vivero local para prueba']
-                )
-                origen_id = cursor.lastrowid
-
-                # Plagas
-                cursor.execute(
-                    "INSERT INTO bd_ipc.plagas (Nombre_Cientifico, Alias, Descripcion, Tratamiento) VALUES (%s, %s, %s, %s)",
-                    ['Plaga testica', 'Testín', 'Plaga común de prueba', 'Agua con jabón']
-                )
-                plaga_id = cursor.lastrowid
-
-                # Planta individuo
-                cursor.execute(
-                    """INSERT INTO bd_ipc.plantaindividuo
-                    (id_Suelo, id_Planta, id_Etapa, id_OrigenCrianza, plagas_id_Plaga, id_espacios)
-                    VALUES (%s, %s, %s, %s, %s, %s)""",
-                    [suelo_id, first_plant_id, etapa_id, origen_id, plaga_id, first_space_id]
-                )
-
-                # Material
-                cursor.execute(
-                    "INSERT INTO bd_ipc.material (Nombre, Descripcion) VALUES (%s, %s)",
-                    ['Acero inoxidable', 'Material conductor para pruebas']
-                )
-                material_id = cursor.lastrowid
-
-                # Electrodos
-                cursor.execute(
-                    "INSERT INTO bd_ipc.electrodos (id_Material, Forma, Largo, Ancho, Calibre_Cable) VALUES (%s, %s, %s, %s, %s)",
-                    [material_id, 'Cilíndrica', '10cm', '0.5cm', '22AWG']
-                )
-                electrodos_id = cursor.lastrowid
-
-                # Sensado Suelo
-                cursor.execute(
-                    """INSERT INTO bd_ipc.sensadoSuelo
-                    (bluetooth, fechaSensado, Voltaje, Amperaje, id_Suelo, PhSuelo, HumedadSuelo, id_PlantaIndividuo)
-                    VALUES (%s, NOW(), %s, %s, %s, %s, %s, %s)""",
-                    [bluetooth, 3.15, 0.045, suelo_id, '6.7', 38.5, 1]
-                )
-
-                # Sensado contaminantes
-                cursor.execute(
-                    """INSERT INTO bd_ipc.sensadocontaminantes
-                    (bluetooth, fechaSensado, CO, CO2, O, COVs)
-                    VALUES (%s, NOW(), %s, %s, %s, %s)""",
-                    [bluetooth, 1.25, 410.00, 20.50, 0.98]
-                )
-
+                
         self.stdout.write(self.style.SUCCESS("Datos para monitoreo insertados correctamente."))
 
         # Experimentos 

@@ -33,7 +33,7 @@ class Circuito(models.Model):
     )
 
     espacio = models.ForeignKey(
-        'plantas.Espacio',   # referencia al modelo Espacio en app plantas
+        'plantas.Espacio',  
         db_column='id_espacios',
         on_delete=models.DO_NOTHING,
         related_name='circuitos',
