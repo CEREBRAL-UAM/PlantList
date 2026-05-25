@@ -47,127 +47,85 @@ function getUserFromStorage() {
   }
   return null;
 }
+
 function composeDateTime(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
+
   const [hh = "00", mm = "00"] = String(timeStr).split(":");
-  const iso = `${dateStr}T${String(hh).padStart(2, "0")}:${String(mm).padStart(
-    2,
-    "0"
-  )}:00`;
-  const dt = new Date(iso);
-  return isNaN(dt) ? null : dt;
-}
 
+  return `${dateStr}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:00`;
+}
 const SERVER_TIMEZONE = "America/Mexico_City";
-const DISPLAY_TZ = "America/Mexico_City";
 
-const RANGE_STRATEGY = "utc";
-const FORCE_TREAT_ALL_AS_SERVER_WALLTIME = true;
-
-function formatInTimeZone(date, tz) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  })
-    .formatToParts(date)
-    .reduce((acc, p) => ((acc[p.type] = p.value), acc), {});
-  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`;
-}
-function localWallTimeToUTCZ(localStr) {
-  const d = new Date(localStr);
-  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
-}
 function buildRangeStrings(fechaIni, horaIni, fechaFin, horaFin) {
-  const localStart = `${fechaIni}T${horaIni}:00`;
-  const localEnd = `${fechaFin}T${horaFin}:00`;
-  if (RANGE_STRATEGY === "utc") {
-    return {
-      start_send: localWallTimeToUTCZ(localStart),
-      end_send: localWallTimeToUTCZ(localEnd),
-    };
-  }
   return {
-    start_send: formatInTimeZone(new Date(localStart), SERVER_TIMEZONE),
-    end_send: formatInTimeZone(new Date(localEnd), SERVER_TIMEZONE),
+    start_send: `${fechaIni}T${horaIni}:00`,
+    end_send: `${fechaFin}T${horaFin}:00`,
   };
 }
 
-function parseWalltimeInTZToDate(str, tz) {
-  const m = String(str).trim().match(
-    /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/
-  );
-  if (!m) {
-    const d = new Date(str);
-    return isNaN(d) ? null : d;
-  }
-  const [_, Y, M, D, h, mi, s2] = m;
-  const sec = Number(s2 || "00");
-  const asUTCms = Date.UTC(+Y, +M - 1, +D, +h, +mi, sec);
-  const tentative = new Date(asUTCms);
+function coerceNum(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
 
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
+function rowDate(r) {
+  const s =
+    r?.fechaSensado ??
+    r?.FechaSensado ??
+    r?.fecha ??
+    r?.timestamp ??
+    r?.created_at;
+
+  console.log("FECHA RAW:", s);
+
+  const d = new Date(s);
+
+  console.log("DATE:", d);
+
+  return isNaN(d) ? null : d;
+}
+
+function displayDateTime(d) {
+  if (!d) return "—";
+  const date = d instanceof Date ? d : new Date(d);
+  if (isNaN(date)) return "—";
+  return date.toLocaleString("es-MX", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hourCycle: "h23",
-  })
-    .formatToParts(tentative)
-    .reduce((acc, p) => ((acc[p.type] = p.value), acc), {});
-
-  const diffSeconds =
-    (+h - +parts.hour) * 3600 +
-    (+mi - +parts.minute) * 60 +
-    (sec - +parts.second);
-
-  return new Date(asUTCms + diffSeconds * 1000);
+  });
 }
 
-function parseServerStamp(s) {
-  if (!s) return null;
-  if (s instanceof Date) return isNaN(s) ? null : s;
-  const str = String(s).trim();
-
-  if (FORCE_TREAT_ALL_AS_SERVER_WALLTIME) {
-    return parseWalltimeInTZToDate(str, SERVER_TIMEZONE);
-  }
-
-  if (/[zZ]$/.test(str) || /[+\-]\d{2}:\d{2}$/.test(str)) {
-    const d = new Date(str);
-    return isNaN(d) ? null : d;
-  }
-  const d = new Date(str + "Z");
-  return isNaN(d) ? null : d;
+function useContainerWidth() {
+  const ref = useRef(null);
+  const [w, setW] = useState(640);
+  useEffect(() => {
+    if (!ref.current) return;
+    const ro = new ResizeObserver(([entry]) => setW(entry.contentRect.width));
+    ro.observe(ref.current);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, Math.max(320, w)];
 }
 
-function displayInTZ(dateLike) {
-  try {
-    const d = parseServerStamp(dateLike);
-    if (!d) return "—";
-    return new Intl.DateTimeFormat("es-MX", {
-      timeZone: DISPLAY_TZ,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    }).format(d);
-  } catch {
-    return String(dateLike ?? "—");
-  }
+function formatTick(dt) {
+  const d = dt instanceof Date ? dt : new Date(dt);
+  if (isNaN(d)) return "";
+  const fDate = d.toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "2-digit",
+  });
+  const fTime = d.toLocaleTimeString("es-MX", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  return `${fDate} ${fTime}`;
 }
-
 const palette = {
   TempAmbiental: {
     color: "rgb(175, 170, 190)",
@@ -210,36 +168,6 @@ const palette = {
 
 const metricKeys = Object.keys(palette);
 
-function useContainerWidth() {
-  const ref = useRef(null);
-  const [w, setW] = useState(640);
-  useEffect(() => {
-    if (!ref.current) return;
-    const ro = new ResizeObserver(([entry]) => setW(entry.contentRect.width));
-    ro.observe(ref.current);
-    return () => ro.disconnect();
-  }, []);
-  return [ref, Math.max(320, w)];
-}
-function formatTick(dt) {
-  try {
-    const d = dt instanceof Date ? dt : parseServerStamp(dt);
-    const fDate = new Intl.DateTimeFormat("es-MX", {
-      timeZone: DISPLAY_TZ,
-      day: "2-digit",
-      month: "2-digit",
-    }).format(d);
-    const fTime = new Intl.DateTimeFormat("es-MX", {
-      timeZone: DISPLAY_TZ,
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(d);
-    return `${fDate} ${fTime}`;
-  } catch {
-    return String(dt ?? "");
-  }
-}
 function MultiLineChart({
   seriesMap,
   activeKeys,
@@ -478,63 +406,6 @@ export function MonitoreoAmbiental() {
       `Espacio #${resumen.id_espacios}`
     );
   }, [resumen, espacios]);
-  
-  useEffect(() => {
-  if (hasAccess) return;
-
-  let alive = true;
-
-  (async () => {
-    try {
-      const res = await getDatosAmbientales();
-
-      const raw = Array.isArray(res?.data)
-        ? res.data
-        : Array.isArray(res?.data?.results)
-        ? res.data.results
-        : [];
-
-      if (!alive) return;
-
-      setDatosPublic(raw);
-    } catch (e) {
-      console.error("Error cargando ambiental público", e);
-    } finally {
-      if (alive) setLoading(false);
-    }
-  })();
-
-  return () => {
-    alive = false;
-  };
-}, [hasAccess]);
-
-  useEffect(() => {
-  if (!hasAccess) return;
-  (async () => {
-    try {
-      const { data } = await getHistoricosFacets({});
-      const esp = data?.espacios || [];
-
-      setEspacios(esp);
-      setNoSpaces(esp.length === 0);
-
-      setCircuitos(data?.circuitos || []);
-      setFechasIni([]);
-      setFechasFin([]);
-      setFechasIniBase([]);
-      setFechasFinBase([]);
-      setHorasIni([]);
-      setHorasFin([]);
-    } catch {
-      setNoSpaces(true);
-      setEspacios([]);
-    } finally {
-      setLoading(false);
-    }
-  })();
-}, [hasAccess]);
-
 
   const onEspacio = async (v) => {
     setIdEspacio(v);
@@ -648,7 +519,7 @@ export function MonitoreoAmbiental() {
       return false;
     const dIni = composeDateTime(fechaIni, horaIni);
     const dFin = composeDateTime(fechaFin, horaFin);
-    return Boolean(dIni && dFin && dFin.getTime() >= dIni.getTime());
+    return Boolean(dIni && dFin && dFin >= dIni);
   }, [hasAccess, idEspacio, idCircuito, fechaIni, horaIni, fechaFin, horaFin]);
 
   const consultar = async () => {
@@ -726,24 +597,13 @@ export function MonitoreoAmbiental() {
         return;
       }
 
-      const ambRows = ambList
-        .map((r) => ({
-          r,
-          d: parseServerStamp(
-            r?.FechaSensado ??
-              r?.fechaSensado ??
-              r?.fecha_sensado ??
-              r?.fecha ??
-              r?.timestamp ??
-              r?.created_at
-          ),
-        }))
+      const rows = ambList
+        .map((r) => ({ r, d: rowDate(r) }))
         .filter((x) => x.d)
         .sort((a, b) => a.d - b.d)
-        .map((x) => ({ ...x.r, __d: x.d }));
+        .map(({ r, d }) => ({ ...r, __d: d }));
 
-      const baseRows = ambRows;
-      setLabels(baseRows.map((r) => r.__d));
+      setLabels(rows.map((r) => r.__d));
 
       const next = {};
       [
@@ -757,25 +617,21 @@ export function MonitoreoAmbiental() {
         "Voltaje",
         "Amperaje",
       ].forEach((k) => {
-        next[k] = ambRows
-          .map((r) => Number(r?.[k]))
-          .filter(Number.isFinite);
+        next[k] = rows.map((r) => {
+          const n = Number(r?.[k]);
+          return Number.isFinite(n) ? n : 0;
+        });
       });
 
       setSeries((prev) => ({ ...prev, ...next }));
 
-      const lastAmb = ambRows[ambRows.length - 1];
-      const lastAny = lastAmb ?? baseRows[baseRows.length - 1];
+      const last = rows[rows.length - 1];
       setResumen(
-        lastAny
+        last
           ? {
-              fecha: lastAny.__d,
-              bluetooth:
-                lastAny?.bluetooth ??
-                lastAny?.id_bluetooth ??
-                lastAny?.id_Circuito,
-              descripcion: lastAny?.descripcion,
-              id_espacios: lastAny?.id_espacios ?? null,
+              fecha: last.__d,
+              bluetooth: last.bluetooth,
+              id_espacios: last.id_espacios ?? null,
             }
           : null
       );
@@ -787,6 +643,59 @@ export function MonitoreoAmbiental() {
       setLoading(false);
     }
   };
+
+  const descargarCSVAmbiental = async () => {
+    if (!ready) {
+      setStatus("Primero realiza una búsqueda válida.");
+      return;
+  }
+
+  const { start_send, end_send } = buildRangeStrings(
+    fechaIni,
+    horaIni,
+    fechaFin,
+    horaFin
+  );
+
+  console.log("START: ", start_send);
+  console.log("END: ", end_send);
+
+  const params = new URLSearchParams({
+    id_espacios: idEspacio,
+    bluetooth: idCircuito,
+    start: start_send,
+    end: end_send,
+    download: "csv",
+  });
+
+  const url = `http://127.0.0.1:8000/api/monitoreo/sensadoambiental/rango/?${params.toString()}&t=${Date.now()}`;
+
+  console.log("URL FINAL:", url);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(text);
+      throw new Error("Error en descarga");
+    }
+
+    const blob = await response.blob();
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `historial_ambiental_${Date.now()}.csv`;
+    link.click();
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const limpiar = () => {
     setRangeMode(false);
@@ -821,67 +730,165 @@ export function MonitoreoAmbiental() {
   };
 
   async function tickLive(seed = false) {
-    try {
-      const ambRes = await getDatosAmbientales();
+  try {
 
-      const ambRaw = Array.isArray(ambRes?.data)
-        ? ambRes.data
-        : Array.isArray(ambRes?.data?.results)
-        ? ambRes.data.results
-        : [];
+    const ambRes = await getDatosAmbientales();
 
-      ambRaw.sort((a, b) => {
-        const da = parseServerStamp(
-          a.FechaSensado ?? a.fechaSensado ?? a.fecha
-        );
-        const db = parseServerStamp(
-          b.FechaSensado ?? b.fechaSensado ?? b.fecha
-        );
-        return (db?.getTime?.() ?? 0) - (da?.getTime?.() ?? 0);
+    const ambRaw = Array.isArray(ambRes?.data)
+      ? ambRes.data
+      : Array.isArray(ambRes?.data?.results)
+      ? ambRes.data.results
+      : [];
+
+    ambRaw.sort((a, b) => {
+
+      const da = new Date(
+        a.FechaSensado ??
+        a.fechaSensado ??
+        a.fecha
+      );
+
+      const db = new Date(
+        b.FechaSensado ??
+        b.fechaSensado ??
+        b.fecha
+      );
+
+      return (db?.getTime?.() ?? 0) - (da?.getTime?.() ?? 0);
+    });
+
+    const ambFuente = idCircuito
+      ? ambRaw.filter(
+          (r) =>
+            String(
+              r.bluetooth ??
+              r.id_bluetooth ??
+              r.id_Circuito
+            ) === String(idCircuito)
+        )
+      : ambRaw;
+
+    const lastAmb = ambFuente[0];
+
+    if (lastAmb) {
+
+      const d = new Date(
+        lastAmb.FechaSensado ??
+        lastAmb.fechaSensado ??
+        lastAmb.fecha
+      );
+
+      setResumen({
+        fecha: d,
+
+        bluetooth:
+          lastAmb.bluetooth ??
+          lastAmb.id_bluetooth ??
+          lastAmb.id_Circuito,
+
+        descripcion:
+          lastAmb.nombre_espacio ??
+          lastAmb.descripcion ??
+          "Sin espacio",
+
+        id_espacios:
+          lastAmb.id_espacios ?? null,
       });
 
-      const ambFuente = idCircuito
-        ? ambRaw.filter(
-            (r) =>
-              String(
-                r.bluetooth ?? r.id_bluetooth ?? r.id_Circuito
-              ) === String(idCircuito)
-          )
-        : ambRaw;
+    } else {
 
-      const lastAmb = ambFuente[0];
-      if (lastAmb) {
-        const d = parseServerStamp(
-          lastAmb.FechaSensado ?? lastAmb.fechaSensado ?? lastAmb.fecha
-        );
-        setResumen({
-          fecha: d,
-          bluetooth:
-            lastAmb.bluetooth ??
-            lastAmb.id_bluetooth ??
-            lastAmb.id_Circuito,
-          descripcion: lastAmb?.descripcion,
-          id_espacios: lastAmb?.id_espacios ?? null,
-        });
-      } else {
-        setResumen(null);
+      setResumen(null);
+    }
+
+    if (seed) {
+
+      const ambRows = ambFuente
+        .slice(0, HISTORY_LEN)
+        .reverse()
+        .map((r) => ({
+          r,
+
+          d: new Date(
+            r.FechaSensado ??
+            r.fechaSensado ??
+            r.fecha
+          ),
+        }))
+        .filter((x) => !isNaN(x.d));
+
+      setLabels(
+        ambRows.map((x) => x.d)
+      );
+
+      const next = {};
+
+      [
+        "TempAmbiental",
+        "Humedad",
+        "Lux",
+        "Radiacion",
+        "Luz_Azul",
+        "Luz_Blanca",
+        "Luz_Roja",
+        "Voltaje",
+        "Amperaje",
+      ].forEach((k) => {
+
+        next[k] = ambRows
+          .map((it) => Number(it.r?.[k]))
+          .filter(Number.isFinite);
+      });
+
+      setSeries(next);
+
+    } else {
+
+      const uAmb = ambFuente[0];
+
+      if (!uAmb) {
+        setLoading(false);
+        return;
       }
 
-      if (seed) {
-        const ambRows = ambFuente
-          .slice(0, HISTORY_LEN)
-          .reverse()
-          .map((r) => ({
-            r,
-            d: parseServerStamp(
-              r.FechaSensado ?? r.fechaSensado ?? r.fecha
-            ),
-          }));
+      setLabels((prev) => {
 
-        const baseRows = ambRows;
-        setLabels(baseRows.map((x) => x.d));
+        const raw =
+          uAmb?.FechaSensado ??
+          uAmb?.fechaSensado ??
+          uAmb?.fecha;
 
-        const next = {};
+        const d = new Date(raw);
+
+        if (isNaN(d)) return prev;
+
+        const n = [...prev, d];
+
+        if (n.length > HISTORY_LEN)
+          n.shift();
+
+        return n;
+      });
+
+      setSeries((prev) => {
+
+        const next = { ...prev };
+
+        const pushVal = (k, v) => {
+
+          const arr = [...(next[k] || [])];
+
+          arr.push(
+            Number.isFinite(v)
+              ? v
+              : arr[arr.length - 1] ?? 0
+          );
+
+          if (arr.length > HISTORY_LEN)
+            arr.shift();
+
+          next[k] = arr;
+        };
+
         [
           "TempAmbiental",
           "Humedad",
@@ -892,59 +899,263 @@ export function MonitoreoAmbiental() {
           "Luz_Roja",
           "Voltaje",
           "Amperaje",
-        ].forEach((k) => {
-          next[k] = ambRows
-            .map((it) => Number(it.r?.[k]))
-            .filter(Number.isFinite);
-        });
+        ].forEach((k) =>
+          pushVal(k, Number(uAmb?.[k]))
+        );
 
-        setSeries((prev) => ({ ...prev, ...next }));
-      } else {
-        const uAmb = ambFuente[0];
-
-        if (!uAmb) return;
-
-        setLabels((prev) => {
-          const raw =
-            uAmb?.FechaSensado ?? uAmb?.fechaSensado ?? uAmb?.fecha;
-          const n = [...prev, parseServerStamp(raw) || new Date()];
-          if (n.length > HISTORY_LEN) n.shift();
-          return n;
-        });
-
-        setSeries((prev) => {
-          const next = { ...prev };
-          const pushVal = (k, v) => {
-            const arr = [...(next[k] || [])];
-            arr.push(Number.isFinite(v) ? v : arr[arr.length - 1] ?? 0);
-            if (arr.length > HISTORY_LEN) arr.shift();
-            next[k] = arr;
-          };
-
-          [
-            "TempAmbiental",
-            "Humedad",
-            "Lux",
-            "Radiacion",
-            "Luz_Azul",
-            "Luz_Blanca",
-            "Luz_Roja",
-            "Voltaje",
-            "Amperaje",
-          ].forEach((k) => pushVal(k, Number(uAmb?.[k])));
-          return next;
-        });
-      }
-    } catch {
+        return next;
+      });
     }
+
+    setLoading(false);
+
+  } catch (e) {
+
+    console.error(
+      "Error en tickLive ambiental:",
+      e
+    );
+
+    setLoading(false);
   }
-  useEffect(() => {
-    if (!hasAccess || noSpaces) return;
-    if (rangeMode) return;
-    tickLive(true);
-    const t = setInterval(() => tickLive(false), POLL_MS);
-    return () => clearInterval(t);
-  }, [hasAccess, rangeMode, idCircuito, noSpaces]);
+}
+
+useEffect(() => {
+  if (hasAccess) return;
+
+  let alive = true;
+
+  (async () => {
+    try {
+      const res = await getDatosAmbientales();
+
+      const raw = Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.results)
+        ? res.data.results
+        : [];
+
+      if (!alive) return;
+
+      setDatosPublic(raw);
+
+    } catch (e) {
+      console.error("Error cargando ambiental público", e);
+
+    } finally {
+
+      if (alive) setLoading(false);
+
+    }
+  })();
+
+  return () => {
+    alive = false;
+  };
+
+}, [hasAccess]);
+
+/* ===== DATOS PÚBLICOS ===== */
+useEffect(() => {
+
+  if (hasAccess) return;
+
+  let alive = true;
+
+  (async () => {
+
+    try {
+
+      setLoading(true);
+
+      const res =
+        await getDatosAmbientales();
+
+      const raw = Array.isArray(
+        res?.data
+      )
+        ? res.data
+        : Array.isArray(
+            res?.data?.results
+          )
+        ? res.data.results
+        : [];
+
+      if (!alive) return;
+
+      setDatosPublic(raw);
+
+    } catch (e) {
+
+      console.error(
+        "Error cargando ambiental público",
+        e
+      );
+
+      if (!alive) return;
+
+      setDatosPublic([]);
+
+    } finally {
+
+      if (alive)
+        setLoading(false);
+
+    }
+
+  })();
+
+  return () => {
+    alive = false;
+  };
+
+}, [hasAccess]);
+
+
+
+/* ===== FACETS PRIVADOS ===== */
+useEffect(() => {
+
+  if (!token) return;
+
+  let alive = true;
+
+  (async () => {
+
+    try {
+
+      setLoading(true);
+
+      const { data } =
+        await getHistoricosFacets({});
+
+      if (!alive) return;
+
+      const esp =
+        data?.espacios || [];
+
+      setEspacios(esp);
+
+      setNoSpaces(
+        esp.length === 0
+      );
+
+      setCircuitos(
+        data?.circuitos || []
+      );
+
+    } catch (e) {
+
+      console.error(
+        "Error cargando facets:",
+        e
+      );
+
+      if (!alive) return;
+
+      setEspacios([]);
+
+      setCircuitos([]);
+
+      setNoSpaces(true);
+
+    } finally {
+
+      if (alive)
+        setLoading(false);
+
+    }
+
+  })();
+
+  return () => {
+    alive = false;
+  };
+
+}, [token]);
+
+
+
+/* ===== DATOS EN VIVO ===== */
+useEffect(() => {
+
+  if (!hasAccess || noSpaces)
+    return;
+
+  if (rangeMode)
+    return;
+
+  tickLive(true);
+
+  const t = setInterval(
+    () => tickLive(false),
+    POLL_MS
+  );
+
+  return () => clearInterval(t);
+
+}, [
+  hasAccess,
+  rangeMode,
+  idCircuito,
+  noSpaces
+]);
+
+useEffect(() => {
+
+  if (!token) return;
+
+  let alive = true;
+
+  (async () => {
+
+    try {
+
+      const { data } =
+        await getHistoricosFacets({});
+
+      if (!alive) return;
+
+      const esp = data?.espacios || [];
+
+      setEspacios(esp);
+
+      setNoSpaces(esp.length === 0);
+
+      setCircuitos(
+        data?.circuitos || []
+      );
+
+    } catch (e) {
+
+      console.error(
+        "Error cargando facets:",
+        e
+      );
+
+      if (!alive) return;
+
+      setEspacios([]);
+
+      setCircuitos([]);
+
+      setNoSpaces(true);
+
+    } finally {
+
+      if (alive)
+        setLoading(false);
+    }
+
+  })();
+
+  return () => {
+    alive = false;
+  };
+
+}, [token]);
+
+
 
   const toggleKey = (k) => {
     setActiveKeys((prev) => {
@@ -953,6 +1164,7 @@ export function MonitoreoAmbiental() {
       return s;
     });
   };
+  
 
   return (
     <div
@@ -998,7 +1210,7 @@ export function MonitoreoAmbiental() {
                     <strong style={{ color: "rgb(40, 39, 39)" }}>Fecha:</strong>
                   </div>
                 <span style={{ color: "rgb(83, 79, 79)" }}>
-                  {ultimoPublic.FechaSensado ? displayInTZ(ultimoPublic.FechaSensado) : "—"}
+                  {ultimoPublic.FechaSensado ? displayDateTime(ultimoPublic.FechaSensado) : "—"}
                 </span>
               </div>
 
@@ -1069,7 +1281,7 @@ export function MonitoreoAmbiental() {
                 >
                   <span className="flex items-center gap-3 text-xl font-semibold">
                     <img src="/images/iconos/LuzAzul.png" alt="Luz Azul" className="w-6 h-6" />
-                    LuzAzul
+                    Luz Azul
                   </span>
                   <span className="text-xl font-bold text-white">
                     {ultimoPublic.Luz_Azul ?? "—"} nm
@@ -1268,28 +1480,33 @@ export function MonitoreoAmbiental() {
                     ))}
                   </select>
 
-                  {/* Botones Consultar / Limpiar */}
-                  <div className="flex gap-2 ml-auto">
-                    <button
-                      type="button"
-                      onClick={consultar}
-                      disabled={!ready || noSpaces}
-                      className={`px-4 py-2 rounded-full text-white shadow ${
-                        !ready || noSpaces
-                          ? "bg-[#78b486] cursor-not-allowed"
-                          : "bg-[#3b7f4a] hover:bg-[#316b3f]"
-                      }`}
-                    >
-                      Consultar
+                  <div className="flex gap-2 ml-4">
+                    <button 
+                    type="button" 
+                    onClick={consultar} 
+                    disabled={!ready || noSpaces} 
+                    className="flex items-center justify-center p-2.5 bg-[#3b7f4a] hover:bg-[#316b3f] disabled:bg-gray-100 disabled:opacity-40 text-white rounded-xl shadow-sm disabled:shadow-none disabled:cursor-not-allowed transition-all duration-200"
+                    title="Consultar"> 
+                      <img src="/images/iconos/consultar.png" alt="Consultar" className="w-7 h-7"/> 
                     </button>
-                    <button
-                      type="button"
-                      onClick={limpiar}
-                      disabled={noSpaces}
-                      className="px-4 py-2 rounded-full bg-[#e8eae6] text-[#2e5d32] border border-[#cbd5c1] hover:bg-[#dde3d8]"
-                    >
-                      Limpiar
+                    
+                    <button 
+                    onClick={limpiar} 
+                    disabled={noSpaces}
+                    className="flex items-center justify-center p-2 rounded-xl text-gray-500 hover:text-red-500 hover:bg-red-50 disabled:opacity-30 disabled:bg-transparent disabled:text-gray-300 transition-all duration-200" 
+                    title="Limpiar">
+                      <img src="/images/iconos/limpiarA.png" alt="Limpiar" className="w-7 h-7 opacity-50"/>
                     </button>
+
+                    <button 
+                    onClick={descargarCSVAmbiental} 
+                    disabled={!ready} 
+                    className="flex items-center justify-center p-2.5 bg-[#C2E3C8] hover:bg-[#B2D6B9] rounded-xl disabled:opacity-40 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200" 
+                    title="Descargar CSV"> 
+                      <img src="/images/iconos/csv.png" alt="Descargar CSV" className="w-7 h-7"/> 
+                    </button>
+
+
                   </div>
                 </div>
 
@@ -1424,7 +1641,7 @@ export function MonitoreoAmbiental() {
                         </span>
                       </div>
                       <span className="text-gray-800 text-right">
-                        {resumen ? displayInTZ(resumen.fecha) : "—"}
+                        {resumen ? displayDateTime(resumen.fecha) : "—"}
                       </span>
                     </div>
 
