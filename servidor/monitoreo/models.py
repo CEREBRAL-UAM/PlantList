@@ -130,6 +130,73 @@ class sensadoSuelo(models.Model):
     def __str__(self):
         return f"Sensado Suelo {self.fechaSensado} - {self.circuito_id}"
 
+class PlantaIndividuo(models.Model):
+    id_PlantaIndividuo = models.AutoField(
+        primary_key=True,
+        db_column='id_PlantaIndividuo'
+    )
+
+    id_Suelo = models.ForeignKey(
+        Suelo,
+        db_column='id_Suelo',
+        on_delete=models.DO_NOTHING,
+        related_name='plantas_individuo'
+    )
+
+    class Meta:
+        managed = False
+        db_table = 'plantaindividuo'
+
+    def __str__(self):
+        return f"PlantaIndividuo {self.id_PlantaIndividuo}"
+    
+class sensadoSuelo(models.Model):
+
+    fechaSensado = models.DateTimeField(
+        primary_key=True,
+        db_column='fechaSensado'
+    )
+
+    circuito = models.ForeignKey(
+        Circuito,
+        db_column='bluetooth',
+        to_field='bluetooth',
+        on_delete=models.DO_NOTHING,
+        related_name='sensados_suelo',
+    )
+
+    Voltaje = models.FloatField(db_column='Voltaje')
+
+    Amperaje = models.FloatField(db_column='Amperaje')
+
+    PhSuelo = models.CharField(
+        max_length=45,
+        null=True,
+        blank=True,
+        db_column='PhSuelo'
+    )
+
+    HumedadSuelo = models.FloatField(
+        null=True,
+        blank=True,
+        db_column='HumedadSuelo'
+    )
+
+    planta_individuo = models.ForeignKey(
+        PlantaIndividuo,
+        db_column='id_PlantaIndividuo',
+        on_delete=models.DO_NOTHING,
+        related_name='sensados_suelo',
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        managed = False
+        db_table = 'sensadoSuelo'
+
+    def __str__(self):
+        return f"Sensado Suelo {self.fechaSensado} - {self.circuito_id}"
 
 class SensadoContaminantes(models.Model):
     circuito = models.ForeignKey(
