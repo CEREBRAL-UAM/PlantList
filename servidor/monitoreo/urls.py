@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from monitoreo.views import (
     # Ambientales
     SensadoAmbientalViewSet,
-    HistoricosAmbientalesView,
     HistoricosAmbientalesFacets,
     DatosAmbientalesView,
 
@@ -40,8 +39,6 @@ router.register(
 
 urlpatterns = [
     path('', include(router.urls)),
-
-    path('historicos/', HistoricosAmbientalesView.as_view(), name='historicos-ambientales'),
     path('historicos/facets/', HistoricosAmbientalesFacets.as_view(), name='historicos-ambientales-facets'),
     path('ambiental/', DatosAmbientalesView.as_view(), name='ambiental-list'),
 

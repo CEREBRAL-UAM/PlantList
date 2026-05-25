@@ -3,7 +3,6 @@ from zoneinfo import ZoneInfo
 from datetime import datetime
 from django.db.models.functions import TruncDate, TruncTime
 from django.utils.timezone import now
-from django.utils import timezone as dj_timezone
 from django.utils.dateparse import parse_date
 
 from rest_framework import viewsets, generics, status
@@ -33,6 +32,8 @@ from .serializers import (
 from usuarios.authentication import TokenAuthentication
 from monitoreo.permissions import IsProjectMemberOrAdmin
 
+import csv
+from django.http import HttpResponse
 
 TIPO_AMBIENTAL = "Ambiental"
 TIPO_SUELO = "Suelo"
@@ -90,15 +91,14 @@ def _role_limits(is_auth: bool):
         return 150, now() - timedelta(days=7)
     return 0, now()
 
-
 def parse_server_local(dt_str: str):
-    """Convierte hora local/ISO/UTC a UTC real."""
     if not dt_str:
         return None
+
     if dt_str.endswith("Z"):
-        return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
-    dt_naive = datetime.strptime(dt_str, "%Y-%m-%dT%H:%M:%S")
-    return dt_naive.replace(tzinfo=SERVER_TZ).astimezone(dj_timezone.utc)
+        dt_str = dt_str.replace("Z", "")
+
+    return datetime.strptime(dt_str, "%Y-%m-%dT%H:%M:%S")
 
 class DatosAmbientalesView(APIView):
     """
@@ -257,7 +257,7 @@ class HistoricosAmbientalesFacets(APIView):
             "horas": horas,
         })
 
-class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
+class SensadoAmbientalViewSet(viewsets.ModelViewSet):
     serializer_class = SensadoAmbientalSerializer
     queryset = SensadoAmbiental.objects.all().order_by("-FechaSensado")[:100]
 
@@ -276,9 +276,9 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
             espacio__id_espacios__in=ctx["allowed_spaces"],
             tipo__descripcion=TIPO_AMBIENTAL
         ).values_list("bluetooth", flat=True)
-
+        
+        
         qs = SensadoAmbiental.objects.filter(
-            FechaSensado__gte=since_dt,
             circuito__bluetooth__in=circuit_bts
         ).order_by("-FechaSensado")
 
@@ -383,7 +383,8 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
 
         if start and end:
             start_dt = parse_server_local(start)
-            end_dt = parse_server_local(end)
+            end_dt = parse_server_local(end) + timedelta(minutes=1)
+            
             qs = qs.filter(FechaSensado__gte=start_dt,
                            FechaSensado__lte=end_dt)
         else:
@@ -395,6 +396,46 @@ class SensadoAmbientalViewSet(viewsets.ReadOnlyModelViewSet):
                 d2 = parse_date(ff)
                 if d2:
                     qs = qs.filter(FechaSensado__date__lte=d2)
+                    
+        # CSV
+        if request.query_params.get("download") == "csv":
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="historial_ambiental.csv"'
+            
+            writer = csv.writer(response)
+            
+            writer.writerow([
+                "FechaSensado",
+                "espacio",
+                "bluetooth",
+                "TempAmbiental",
+                "Humedad",
+                "Lux",
+                "Radiacion",
+                "Luz_Azul",
+                "Luz_Roja",
+                "Luz_Blanca",
+                "Voltaje",
+                "Amperaje",
+            ])
+
+            for obj in qs:
+                writer.writerow([
+                    obj.FechaSensado,
+                    obj.circuito.espacio.nombre_espacio,
+                    obj.circuito.bluetooth,
+                    obj.TempAmbiental,
+                    obj.Humedad,
+                    obj.Lux,
+                    obj.Radiacion,
+                    obj.Luz_Azul,
+                    obj.Luz_Roja,
+                    obj.Luz_Blanca,
+                    obj.Voltaje,
+                    obj.Amperaje,
+                ])
+                
+            return response
 
         return Response(
             SensadoAmbientalSerializer(qs.order_by("FechaSensado"), many=True).data
@@ -452,7 +493,7 @@ class DatosSueloView(APIView):
 
         return Response(data)
     
-class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
+class SensadoSueloViewSet(viewsets.ModelViewSet):
     serializer_class = SensadoSueloSerializer
 
     def get_queryset(self):
@@ -517,7 +558,7 @@ class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
 
         if start and end:
             start_dt = parse_server_local(start)
-            end_dt = parse_server_local(end)
+            end_dt = parse_server_local(end) + timedelta(minutes=1)
             qs = qs.filter(
                 fechaSensado__gte=start_dt,
                 fechaSensado__lte=end_dt
@@ -533,12 +574,45 @@ class SensadoSueloViewSet(viewsets.ReadOnlyModelViewSet):
                 if d2:
                     qs = qs.filter(fechaSensado__date__lte=d2)
         
+        qs=qs.order_by("fechaSensado")
+        
+        #CSV
+        if request.query_params.get("download") == "csv":
+            response = HttpResponse(content_type="text/csv")
+            response["Content-Disposition"] = 'attachment; filename="historial_suelo.csv"'
+            
+            writer = csv.writer(response)
+            writer.writerow([
+                "fechaSensado",
+                "espacio",
+                "bluetooth",
+                "Voltaje",
+                "Amperaje",
+                "PhSuelo",
+                "HumedadSuelo",
+                "id_PlantaIndividuo",
+                "nombre_suelo",
+                "descripcion_suelo",
+            ])
+            
+            for obj in qs:
+                writer.writerow([
+                    getattr(obj, "fechaSensado", ""),
+                    obj.circuito.espacio.nombre_espacio if obj.circuito and obj.circuito.espacio else "",
+                    obj.circuito.bluetooth if obj.circuito else "",
+                    obj.Voltaje,
+                    obj.Amperaje,
+                    obj.PhSuelo,
+                    obj.HumedadSuelo,
+                    obj.planta_individuo.id_PlantaIndividuo,
+                    obj.planta_individuo.id_Suelo.Nombre_Cientifico,
+                    obj.planta_individuo.id_Suelo.Descripcion,
+                ])
+            
+            return response
         return Response(
-            SensadoSueloSerializer(
-                qs.order_by("fechaSensado"),
-                many=True
-            ).data
-        )
+        SensadoSueloSerializer(qs, many=True).data
+        )      
     
 class HistoricosSueloFacets(APIView):
     authentication_classes = [TokenAuthentication]
@@ -825,7 +899,7 @@ class ContaminantesFacetsView(APIView):
             "horas": horas,
         })
 
-class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
+class SensadoContaminantesViewSet(viewsets.ModelViewSet):
     serializer_class = SensadoContaminantesSerializer
     queryset = SensadoContaminantes.objects.all().order_by("-fechaSensado")
 
@@ -895,7 +969,7 @@ class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
 
         if start and end:
             start_dt = parse_server_local(start)
-            end_dt = parse_server_local(end)
+            end_dt = parse_server_local(end) + timedelta(minutes=1)
             qs = qs.filter(
                 fechaSensado__gte=start_dt,
                 fechaSensado__lte=end_dt
@@ -909,6 +983,36 @@ class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
                 d2 = parse_date(ff)
                 if d2:
                     qs = qs.filter(fechaSensado__date__lte=d2)
+        
+        #CSV
+        if request.query_params.get("download") == "csv":
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="historial_contaminantes.csv"'
+
+            writer = csv.writer(response)
+
+            writer.writerow([
+                "fechaSensado",
+                "espacio",
+                "bluetooth",
+                "CO",
+                "CO2",
+                "O",
+                "COVs"
+            ])
+            
+            for obj in qs:
+                writer.writerow([
+                    obj.fechaSensado,
+                    obj.circuito.espacio.nombre_espacio,
+                    obj.circuito.bluetooth,
+                    obj.CO,
+                    obj.CO2,
+                    obj.O,
+                    obj.COVs,
+                ])
+            
+            return response
 
         return Response(
             SensadoContaminantesSerializer(
@@ -916,82 +1020,3 @@ class SensadoContaminantesViewSet(viewsets.ReadOnlyModelViewSet):
                 many=True
             ).data
         )
-
-class HistoricosAmbientalesView(generics.ListAPIView):
-    """
-    GET /api/monitoreo/historicos/?id_espacios=&bluetooth=&fecha=YYYY-MM-DD&hora=HH:MM
-
-    - SIN login: histórico público de todos los circuitos AMBIENTALES
-    - CON login + espacios: restringe circuitos ambientales a los del usuario
-    """
-
-    serializer_class = SensadoAmbientalSerializer
-
-    def get_queryset(self):
-        request = self.request
-        ctx = _user_ctx(request)
-
-        qs = SensadoAmbiental.objects.select_related(
-            "circuito", "circuito__espacio"
-        )
-
-        id_esp = _to_int(request.query_params.get("id_espacios"))
-        circuito_bt = (
-            request.query_params.get("bluetooth")
-            or request.query_params.get("id_Circuito")
-            or request.query_params.get("id_circuito")
-        )
-        fecha = request.query_params.get("fecha")
-        hora = request.query_params.get("hora")
-        
-        if ctx["is_auth"] and ctx["allowed_spaces"]:
-
-            allowed = set(ctx["allowed_spaces"])
-
-            # circuitos ambientales del usuario
-            circuit_bts_allowed = Circuito.objects.filter(
-                espacio__id_espacios__in=ctx["allowed_spaces"],
-                tipo__descripcion=TIPO_AMBIENTAL,
-            ).values_list("bluetooth", flat=True)
-
-            qs = qs.filter(circuito__bluetooth__in=circuit_bts_allowed)
-
-            # Filtrar por espacio 
-            if id_esp is not None:
-                cids = Circuito.objects.filter(
-                    espacio__id_espacios=id_esp,
-                    tipo__descripcion=TIPO_AMBIENTAL,
-                ).values_list("bluetooth", flat=True)
-                qs = qs.filter(circuito__bluetooth__in=cids)
-
-            # Filtrar por circuito
-            if circuito_bt:
-                try:
-                    c = Circuito.objects.select_related("espacio", "tipo").get(bluetooth=circuito_bt)
-                    if c.espacio.id_espacios not in allowed or c.tipo.descripcion != TIPO_AMBIENTAL:
-                        raise PermissionDenied("No tienes acceso a este circuito.")
-                except Circuito.DoesNotExist:
-                    raise PermissionDenied("Circuito inválido.")
-
-                qs = qs.filter(circuito__bluetooth=circuito_bt)
-
-        else:
-            qs = qs.filter(circuito__tipo__descripcion=TIPO_AMBIENTAL)
-
-            if id_esp is not None:
-                qs = qs.filter(circuito__espacio__id_espacios=id_esp)
-
-            if circuito_bt:
-                qs = qs.filter(circuito__bluetooth=circuito_bt)
-
-        if fecha:
-            qs = qs.filter(FechaSensado__date=fecha)
-
-        if hora:
-            # hora = HH:MM
-            if len(hora) == 5:
-                qs = qs.filter(FechaSensado__time__startswith=hora)
-            else:
-                qs = qs.filter(FechaSensado__time=hora)
-
-        return qs.order_by("-FechaSensado")
