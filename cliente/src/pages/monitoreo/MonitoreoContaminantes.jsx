@@ -49,39 +49,18 @@ function getUserFromStorage() {
 
 function composeDateTime(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
+
   const [hh = "00", mm = "00"] = String(timeStr).split(":");
-  const iso = `${dateStr}T${String(hh).padStart(2, "0")}:${String(mm).padStart(
-    2,
-    "0"
-  )}:00`;
-  const dt = new Date(iso);
-  return isNaN(dt) ? null : dt;
+
+  return `${dateStr}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:00`;
 }
 
 const SERVER_TIMEZONE = "America/Mexico_City";
 
-function formatInTimeZone(date, tz) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  })
-    .formatToParts(date)
-    .reduce((acc, p) => ((acc[p.type] = p.value), acc), {});
-  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`;
-}
-
 function buildRangeStrings(fechaIni, horaIni, fechaFin, horaFin) {
-  const localStart = `${fechaIni}T${horaIni}:00`;
-  const localEnd = `${fechaFin}T${horaFin}:00`;
   return {
-    start_send: formatInTimeZone(new Date(localStart), SERVER_TIMEZONE),
-    end_send: formatInTimeZone(new Date(localEnd), SERVER_TIMEZONE),
+    start_send: `${fechaIni}T${horaIni}:00`,
+    end_send: `${fechaFin}T${horaFin}:00`,
   };
 }
 
@@ -539,7 +518,7 @@ export function MonitoreoContaminantes() {
       return false;
     const dIni = composeDateTime(fechaIni, horaIni);
     const dFin = composeDateTime(fechaFin, horaFin);
-    return Boolean(dIni && dFin && dFin.getTime() >= dIni.getTime());
+    return Boolean(dIni && dFin && dFin >= dIni);
   }, [hasAccess, idEspacio, idCircuito, fechaIni, horaIni, fechaFin, horaFin]);
 
   /* ===== Consultar rango ===== */
@@ -637,6 +616,55 @@ export function MonitoreoContaminantes() {
       setLoading(false);
     }
   };
+
+  const descargarCSVContaminantes = async () => {
+    if (!ready) {
+      setStatus("Primero realiza una búsqueda válida.");
+    return;
+  }
+
+  const { start_send, end_send } = buildRangeStrings(
+    fechaIni,
+    horaIni,
+    fechaFin,
+    horaFin
+  );
+
+  const params = new URLSearchParams({
+    id_espacios: idEspacio,
+    bluetooth: idCircuito,
+    start: start_send,
+    end: end_send,
+    download: "csv",
+  });
+
+  const url =
+    `http://127.0.0.1:8000/api/monitoreo/sensadocontaminantes/rango/?${params.toString()}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(text);
+      throw new Error("Error en descarga");
+    }
+
+    const blob = await response.blob();
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = "historial_contaminantes.csv";
+    link.click();
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const limpiar = () => {
     setRangeMode(false);
@@ -919,13 +947,13 @@ export function MonitoreoContaminantes() {
             </div>
           ) : (
             <div className="max-w-6xl mx-auto mt-6 space-y-4">
-              {/* FILTROS + BOTONES (arriba) */}
+              {/* FILTROS + BOTONES */}
               <div className="bg-transparent">
                 <div className="flex items-center gap-3 text-[#2e5d32] font-semibold mb-2">
                   <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#c8dcbc]">
                     <span className="w-3 h-3 border-t-2 border-b-2 border-[#2e5d32]" />
                   </span>
-                  <span>Filtrar datos de contaminantes</span>
+                  <span>Filtrar datos</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
@@ -1020,26 +1048,32 @@ export function MonitoreoContaminantes() {
                     ))}
                   </select>
 
-                  <div className="flex gap-2 ml-auto">
-                    <button
-                      type="button"
-                      onClick={consultar}
-                      disabled={!ready || noSpaces}
-                      className={`px-4 py-2 rounded-full text-white shadow ${
-                        !ready || noSpaces
-                          ? "bg-[#78b486] cursor-not-allowed"
-                          : "bg-[#3b7f4a] hover:bg-[#316b3f]"
-                      }`}
-                    >
-                      Consultar
+                  <div className="flex gap-2 ml-4">
+                    <button 
+                    type="button" 
+                    onClick={consultar} 
+                    disabled={!ready || noSpaces} 
+                    className="flex items-center justify-center p-2.5 bg-[#3b7f4a] hover:bg-[#316b3f] disabled:bg-gray-100 disabled:opacity-40 text-white rounded-xl shadow-sm disabled:shadow-none disabled:cursor-not-allowed transition-all duration-200"
+                    title="Consultar"> 
+                      <img src="/images/iconos/consultar.png" alt="Consultar" className="w-7 h-7"/> 
                     </button>
-                    <button
-                      type="button"
-                      onClick={limpiar}
-                      disabled={noSpaces}
-                      className="px-4 py-2 rounded-full bg-[#e8eae6] text-[#2e5d32] border border-[#cbd5c1] hover:bg-[#dde3d8]"
+
+                    <button 
+                    onClick={limpiar} 
+                    disabled={noSpaces}
+                    className="flex items-center justify-center p-2 rounded-xl text-gray-500 hover:text-red-500 hover:bg-red-50 disabled:opacity-30 disabled:bg-transparent disabled:text-gray-300 transition-all duration-200" 
+                    title="Limpiar">
+                      <img src="/images/iconos/limpiarA.png" alt="Limpiar" className="w-7 h-7 opacity-50"/>
+                    </button>
+
+                    <button onClick={descargarCSVContaminantes} disabled={!ready}
+                    className="flex items-center justify-center p-2.5 bg-[#C2E3C8] hover:bg-[#B2D6B9] rounded-xl disabled:opacity-40 disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200" 
+                    title="Descargar CSV"
                     >
-                      Limpiar
+                      <img 
+                      src="/images/iconos/csv.png" 
+                      alt="Descargar CSV" 
+                      className="w-7 h-7"/>
                     </button>
                   </div>
                 </div>
