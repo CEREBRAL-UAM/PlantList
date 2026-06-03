@@ -77,6 +77,7 @@ class SensadoAmbientalSerializer(serializers.ModelSerializer):
             "Luz_Azul",
             "Luz_Roja",
             "Luz_Blanca",
+            "HumedadSuelo",
         ]
         
         def create(self, request, *args, **kwargs):

@@ -132,7 +132,7 @@ const palette = {
     chip: "Temp",
   },
   Humedad: {
-    color: "rgb(220, 175, 185)", 
+    color: "rgb(107, 135, 121)", 
     chip: "Humedad",
   },
   Lux: {
@@ -162,6 +162,10 @@ const palette = {
   Amperaje: {
     color: "rgb(177, 203, 168)",
     chip: "Amperaje",
+  },
+  HumedadSuelo: {
+    color: "rgb(220, 175, 185)",
+    chip: "Humedad Suelo",
   },
 };
 
@@ -368,6 +372,7 @@ export function MonitoreoAmbiental() {
     Luz_Roja: [],
     Voltaje: [],
     Amperaje: [],
+    HumedadSuelo: [],
   });
   const [activeKeys, setActiveKeys] = useState(new Set(metricKeys));
   const [rangeMode, setRangeMode] = useState(false);
@@ -591,6 +596,7 @@ export function MonitoreoAmbiental() {
           Luz_Roja: [],
           Voltaje: [],
           Amperaje: [],
+          HumedadSuelo: [],
         });
         setResumen(null);
         setLabels([]);
@@ -616,6 +622,7 @@ export function MonitoreoAmbiental() {
         "Luz_Roja",
         "Voltaje",
         "Amperaje",
+        "HumedadSuelo",
       ].forEach((k) => {
         next[k] = rows.map((r) => {
           const n = Number(r?.[k]);
@@ -721,6 +728,7 @@ export function MonitoreoAmbiental() {
       Luz_Roja: [],
       Voltaje: [],
       Amperaje: [],
+      HumedadSuelo: [],
     });
     setResumen(null);
     setLabels([]);
@@ -832,6 +840,7 @@ export function MonitoreoAmbiental() {
         "Luz_Roja",
         "Voltaje",
         "Amperaje",
+        "HumedadSuelo",
       ].forEach((k) => {
 
         next[k] = ambRows
@@ -899,6 +908,7 @@ export function MonitoreoAmbiental() {
           "Luz_Roja",
           "Voltaje",
           "Amperaje",
+          "HumedadSuelo"
         ].forEach((k) =>
           pushVal(k, Number(uAmb?.[k]))
         );
@@ -1241,10 +1251,10 @@ useEffect(() => {
                 </div>
                 <div
                   className="flex items-center justify-between rounded-full px-6 py-4 shadow text-white"
-                  style={{ backgroundColor: "rgb(220, 175, 185)" }}
+                  style={{ backgroundColor: "rgb(107, 135, 121)" }}
                 >
                   <span className="flex items-center gap-3 text-xl font-semibold">
-                    <img src="/images/iconos/Humedad.png" alt="Humedad" className="w-6 h-6" />
+                    <img src="/images/iconos/HumedadA.png" alt="Humedad" className="w-6 h-6" />
                     Humedad
                   </span>
                   <span className="text-xl font-bold text-white">
@@ -1335,6 +1345,18 @@ useEffect(() => {
                   </span>
                   <span className="text-xl font-bold text-white">
                     {ultimoPublic.Amperaje ?? "—"} A
+                  </span>
+                </div>
+                <div
+                  className="flex items-center justify-between rounded-full px-6 py-4 shadow text-white"
+                  style={{ backgroundColor: "rgb(220, 175, 185)" }}
+                >
+                  <span className="flex items-center gap-3 text-xl font-semibold">
+                    <img src="/images/iconos/Humedad.png" alt="Humedad Suelo" className="w-6 h-6" />
+                    Humedad Suelo
+                  </span>
+                  <span className="text-xl font-bold text-white">
+                    {ultimoPublic.HumedadSuelo ?? "—"} %
                   </span>
                 </div>
               </div>
@@ -1526,17 +1548,18 @@ useEffect(() => {
               <div className="flex flex-wrap gap-3">
                 {metricKeys
                 .filter((k) => 
-                  ["TempAmbiental", "Humedad", "Lux", "Radiacion", "Luz_Azul", "Luz_Blanca", "Luz_Roja"].includes(k))
+                  ["TempAmbiental", "Humedad", "Lux", "Radiacion", "Luz_Azul", "Luz_Blanca", "Luz_Roja", "Humedad", "HumedadSuelo"].includes(k))
                 .map((k) => {
                   const active = activeKeys.has(k);
                   const iconoMap = {
                     TempAmbiental: "Temp",
-                    Humedad: "Humedad",
+                    Humedad: "HumedadA",
                     Lux: "Lux",
                     Radiacion: "Radiacion",
                     Luz_Azul: "LuzAzul",
                     Luz_Blanca: "luzBlanca",
-                    Luz_Roja: "LuzRoja"
+                    Luz_Roja: "LuzRoja",
+                    HumedadSuelo: "Humedad"
                 };
                 
                 return (
